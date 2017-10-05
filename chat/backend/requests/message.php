@@ -4,17 +4,16 @@
 
   if ($_SERVER['REQUEST_METHOD'] == 'GET')
   {
-    //if ($_SESSION['roleId'] == 1) // admin only can call these methods
-    //{
-      if (isset($_GET['messageId']) && test_int($_GET['messageId']))
+  
+      if (isset($_GET['firstUserId'],$_GET['secondUserId']) && test_int($_GET['firstUserId'],$_GET['secondUserId']))
       {
-        checkResult(getMessageById($conn, $_GET['messageId']));
+        checkResult(getMessagesBetweenUsersIdsInClass($conn,$_GET['firstUserId'],$_GET['secondUserId'] ,$_GET['classId']));
       }
       else
       {
-        checkResult(getMessages($conn));
+        RecieveNewMessageForUserIdInClass($conn,$_GET['UserId']);
       }
-    //}
+    
   }
 
   if ($_SERVER['REQUEST_METHOD'] == 'POST')
@@ -23,10 +22,10 @@
     //{
       // decode the json data
       $data = json_decode(file_get_contents('php://input'));
-      $result = isset($data->Content, $data->SentFrom, $data->SentTo) && normalize_string($conn, $data->Content) && test_int($data->SentFrom, $data->SentTo);
+      $result = isset($data->Content, $data->SentFrom, $data->SentTo,$data->ClassId) && normalize_string($data->Content) && test_int($data->SentFrom, $data->SentTo,$data->ClassId);
       if ($result)
       {
-        echo addMessage($conn, $data->Content, $data->SentFrom, $data->SentTo);
+        echo SendMessage($conn, $data->Content, $data->SentFrom, $data->SentTo,$data->ClassId );
       }
     //}
   }
