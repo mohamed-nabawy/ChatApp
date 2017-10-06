@@ -1,5 +1,5 @@
 <?php
-	function test_price(&$value) {
+	function testPrice(&$value) {
 		$value = trim($value);
 		$x = preg_match('/^\d{0,9}(\.\d{0,9})?$/', $value);
 		if (!$x) {
@@ -9,7 +9,7 @@
 		return true;
 	}
 
-	function test_date_of_birth(&$value) {
+	function testDateOfBirth(&$value) {
 		$value = trim($value);
 		$x = preg_match('/^\d{4}-[0-9]([0-9])?-\d{1,2}$/', $value);
 		if (!$x) {
@@ -19,7 +19,7 @@
 		return true;
 	}
 
-	function test_email(&$value) {
+	function testEmail(&$value) {
 		$value = trim($value);
 		$x = filter_var($value, FILTER_VALIDATE_EMAIL);
 		if (!$x) {
@@ -29,7 +29,7 @@
 		return true;
 	}
 
-	function normalize_string($conn, &...$values) {
+	function normalizeString($conn, &...$values) {
 		foreach ($values as &$value) {
 			$value = trim($value);
 			if ($value !== "") {
@@ -45,11 +45,11 @@
 		return true;
 	}
 
-	function has_max_length($value, $max) {
+	function hasMaxLength($value, $max) {
 		return strlen($value) <= $max;
 	}
 
-	function validate_max_lengths($fields_with_max_lengths) {
+	function validateMaxLengths($fields_with_max_lengths) {
 		// Expects an assoc. array
 		foreach ($fields_with_max_lengths as $field => $max) {
 			$value = trim($field);
@@ -61,7 +61,7 @@
 		return true;
 	}
 
-	function test_phone(&$value) {
+	function testPhone(&$value) {
 		$value = trim($value);
 		$x = preg_match('/^\d{0,13}$/', $value);
 		if (!$x) {
@@ -71,9 +71,9 @@
 		return true;
 	}
 
-	function test_int(&...$values) {
+	function testInt(&...$values) {
 		foreach ($values as &$value) {
-			if (!ctype_digit($value) && !(is_int($value) || is_double($value))) {
+			if (!ctype_digit($value) && !(is_int($value) || is_double($value) ) ) {
 				echo "false integer";
 				return false;
 			}
@@ -81,8 +81,23 @@
 		return true;
 	}
 
+	function testPassword(&$password) {
+		$password = trim($password);
+		$x = preg_match('/^([a-zA-Z\d]){8,}$/', $password);
+		$y = preg_match('/([A-Z])/', $password);
+		if (!$x || !$y) {
+			//echo "false password";
+			return false;
+		}
+		return true;
+	}
+
+	$x = "dgfR34tS";
+
+	var_dump(testPassword($x) );
+
 	function checkResult($result) {
-		if (isset($result)) {	
+		if (isset($result) ) {
 			echo json_encode($result);
 		}
 		else {
