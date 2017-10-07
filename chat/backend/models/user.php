@@ -1,6 +1,6 @@
 <?php
 	class user {
-		public $Id = array("type"=> "int", "max"=> "11", "primary key", "auto_increment", "not null");
+		public $Id = array("type"=> "int", "max"=> "11", "primary key", "auto_increment"); // auto_increment // primary key
 		public $UserName = array("type"=> "string", "max"=> "200", "not null");
 		public $FirstName = array("type"=> "string", "max"=> "100", "not null");
 		public $LastName = array("type"=> "string", "max"=> "100", "not null");
