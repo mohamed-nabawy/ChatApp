@@ -1,6 +1,6 @@
 <?php
-  require('chat/backend/controllers/message.php');
-  require('chat/backend/test-request-input.php');
+  require('ChatApp/chat/backend/controllers/messages.php');
+  require('ChatApp/chat/backend/test-request-input.php');
 
   if ($_SERVER['REQUEST_METHOD'] == 'GET')
   {

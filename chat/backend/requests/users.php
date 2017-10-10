@@ -1,5 +1,5 @@
 <?php
-  require('ChatApp/chat/backend/controllers/user.php');
+  require('ChatApp/chat/backend/controllers/users.php');
   require('ChatApp/chat/backend/test-request-input.php');
 
   if ($_SERVER['REQUEST_METHOD'] == 'GET')

@@ -60,7 +60,7 @@
 
     <div ng-app="registerApp" ng-controller="registerController" class="row">
 
-      <form novalidate role="form" name="myform" style="width: 40%;margin: auto;text-align: center" enctype="multipart/form-data" method="post" action="/ChatApp/chat/backend/requests/user.php">
+      <form novalidate role="form" name="myform" style="width: 40%;margin: auto;text-align: center" enctype="multipart/form-data" method="post" action="/ChatApp/chat/backend/requests/users.php">
 
         <div class="input-field col s12">
 

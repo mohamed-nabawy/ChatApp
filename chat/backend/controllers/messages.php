@@ -1,6 +1,6 @@
 <?php
 
-  require('chat/backend/connection.php');
+  require('ChatApp/chat/backend/connection.php');
 
   function getMessagesBetweenUsersIdsInClass($conn,$firstUserId,$secondUserId,$classId)
   {  
