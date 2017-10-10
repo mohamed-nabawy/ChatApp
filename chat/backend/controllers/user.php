@@ -1,7 +1,7 @@
 <?php
 
-  require('chat/backend/functions.php');
-  require('chat/backend/image-handle.php');
+  require('ChatApp/chat/backend/functions.php');
+  require('ChatApp/chat/backend/image-handle.php');
 
   function getUsers($conn) {  
     $sql = "select * from user";
@@ -40,14 +40,14 @@
     $FirstName = $firstName;
     $LastName = $lastName;
 
-    if ( isset($image) && $image['name'] != "") {
+    if (isset($image) && $image['name'] != "") {
       $Image = addImageFile($image, $email);
     }
     else {
-      if ($gender == 1) {
+      if ($gender == 0) {
         $Image = '/chat/backend/uploads/maleimage.jpg';
       }
-      elseif ($gender == 2) {
+      elseif ($gender == 1) {
         $Image = '/chat/backend/uploads/femaleimage.jpg';
       }
     }
@@ -59,11 +59,15 @@
     $DateOfBirth = $dateOfBirth;
     $Gender = $gender;
 
-    if ($stmt->execute() === TRUE) {    
+    echo 1;
+
+    if ($stmt->execute() === TRUE) {
+      header("Location: ". "/ChatApp/chat/frontend/login.php");
       $user_id = mysqli_insert_id($conn);
       return $user_id;
     }
     else {
+      echo 3;
       echo "Error: ", $conn->error;
       //return false;
     }

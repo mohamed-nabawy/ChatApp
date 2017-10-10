@@ -1,12 +1,12 @@
 <?php
-  require('chat/backend/controllers/user.php');
-  require('chat/backend/test-request-input.php');
+  require('ChatApp/chat/backend/controllers/user.php');
+  require('ChatApp/chat/backend/test-request-input.php');
 
   if ($_SERVER['REQUEST_METHOD'] == 'GET')
   {
     //if ($_SESSION['roleId'] == 1) // admin only can call these methods
     //{
-      if (isset($_GET['userId']) && test_int($_GET['userId']))
+      if (isset($_GET['userId']) && testInt($_GET['userId']))
       {
         checkResult(getUserById($conn, $_GET['userId']));
       }
@@ -25,12 +25,13 @@
     //{
       // decode the json data
       //$data = json_decode(file_get_contents('php://input'));
-      $result = isset($_POST['firstName'], $_POST['lastName'], $_POST['phone'], $_POST['email'], $_POST['DOB'], $_POST['gender']) && normalize_string($conn, $_POST['firstName'], $_POST['lastName']) && test_phone($_POST['phone']) && test_email($_POST['email']) && test_date_of_birth($_POST['DOB']) && test_int($_POST['gender']);
+      $result = isset($_POST['firstName'], $_POST['lastName'], $_POST['phone'], $_POST['email'], $_POST['DOB'], $_POST['gender']) && normalizeString($conn, $_POST['firstName'], $_POST['lastName']) && testPhone($_POST['phone']) && testEmail($_POST['email']) && testDateOfBirth($_POST['DOB']) && testInt($_POST['gender']);
+      //var_dump($result);
       if ($result)
       {
-        normalize_string($conn, $_FILES['file']['name']);
-        echo addUser($conn, $_POST['firstName'], $_POST['lastName'], $_FILES['file'], $_POST['email'], $_POST['phone'], $_POST['password'], $_POST['DOB'], $_POST['gender'], 1);
-        header("Location: ". "/chat/frontend/login.php");
+        normalizeString($conn, $_FILES['image']['name']);
+        echo addUser($conn, $_POST['firstName'], $_POST['lastName'], $_FILES['image'], $_POST['email'], $_POST['phone'], $_POST['password'], $_POST['DOB'], $_POST['gender'], 1);
+        header("Location: ". "/ChatApp/chat/index.php");
       }
     //}
   }
@@ -41,10 +42,10 @@
     //{
       // decode the json data
       $data = json_decode(file_get_contents('php://input'));
-      $result = isset($data->RoleId, $data->Id, $data->UserName, $data->FirstName, $data->LastName, $data->Email, $data->PhoneNumber) && test_int($data->RoleId, $data->Id) && normalize_string($conn, $data->UserName, $data->FirstName, $data->LastName) && test_phone($data->PhoneNumber) && test_email($data->Email);
+      $result = isset($data->RoleId, $data->Id, $data->UserName, $data->FirstName, $data->LastName, $data->Email, $data->PhoneNumber) && testInt($data->RoleId, $data->Id) && normalizeString($conn, $data->UserName, $data->FirstName, $data->LastName) && testPhone($data->PhoneNumber) && testEmail($data->Email);
       if ($result)
       {
-        normalize_string($conn, $data->Image);
+        normalizeString($conn, $data->Image);
         editUser($conn, $data->UserName, $data->FirstName, $data->LastName, $data->Email, $data->Image, $data->PhoneNumber, $data->RoleId, $data->Id);
       }
     //}
@@ -55,12 +56,12 @@
     //if ($_SESSION['roleId'] == 1)
     //{
       // decode the json data
-      if (isset($_GET['userId']) && test_int($_GET['userId']))
+      if (isset($_GET['userId']) && testInt($_GET['userId']))
       {
         deleteUser($conn, $_GET['userId']);
       }
     //}
   }
 
-  require('chat/backend/footer.php');
+  require('ChatApp/chat/backend/footer.php');
 ?>

@@ -38,7 +38,6 @@
 				$value = htmlspecialchars($value);
 			}
 			else {
-				echo "name required";
 				return false;
 			}
 		}
@@ -91,10 +90,6 @@
 		}
 		return true;
 	}
-
-	$x = "dgfR34tS";
-
-	var_dump(testPassword($x) );
 
 	function checkResult($result) {
 		if (isset($result) ) {

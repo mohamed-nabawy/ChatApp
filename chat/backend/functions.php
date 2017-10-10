@@ -1,13 +1,13 @@
 <?php 	
-  require_once('chat/backend/session.php');
-  require_once('chat/backend/connection.php'); 
+  require_once('ChatApp/chat/backend/session.php');
+  require_once('ChatApp/chat/backend/connection.php'); 
 
 	function redirect_to($new_location) {
 	  header("Location: " . $new_location);
 	  exit;
 	}
 
-	function confirm_query($result_set) {
+	function confirmQuery($result_set) {
 		if (!$result_set) {
 			die("Database query failed.");
 		}
