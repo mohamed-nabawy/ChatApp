@@ -90,6 +90,8 @@
 		}
 		return true;
 	}
+	// $x = "afLTkkljg";
+	// var_dump(testPassword($x) );
 
 	function checkResult($result) {
 		if (isset($result) ) {

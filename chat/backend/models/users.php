@@ -1,17 +1,17 @@
 <?php
-	class user {
-		public $Id = array("type"=> "int", "max"=> "11", "primary key", "auto_increment"); // auto_increment // primary key
-		public $UserName = array("type"=> "string", "max"=> "200", "not null");
-		public $FirstName = array("type"=> "string", "max"=> "100", "not null");
-		public $LastName = array("type"=> "string", "max"=> "100", "not null");
-		public $Email = array("type"=> "string", "max"=> "200", "not null");
-		public $PhoneNumber = array("type"=> "string", "max"=> "13", "not null");
-		public $DateOfBirth = array("type"=> "date", "not null");
-		public $Gender = array("type"=> "bool", "not null");
-		public $RoleId = array("type"=> "int", "max"=> "11", "not null");
-		public $Confirmed = array("type"=> "bool", "not null");
-		public $PasswordHash = array("type"=> "string", "max"=> "100", "not null");
-		public $Image = array("type"=> "string", "max"=> "300");
+	class users {
+		public $id = array("type"=> "int", "primary key", "auto_increment"); // auto_increment // primary key
+		public $userName = array("type"=> "string", "max"=> "200", "not null");
+		public $firstName = array("type"=> "string", "max"=> "100", "not null");
+		public $lastName = array("type"=> "string", "max"=> "100", "not null");
+		public $email = array("type"=> "string", "max"=> "200", "not null");
+		public $phoneNumber = array("type"=> "string", "max"=> "13", "not null");
+		public $dateOfBirth = array("type"=> "date", "not null");
+		public $gender = array("type"=> "bool", "not null");
+		public $roleId = array("type"=> "int", "not null", "foreign key"=> "roles(id)");
+		public $confirmed = array("type"=> "bool", "not null");
+		public $passwordHash = array("type"=> "string", "max"=> "100", "not null");
+		public $image = array("type"=> "string", "max"=> "300");
 	}
-	$user = new user();
+	$users = new users();
 ?>

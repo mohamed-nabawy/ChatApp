@@ -4,11 +4,15 @@
 
   <head>
 
+    <title>Login</title>
+
     <meta name="viewport" charset="utf-8" content="width=device-width,initial-scale=1.0">
+
+    <link rel="icon" href="/ChatApp/chat/favicon.ico">
   
     <link href="/ChatApp/chat/frontend/css/errors.css" rel="stylesheet" type="text/css">
 
-    <link rel="stylesheet" href="/ChatApp/chat/frontend/css/materialize.css">
+    <link rel="stylesheet" href="/ChatApp/chat/frontend/css/modules/materialize.css">
 
     <script src="/ChatApp/chat/frontend/javascript/modules/jquery-3.2.1.js"></script>
 

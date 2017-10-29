@@ -15,7 +15,7 @@
 
 	function form_errors($errors=array()) {
 		$output = "";
-		if (!empty($errors)) {
+		if (!empty($errors) ) {
 		  $output .= "<div class=\"error\"> ";
 		  $output .= "Please fix the following errors:";
 		  $output .= "<ul class=\"error\">";
@@ -57,12 +57,12 @@
 	}
 	
 	function islogged_in() {
-		return ( isset($_SESSION['userId']) ); // for normal user and fb user check
+		return (isset($_SESSION['userId']) ); // for normal user and fb user check
 	}
 	
 	function confirm_logged_in() {
-		if (!islogged_in()) {
-			redirect_to("/CafeteriaApp.Frontend/Views/login.php");
+		if (!islogged_in() ) {
+			redirect_to("/ChatApp/chat/frontend/login.php");
 		}
 	}
 
@@ -70,7 +70,7 @@
     $user = getUserByEmail($conn, $email);
     if ($user) {
       // found user, now check password
-      if (passwordCheck($password, $user["PasswordHash"])) {
+      if (passwordCheck($password, $user["passwordHash"]) ) {
         // password matches
         return $user;
       } else {
@@ -83,21 +83,21 @@
     }
   }
 
-  function getUserByEmail($conn, $email) {    
-    if (!isset($email)) {
+  function getUserByEmail($conn, $email) {
+    if (!isset($email) ) {
       echo "Error: User Email is not set";
       return;
     }
     else {
       $safe_email = mysqli_real_escape_string($conn, $email);
       $query  = "SELECT * ";
-      $query .= "FROM User ";
-      $query .= "WHERE Email = '{$safe_email}' ";
+      $query .= "FROM users ";
+      $query .= "WHERE `email` = '{$safe_email}' ";
       $query .= "LIMIT 1";
       $user_set = mysqli_query($conn, $query);
       confirmQuery($user_set);
 
-      if ($user = mysqli_fetch_assoc($user_set)) {
+      if ($user = mysqli_fetch_assoc($user_set) ) {
         return $user;
       } else {
         return null;
@@ -117,8 +117,7 @@
 
   function validatePageAccess($conn) {/*  using hash*/
     confirm_logged_in();
-
-    $query = "SELECT `Dir` FROM `Dir` WHERE Id IN (SELECT DirId FROM Dir_Role WHERE RoleId = {$_SESSION["roleId"]})";  // add RoleId 
+    $query = "SELECT `name` FROM `directories` WHERE id IN (SELECT `dirId` FROM `directoryroles` WHERE roleId = {$_SESSION["roleId"]})";  // add RoleId
 
     $result_set = mysqli_query($conn, $query);
 
@@ -129,7 +128,8 @@
       $dirs = mysqli_fetch_all($result_set, MYSQLI_ASSOC); // ??
       //print_r($dirs); 
       foreach ($dirs as $key => $value) {
-        if ( strpos(getcwd(), $value["Dir"]) !== false ) {
+        
+        if ( strpos(getcwd(), $value["name"]) !== false ) {
           return;
         }
       }

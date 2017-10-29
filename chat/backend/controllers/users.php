@@ -3,8 +3,8 @@
   require('ChatApp/chat/backend/functions.php');
   require('ChatApp/chat/backend/image-handle.php');
 
-  function getUsers($conn) {  
-    $sql = "select * from user";
+  function getUsers($conn) {
+    $sql = "select * from `users` where `id` != ".$_SESSION['userId'];
     $result = $conn->query($sql);
     if ($result) {
       $users = mysqli_fetch_all($result, MYSQLI_ASSOC);
@@ -16,8 +16,21 @@
     }
   }
 
+  function addChatUser($user) {
+    array_push($_SESSION["chats"], $user);
+  }
+
+  function deleteChat($id) {
+    foreach ($_SESSION["chats"] as $key => $value) {
+      if ($value->id == $id) {
+        array_splice($_SESSION["chats"], $key, 1);
+        break;
+      }
+    }
+  }
+
   function getUserById($conn, $id) { // check validations on this
-    $sql = "select * from user where Id = ".$id." limit 1";
+    $sql = "select * from `users` where id = ".$id." limit 1";
     $result = $conn->query($sql);
     if ($result) {
       $user = mysqli_fetch_assoc($result);
@@ -29,8 +42,25 @@
     }
   }
 
+  function changeActiveUser($user) {
+    $_SESSION["active"] = $user;
+  }
+
+  function getCurrentUser($conn) {
+    $sql = "select * from `users` where id = ".$_SESSION["userId"]." limit 1";
+    $result = $conn->query($sql);
+    if ($result) {
+      $user = mysqli_fetch_assoc($result);
+      mysqli_free_result($result);
+      return $user;
+    }
+    else {
+      echo "Error retrieving User: ", $conn->error;
+    } 
+  }
+
   function addUser($conn, $firstName, $lastName, $image, $email, $phoneNumber, $password, $dateOfBirth, $gender, $roleId) {
-    $sql = "insert into user (UserName, FirstName, LastName, Image, Email, PhoneNumber, PasswordHash, DateOfBirth, Gender, RoleId) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $sql = "insert into `users` (userName, firstName, lastName, image, email, phoneNumber, passwordHash, dateOfBirth, gender, roleId) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     $stmt = $conn->prepare($sql);
 
@@ -45,10 +75,10 @@
     }
     else {
       if ($gender == 0) {
-        $Image = '/chat/backend/uploads/maleimage.jpg';
+        $Image = '/ChatApp/chat/backend/uploads/maleimage.jpg';
       }
       elseif ($gender == 1) {
-        $Image = '/chat/backend/uploads/femaleimage.jpg';
+        $Image = '/ChatApp/chat/backend/uploads/femaleimage.jpg';
       }
     }
 
@@ -59,32 +89,36 @@
     $DateOfBirth = $dateOfBirth;
     $Gender = $gender;
 
-    echo 1;
-
     if ($stmt->execute() === TRUE) {
-      header("Location: ". "/ChatApp/chat/frontend/login.php");
       $user_id = mysqli_insert_id($conn);
+      
+      // Success
+      // Mark user as logged in
+      $_SESSION["userId"] = $user_id;
+      $_SESSION["userName"] = $email;
+      $_SESSION["roleId"] = $roleId;
+      $_SESSION["chats"] = [];
+      header("Location: ". "/ChatApp/chat/frontend/areas/student/student-profile.php");
       return $user_id;
     }
     else {
-      echo 3;
       echo "Error: ", $conn->error;
       //return false;
     }
   }
 
   function editUser($conn, $userName, $firstName, $lastName, $email, $image, $phoneNumber, $roleId, $id) {
-    $userUserName = mysqli_fetch_assoc($conn->query("select UserName from user where Id = ".$id))['UserName'];
+    $userUserName = mysqli_fetch_assoc($conn->query("select `userName` from `users` where `id` = ".$id) )['userName'];
     
-    if (!($userUserName == $userName) && checkExistingUserName($conn,$userName,true))  {
+    if (!($userUserName == $userName) && checkExistingUserName($conn,$userName, true) )  {
       echo "existing username or email";
       return;
     }
     else {
-      $result = $conn->query("select Image from user where Id = ".$id);
-      $userImage = mysqli_fetch_assoc($result)['Image'];
+      $result = $conn->query("select `image` from `users` where `id` = ".$id);
+      $userImage = mysqli_fetch_assoc($result)['image'];
       mysqli_free_result($result);
-      $sql = "update user set UserName = (?), FirstName = (?) , LastName = (?) , Email = (?) , Image = (?) , PhoneNumber = (?) , RoleId = (?) where Id = (?)"; 
+      $sql = "update `users` set `userName` = (?), `firstName` = (?) , `lastName` = (?) , `email` = (?) , `image` = (?) , `phoneNumber` = (?) , `roleId` = (?) where `id` = (?)"; 
       $stmt = $conn->prepare($sql);
       $stmt->bind_param("ssssssii", $UserName, $FirstName, $LastName, $Email, $Image, $PhoneNumber, $RoleId, $Id);
       $UserName = $userName;
@@ -163,7 +197,7 @@
   // }
 
   function activateUser($conn, $id) { // check validations on this
-    $sql = "update user set Confirmed = True where Id = (?)"; 
+    $sql = "update `users` set `confirmed` = true where `id` = (?)"; 
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $Id);
     $Id = $id;
@@ -177,7 +211,7 @@
 
   function checkExistingUserName($conn, $userName, $register_edit) {
     $UserName = mysqli_real_escape_string($conn, $userName);
-    $sql = "select count(*) from user where UserName = '{$UserName}'";
+    $sql = "select count(*) from `users` where `userName` = '{$UserName}'";
     $result = $conn->query($sql);
     if ($result) {
       $result = mysqli_fetch_array($result, MYSQLI_NUM); 
@@ -201,7 +235,7 @@
   function checkExistingEmail($conn, $email) { // problem if he wants to edit his info cause' of his email
     $email = trim($email);
     $Email = mysqli_real_escape_string($conn, $email);
-    $sql = "select count(*) from user where Email = '{$Email}'";
+    $sql = "select count(*) from `users` where `email` = '{$Email}'";
     $result = $conn->query($sql);
     if ($result) {
       $result = mysqli_fetch_array($result, MYSQLI_NUM);
@@ -222,7 +256,7 @@
 
   function deleteUser($conn, $id) { // cascaded delete ??
     //$conn->query("set foreign_key_checks = 0"); // ????????/
-    $sql = "delete from user where Id = ".$id . " limit 1";
+    $sql = "delete from `users` where `id` = ".$id . " limit 1";
     if ($conn->query($sql) === TRUE) {
       echo "User deleted successfully";
     }

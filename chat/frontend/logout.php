@@ -1,6 +1,6 @@
 <?php
-	require('CafeteriaApp.Backend/functions.php');
-	require('fbConfig.php');
+	require('ChatApp/chat/backend/functions.php');
+	//require('fbConfig.php');
  
 
 	// v1: simple logout
@@ -9,12 +9,11 @@
 	//$_SESSION["user_name"] = null;
 	//$_SESSION["customer_id"] = null;
 
-	//redirect_to("login.php");
-
 	// Include FB config file
 
 	// Remove access token from session
-	unset($_SESSION['facebook_access_token']);
+	//unset($_SESSION['facebook_access_token']);
+
 	// v2: destroy session
 	// assumes nothing else in session to keep
 	$_SESSION = array();

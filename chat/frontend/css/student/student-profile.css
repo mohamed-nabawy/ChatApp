@@ -1,0 +1,15 @@
+.mypos {
+	/*position: absolute;
+	float: right;*/
+}
+
+.classmate-and-teacher {
+	padding: 10px 10px;
+	background-color: lightblue;
+	cursor: pointer;
+	position: relative;
+	font-weight: bold
+	top: 20px;
+	float: right;
+	display: block;
+}

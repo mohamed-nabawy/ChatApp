@@ -4,11 +4,13 @@
 
   <head>
 
-    <title>Register Form</title>
+    <title>Register</title>
 
     <meta name="viewport" charset="UTF-8" content="width=device-width, initial-scale=1.0" />
 
-    <link rel="stylesheet" type="text/css" href="/ChatApp/chat/frontend/css/materialize.css" />
+    <link rel="icon" href="/ChatApp/chat/favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="/ChatApp/chat/frontend/css/modules/materialize.css" />
 
     <link href="/ChatApp/chat/frontend/css/input_file.css" rel="stylesheet" />
 
@@ -34,7 +36,10 @@
 
     <script type="text/javascript">
 
-      angular.module('registerApp',['phone_number']).controller('registerController',['$scope',function($scope){}]);
+      angular.module('registerApp',['phone_number','image']).controller('registerController',['$scope',function($scope){
+        $scope.image = {};
+        $scope.image.src = '';
+      }]);
       
     </script>
 
@@ -141,8 +146,18 @@
         <span ng-show="myform.gender.$touched && myform.gender.$invalid">Gender is Required</span>
 
         <br>
+        <div class="image-button">
+          <input type="file" id="file" name="image" fileread="image.src" size="10" />
 
-        <input type="file" name="image" />
+        <label for="file"><span class="inside-image-label">choose Image</span></label>
+      </div>
+
+
+        <img ng-src="{{image.src}}" id="profileImage" />
+
+        <div class="dropzone" file-dropzone="[image/png, image/jpeg, image/gif]" file="image" file-name="imageFileName" data-max-file-size="3">
+
+          </div>
 
         <!-- <div>
         
