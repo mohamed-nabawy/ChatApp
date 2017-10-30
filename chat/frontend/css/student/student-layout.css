@@ -8,6 +8,9 @@ nav div ul li {
 .separate-between-windows {
 	margin-right: 100px;
 	background-color: white;
+	height:360px;
+	width:280px;
+	bottom: 0px;
 }
 
 .message-content {

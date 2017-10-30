@@ -3,7 +3,7 @@
   require('ChatApp/chat/backend/functions.php');
   require('ChatApp/chat/backend/image-handle.php');
 
-  function getUsers($conn) {
+  function getUsers($conn) { // in the same class
     $sql = "select * from `users` where `id` != ".$_SESSION['userId'];
     $result = $conn->query($sql);
     if ($result) {
@@ -16,11 +16,11 @@
     }
   }
 
-  function addChatUser($user) {
+  function addChatUser($user) {   //add user to open chats
     array_push($_SESSION["chats"], $user);
   }
 
-  function deleteChat($id) {
+  function deleteChat($id) {   // close the window
     foreach ($_SESSION["chats"] as $key => $value) {
       if ($value->id == $id) {
         array_splice($_SESSION["chats"], $key, 1);

@@ -18,7 +18,8 @@
 
 		</head>
 
-		<div ng-controller="studentProfile">
+		<div ng-controller="studentProfile" class="MatesPanel">
+			<h4>Contacts</h4>
 
 			<div ng-repeat="u in myClassMatesAndTeachers" class="panel classmate-and-teacher">
 

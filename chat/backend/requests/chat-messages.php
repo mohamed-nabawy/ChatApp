@@ -8,8 +8,7 @@
   
       if (isset($_GET['firstUserId'], $_GET['secondUserId']) && testInt($_GET['firstUserId'], $_GET['secondUserId']) ) {
         checkResult(getMessagesBetweenUsersIdsInClass($conn, $_GET['firstUserId'], $_GET['secondUserId'], $_GET['classId']) );
-      }
-      else {
+      }else {
         RecieveNewMessageForUserIdInClass($conn, $_GET['userId']);
       }
     

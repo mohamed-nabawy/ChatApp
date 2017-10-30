@@ -13,3 +13,13 @@
 	float: right;
 	display: block;
 }
+
+.MatesPanel{
+	padding-top: 6px;
+width: 172px;
+height: 500px;
+text-align: center;
+background-color: #9D9D9D;
+overflow: auto;
+border-radius: 10px;
+}

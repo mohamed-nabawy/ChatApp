@@ -52,27 +52,30 @@ layoutApp.controller('chats', ['$scope', '$http', 'chat', '$rootScope', function
 	// 	});
 	// };
 
+
+ // $interval(function () {
+ //     $http.get('/ChatApp/chat/backend/requests/users.php?flag=3').then(function(response) {
+
+ //     });
+ //    }, 1000);
+
+
 	$scope.getCurrentInfo = function() {
 		$http.get('/ChatApp/chat/backend/requests/users.php?flag=3').then(function(response) {
-			$scope.currentUser = response.data;
-			$scope.currentMessages = [];
+			$scope.currentUser = response.data;// id of user
+			$scope.currentMessages = []; 
 			$http.get('/ChatApp/chat/backend/requests/users.php?flag=1').then(function(response) {
-				$scope.chats = response.data;
-				//console.log($scope.chats);
+				$scope.chats = response.data; // open windows
 				var length = $scope.chats.length;
 				if (length > 0) {
 					for (var i = 0; i < length; i++) {
-						// $scope.currentMessages.push()
 						$http.get('/ChatApp/chat/backend/requests/chat-messages.php?firstUserId=' + $scope.currentUser.id + "&secondUserId=" + $scope.chats[i].id + "&classId=" + 1).then(function(response) {
-							//return response.data;
-							//console.log(response.data);
 							if (response.data.length > 0) {
 								var data = response.data;
 								var len = data.length;
 								for (var j = 0; j < len; j++) {
 									$scope.currentMessages.push(data[j]);
-									//console.log($scope.currentMessages);
-								}
+									}
 								console.log($scope.currentMessages);
 							}
 						});
