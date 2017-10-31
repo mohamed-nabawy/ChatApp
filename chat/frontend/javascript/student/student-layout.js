@@ -31,7 +31,7 @@ var layoutApp = angular.module('student', ['ngRoute', 'studentService', 'locatio
   
 // }]);
 
-layoutApp.controller('chats', ['$scope', '$http', 'chat', '$rootScope', function($scope, $http, chat, $rootScope) {
+layoutApp.controller('chats', ['$scope', '$http', 'chat', '$rootScope', '$interval', function($scope, $http, chat, $rootScope, $interval) {
 	//$scope.message = "";
 
 	// $scope.getChats = function() {
@@ -53,11 +53,18 @@ layoutApp.controller('chats', ['$scope', '$http', 'chat', '$rootScope', function
 	// };
 
 
- // $interval(function () {
- //     $http.get('/ChatApp/chat/backend/requests/users.php?flag=3').then(function(response) {
+ $interval(function () {
+ 	if($scope.chats.length>0)//for open chat windows >> only refresh
+     {	//check if there is a new received message
+     	$http.get('/ChatApp/chat/backend/requests/chat-messages.php').then(function(response) {
+	
+			if( parseInt( response.data) > 0 )
+				{	$scope.getCurrentInfo(); }
 
- //     });
- //    }, 1000);
+    	 });
+ 	}
+
+    }, 3000);
 
 
 	$scope.getCurrentInfo = function() {
@@ -74,6 +81,7 @@ layoutApp.controller('chats', ['$scope', '$http', 'chat', '$rootScope', function
 								var data = response.data;
 								var len = data.length;
 								for (var j = 0; j < len; j++) {
+									data[j]['id']=parseInt(data[j]['id']);
 									$scope.currentMessages.push(data[j]);
 									}
 								console.log($scope.currentMessages);
@@ -134,6 +142,7 @@ layoutApp.controller('chats', ['$scope', '$http', 'chat', '$rootScope', function
 	};
 
 	$scope.sendMessageToUser = function(user) {
+		//console.log(1);
 		var data = {
 			SentFrom: $scope.currentUser.id,
 			SentTo: user.id,

@@ -12,6 +12,12 @@
     {
       $messages = mysqli_fetch_all($result, MYSQLI_ASSOC);
       mysqli_free_result($result);
+
+      //mark new messages as old
+      foreach ($messages as $key => $value) {
+         markMessageAsRead($conn, $value['id']);
+      }
+     
       return $messages;
     }
     else
@@ -21,13 +27,29 @@
   }
 
 
-function RecieveNewMessageForUserIdInClass($conn,$UserId,$classId)
+function recieveNewMessageForUserIdInClass($conn,$UserId,$classId)
   {  
     $sql = "select * from `chatmessages` where `sentTo` = {$UserId} and `new` = true"; // can be order in the front end
     $result = $conn->query($sql);
     if ($result)
     {
       $messages = mysqli_fetch_all($result, MYSQLI_ASSOC);
+      mysqli_free_result($result);
+      return $messages;
+    }
+    else
+    {
+      echo "Error retrieving chat messages: ", $conn->error;
+    }
+  }
+
+  function checkNewMessageForUserIdInClass($conn,$UserId,$classId)
+  {  
+    $sql = "select count(*) from `chatmessages` where `sentTo` = {$UserId} and `new` = true"; // can be order in the front end
+    $result = $conn->query($sql);
+    if ($result)
+    {
+      $messages = mysqli_fetch_row($result);
       mysqli_free_result($result);
       return $messages;
     }

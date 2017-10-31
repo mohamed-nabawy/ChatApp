@@ -1,6 +1,7 @@
 <?php
   require('ChatApp/chat/backend/controllers/chat-messages.php');
   require('ChatApp/chat/backend/test-request-input.php');
+  require_once('ChatApp/chat/backend/session.php');
 
   //var_dump($_SERVER);
 
@@ -9,7 +10,9 @@
       if (isset($_GET['firstUserId'], $_GET['secondUserId']) && testInt($_GET['firstUserId'], $_GET['secondUserId']) ) {
         checkResult(getMessagesBetweenUsersIdsInClass($conn, $_GET['firstUserId'], $_GET['secondUserId'], $_GET['classId']) );
       }else {
-        RecieveNewMessageForUserIdInClass($conn, $_GET['userId']);
+        if( checkNewMessageForUserIdInClass($conn,$_SESSION["userId"],1)[0] > 0 )
+          echo(checkNewMessageForUserIdInClass($conn,$_SESSION["userId"],1)[0]);
+           // RecieveNewMessageForUserIdInClass($conn, $_GET['userId']);
       }
     
   }
@@ -20,7 +23,11 @@
     //{
       // decode the json data
       $data = json_decode( file_get_contents('php://input') );
-      $result = isset($data->Content, $data->SentFrom, $data->SentTo, $data->ClassId) && normalizeString($data->Content) && testInt($data->SentFrom, $data->SentTo, $data->ClassId);
+
+      $result = isset($data->Content, $data->SentFrom, $data->SentTo, $data->ClassId) && 
+      //normalizeString($data->Content) && 
+      testInt($data->SentFrom, $data->SentTo, $data->ClassId);
+
       if ($result) {
         echo sendMessage($conn, $data->Content, $data->SentFrom, $data->SentTo, $data->ClassId);
       }
