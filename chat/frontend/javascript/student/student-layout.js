@@ -1,5 +1,58 @@
 var layoutApp = angular.module('student', ['ngRoute', 'studentService', 'location_provider']);
 
+layoutApp.directive('scrollToBottom',['$http', function($http) {
+	return {
+		link: function(scope, elem, attr) {
+
+			elem.bind('scroll', function() { // on scroll event
+				//console.log(attr.scrollToBottom);
+				var obj = JSON.parse(attr.scrollToBottom);
+				//console.log(obj.id);
+				var currentUserId = obj.id;
+				//console.log(elem[0].scrollTop);
+				if (elem[0].scrollTop == 0) { // make sure the element is at the top
+					elem.bind('mouseup', function() {
+						scope.offset += 10;
+						// load another ten messages
+						$http.get('/ChatApp/chat/backend/requests/chat-messages.php?firstUserId=' + scope.currentUser.id + "&secondUserId=" + currentUserId + "&classId=" + 1 + "&offset=" + scope.offset).then(function(response) {
+
+							if (response.data.length > 0) {
+								elem[0].scrollTop += 50;
+								console.log(response);
+								var data = response.data;
+								var len = data.length;
+								for (var j = 0; j < len; j++) {
+									data[j]['id'] = parseInt(data[j]['id']);
+									scope.currentMessages.push(data[j]);
+								}
+							}
+						});
+					});
+					
+				}
+				
+			});
+
+			scope.$on('finished', function() { // when last element is rendered (event fired from finished directive)
+				elem[0].scrollTop = elem[0].scrollHeight - elem[0].clientHeight; // scroll to the bottom
+			});
+		}
+	}
+}]);
+
+layoutApp.directive('finished',['$timeout', function($timeout) {
+	return {
+		link: function(scope, elem, attr) {
+			// the timeout will execute only after the last element in ng-repeat is rendered
+			$timeout(function() {
+				if (scope.$last == true) {
+					scope.$emit(attr.finished); // fire an event that will scroll the window to the bottom
+				}
+			});
+		}
+	}
+}]);
+
 // layoutApp.directive('getMessages', function() {
 // 	return {
 // 		link: function(scope) {
@@ -10,11 +63,11 @@ var layoutApp = angular.module('student', ['ngRoute', 'studentService', 'locatio
 // 	}
 // });
 
-// layoutApp.config(['$routeProvider',function($routeProvider) {
+// layoutApp.config(['$routeProvider', function($routeProvider) {
 
 //   $routeProvider
 //   // chat window
-//   .when("/ChatApp/chat/frontend/areas/student/student-profile.php/1" , {
+//   .when("/ChatApp/chat/frontend/areas/student/student-profile.php/1", {
 //     templateUrl: "/CafeteriaApp/CafeteriaApp/CafeteriaApp.Frontend/Templates/Views/add_admin.php",
 //     controller: "addAdmin"
 //   })
@@ -31,9 +84,11 @@ var layoutApp = angular.module('student', ['ngRoute', 'studentService', 'locatio
   
 // }]);
 
-layoutApp.controller('chats', ['$scope', '$http', 'chat', '$rootScope', '$interval', function($scope, $http, chat, $rootScope, $interval) {
+layoutApp.controller('chats', ['$scope', '$http', 'chat', '$rootScope', '$interval', '$timeout', function($scope, $http, chat, $rootScope, $interval, $timeout) {
 	//$scope.message = "";
-
+	// $scope.$on("ngRepeatFinished", function(e) {
+	// 	console.log(e);
+	// });
 	// $scope.getChats = function() {
 	// 	$scope.currentMessages = [];
 	// 	$http.get('/ChatApp/chat/backend/requests/users.php?flag=1').then(function(response) {
@@ -51,7 +106,22 @@ layoutApp.controller('chats', ['$scope', '$http', 'chat', '$rootScope', '$interv
 	// 		}
 	// 	});
 	// };
+	$scope.offset = 0;
+	//$scope.initialize = function() {
+		//$scope.$apply(function() {
+			// $(document).ready(function() {
+			// 	$('.chat-window').scrollTop($('.chat-window').scrollHeight);
+			// });
+			
+		//});
+		// var chatWindows = document.getElementsByClassName("chat-window");
+		// var len = chatWindows.length;
+		// for (var i = 0; i < len; i++) {
+		// 	chatWindows[i].scrollTop = chatWindows[i].scrollHeight;
+		// }		
+	//}
 
+	//$scope.initialize();
 
  $interval(function () {
  	if($scope.chats.length>0)//for open chat windows >> only refresh
@@ -76,15 +146,15 @@ layoutApp.controller('chats', ['$scope', '$http', 'chat', '$rootScope', '$interv
 				var length = $scope.chats.length;
 				if (length > 0) {
 					for (var i = 0; i < length; i++) {
-						$http.get('/ChatApp/chat/backend/requests/chat-messages.php?firstUserId=' + $scope.currentUser.id + "&secondUserId=" + $scope.chats[i].id + "&classId=" + 1).then(function(response) {
+						$http.get('/ChatApp/chat/backend/requests/chat-messages.php?firstUserId=' + $scope.currentUser.id + "&secondUserId=" + $scope.chats[i].id + "&classId=" + 1 + "&offset=" + $scope.offset).then(function(response) {
 							if (response.data.length > 0) {
+								//console.log(response);
 								var data = response.data;
 								var len = data.length;
 								for (var j = 0; j < len; j++) {
-									data[j]['id']=parseInt(data[j]['id']);
+									data[j]['id'] = parseInt(data[j]['id']);
 									$scope.currentMessages.push(data[j]);
-									}
-								console.log($scope.currentMessages);
+								}
 							}
 						});
 					}
@@ -128,6 +198,8 @@ layoutApp.controller('chats', ['$scope', '$http', 'chat', '$rootScope', '$interv
 			$scope.chats.push(chat.chatUser);
 			$http.put('/ChatApp/chat/backend/requests/users.php?flag=1', chat.chatUser).then(function(response) {
 				$scope.getCurrentInfo();
+
+				//$scope.initialize();
 			}); // put it in the session array of chats
 		}
 	});

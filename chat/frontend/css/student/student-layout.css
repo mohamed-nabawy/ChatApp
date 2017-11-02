@@ -8,8 +8,8 @@ nav div ul li {
 .separate-between-windows {
 	margin-right: 100px;
 	background-color: white;
-	height:360px;
-	width:280px;
+	height: 360px;
+	width: 280px;
 	bottom: 0px;
 }
 
@@ -73,8 +73,8 @@ nav div ul li {
 }
 
 .send-button {
-float: right;
-width: 60px;
+	float: right;
+	width: 60px;
 }
 
 .closed-window {
@@ -102,14 +102,13 @@ width: 60px;
 
 }
 
-.chat-head{
-
+.chat-head {
 	cursor: pointer;
 	width: 200px;
 	height: 20px;
-	background-color:#959FA9;
+	background-color: #959FA9;
 	right: -100px;
-	width:100%;
+	width: 100%;
 	color: white;
 	font-size: 1.2em;
 }

@@ -7,11 +7,11 @@
 
   if ($_SERVER['REQUEST_METHOD'] == 'GET') {
   
-      if (isset($_GET['firstUserId'], $_GET['secondUserId']) && testInt($_GET['firstUserId'], $_GET['secondUserId']) ) {
-        checkResult(getMessagesBetweenUsersIdsInClass($conn, $_GET['firstUserId'], $_GET['secondUserId'], $_GET['classId']) );
-      }else {
-        if( checkNewMessageForUserIdInClass($conn,$_SESSION["userId"],1)[0] > 0 )
-          echo(checkNewMessageForUserIdInClass($conn,$_SESSION["userId"],1)[0]);
+      if (isset($_GET['firstUserId'], $_GET['secondUserId'], $_GET['offset']) && testInt($_GET['firstUserId'], $_GET['secondUserId'], $_GET['offset']) ) {
+        checkResult(getMessagesBetweenUsersIdsInClass($conn, $_GET['firstUserId'], $_GET['secondUserId'], $_GET['classId'], $_GET['offset']) );
+      } else {
+        if ( checkNewMessageForUserIdInClass($conn, $_SESSION["userId"], 1)[0] > 0)
+          echo(checkNewMessageForUserIdInClass($conn, $_SESSION["userId"], 1)[0]);
            // RecieveNewMessageForUserIdInClass($conn, $_GET['userId']);
       }
     

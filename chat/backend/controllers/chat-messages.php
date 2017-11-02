@@ -4,9 +4,9 @@
   require('ChatApp/chat/backend/controllers/times.php');
   require('ChatApp/chat/backend/controllers/dates.php');
 
-  function getMessagesBetweenUsersIdsInClass($conn, $firstUserId, $secondUserId, $classId)
+  function getMessagesBetweenUsersIdsInClass($conn, $firstUserId, $secondUserId, $classId, $offset)
   {  
-    $sql = "select * from `chatmessages` where `sentFrom` in ({$firstUserId}, {$secondUserId}) and `sentTo` in ({$firstUserId},{$secondUserId}) order by dateId desc"; // can be order in the front end
+    $sql = "select * from `chatmessages` where `sentFrom` in ({$firstUserId}, {$secondUserId}) and `sentTo` in ({$firstUserId},{$secondUserId}) order by id desc limit {$offset}, 10"; // can be order in the front end
     $result = $conn->query($sql);
     if ($result)
     {
