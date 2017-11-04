@@ -47,7 +47,7 @@ layoutApp.directive('finished', ['$timeout', function($timeout) {
 					var z = elem[0].parentElement; // whole chat window
 					//var x = z.parentElement;	
 					z.scrollTop = z.scrollHeight - z.clientHeight;
-					console.log(z.scrollTop);
+					//console.log(z.scrollTop);
 				});
 			}
 		}

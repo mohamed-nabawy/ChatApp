@@ -47,10 +47,9 @@
 
 		<script type="text/javascript">
 			
-			setTimeout(function function_name(argument) {
-				
-				$('div.chat-window').css('display','block');
-
-			},1000);
-
+			// $(document).ready(function(){
+			// setTimeout(function () {
+			// 	$('div.wrapper').css('display','block');
+			// },500);
+			// });
 		</script>
