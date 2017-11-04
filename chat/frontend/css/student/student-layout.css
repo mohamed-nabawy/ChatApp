@@ -55,7 +55,7 @@ nav div ul li {
 
 .chat-window {
 	
-	
+	display: none;
 	border: 2px solid grey;
 	border-radius: 6px;
 	height: 280px;
