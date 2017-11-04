@@ -1,6 +1,6 @@
 <?php
 	class chatmessages {
-		public $id = array("type"=> "int", "not null", "auto_increment", "primary key");
+		public $id = array("type"=> "int", "not null", "primary key", "auto_increment");
 		public $content = array("type"=> "text");
 		public $sentFrom = array("type"=> "int", "foreign key"=> "users(id)", "not null");
 		public $sentTo = array("type"=> "int", "foreign key"=> "users(id)", "not null");

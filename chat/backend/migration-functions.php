@@ -4,6 +4,7 @@
 	function getTableFields($conn, $tableName) {
 		$result = $conn->query("show columns from `$tableName`");
 		return $result;
+		//var_dump($result);
 	}
 
 	function createTableIfNotExisted($conn, $tableName, $object) {
@@ -20,13 +21,17 @@
 				$create[(strlen($create) )-1] = ' ';
 			}
 			$create.= ");";
+			//echo $create;
 			$r = $conn->query($create);
 			if ($r) {
+				//echo $create;
+				//echo "9867987695767";
 				echo "table created";
 			}
 			else {
 				echo "error: ", $conn->error;
 			}
+			
 		}
 	}
 
@@ -64,15 +69,19 @@
 		if (in_array("primary key", $value) && ($flag === null || $flag === 6) ) {
 			$pr = "SHOW INDEXES FROM `$tableName` WHERE Key_name = 'PRIMARY'";
 			$pr1 = $conn->query($pr);
+			echo $pr1;
 			$pr2 = false;
 			//var_dump($pr1);
 			if ($pr1) {
 				$pr2 = mysqli_fetch_assoc($pr1);
 			}
-			var_dump($pr2);
-			if ($pr2) {
+			else {
 				$statment.= " primary key";
 			}
+			//var_dump($pr2);
+			// if ($pr2) {
+			// 	$statment.= " primary key";
+			// }
 		}
 		if (in_array("not null", $value) ) {
 			$statment.= " not null";

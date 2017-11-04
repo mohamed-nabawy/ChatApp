@@ -41,8 +41,9 @@ nav div ul li {
 
 .each-message {
 	padding: 20px 20px;
-	width: 295px;
-	max-width: 295px;
+	width: 165px;
+	max-width: 165px;
+	text-align: center;
 	/*overflow-wrap: break-word;*/
 	/*word-wrap: break-word;*/
 	display: block;
@@ -53,6 +54,7 @@ nav div ul li {
 }
 
 .chat-window {
+	
 	
 	border: 2px solid grey;
 	border-radius: 6px;
@@ -114,6 +116,6 @@ nav div ul li {
 }
 
 .wrapper{
-
+	visibility: hidden;
 	padding-bottom: 20px;
 }
