@@ -18,7 +18,7 @@
 					
 
 					<div class="chat-window" scroll-to-top="{{c.id}}">
-						<li ng-repeat="m in getCurrentMessages(c.id) | orderBy: 'id' " class="each-message" finished="{{chats.indexOf(c)}}">
+						<li ng-repeat="m in getCurrentMessages(c.id) | orderBy: 'id' " class="each-message" finished>
 
 							<span ng-if="m.sentFrom == c.id" class="message-content" ng-bind="m.content" style="background-color: grey;border: 2px solid grey;right: 50px"></span>
 

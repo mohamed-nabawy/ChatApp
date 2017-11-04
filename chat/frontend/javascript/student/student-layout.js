@@ -9,10 +9,10 @@ layoutApp.directive('scrollToTop',['$http', function($http) {
 					elem.bind('mouseup', function() {
 						scope.offset += 10;
 						// load another ten messages
-						//scope.addChatMessages(attr.scrollToBottom);
 						$http.get('/ChatApp/chat/backend/requests/chat-messages.php?firstUserId=' +
-							scope.currentUser.id + "&secondUserId=" + attr.scrollToBottom + "&classId=" + 1 + "&offset=" + scope.offset).then(function(response) {
+							scope.currentUser.id + "&secondUserId=" + attr.scrollToTop + "&classId=" + 1 + "&offset=" + scope.offset).then(function(response) {
 							if (response.data.length > 0) {
+								console.log(response);
 								elem[0].scrollTop += 50;
 								var data = response.data;
 								var len = data.length;
@@ -29,32 +29,26 @@ layoutApp.directive('scrollToTop',['$http', function($http) {
 	}
 }]);
 
-// layoutApp.factory('chatsFinished', function() {
-// 	var finished = {};
-// 	finished.flag = 0;
-// 	return finished;
+// layoutApp.directive('last', function($rootScope) {
+// 	return {
+// 		link: function(scope) {
+// 			//if (scope.$last == true) {
+// 				//scope.$broadcast("1");
+// 			//}
+// 		}
+// 	}
 // });
-
-layoutApp.directive('last', function() {
-	return {
-		link: function(scope) {
-			if (scope.$last == true) {
-			}
-		}
-	}
-});
 
 layoutApp.directive('finished', ['$timeout', function($timeout) {
 	return {
 		link: function(scope, elem, attr) {
 			if (scope.$last == true) { // if the current element is the last
-				$timeout(function() {						
+				$timeout(function() {
 					var z = elem[0].parentElement; // whole chat window
-					var x = z.parentElement;
+					//var x = z.parentElement;	
 					z.scrollTop = z.scrollHeight - z.clientHeight;
-					x.style.visibility = "visible";
+					console.log(z.scrollTop);
 				});
-				//}
 			}
 		}
 	}
@@ -81,6 +75,7 @@ layoutApp.controller('chats', ['$scope', '$http', 'chat', '$rootScope', '$interv
 			$scope.setCurrentUser(response.data);
 			$http.get('/ChatApp/chat/backend/requests/users.php?flag=1').then(function(response) {
 				$scope.chats = response.data;
+				//console.log($scope.chats);
 				$scope.addNewMessages();
 			});
 		});
@@ -127,13 +122,16 @@ layoutApp.controller('chats', ['$scope', '$http', 'chat', '$rootScope', '$interv
 	$scope.getCurrentInfo();
 
 	$scope.$on('chatRequest', function() {
+		//console.log(1);
 		var x = 0;
 		x = $scope.chats.filter(function(e) {
 			return e.id == chat.chatUser.id;
 		});
 		if (x <= 0) { // if it's not in the array add it
+			//console.log(1);
 			$scope.chats.push(chat.chatUser);
 			$http.put('/ChatApp/chat/backend/requests/users.php?flag=1', chat.chatUser).then(function(response) {
+				//console.log(1);
 				$scope.getCurrentInfo();
 				//$scope.addChatMessages(chat.chatUser.id);
 			}); // put it in the session array of chats
@@ -150,7 +148,9 @@ layoutApp.controller('chats', ['$scope', '$http', 'chat', '$rootScope', '$interv
 
 		$http.post('/ChatApp/chat/backend/requests/chat-messages.php', data).then(function(response) {
 			//$scope.currentMessages.push(data);
+			//console.log(response);
 			$scope.getCurrentInfo();
+
 			//$scope.addChatMessages(user.id);
 		});
 		$scope.currentMessages.push(data);
