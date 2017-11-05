@@ -1,4 +1,4 @@
-<nav class="navbar navbar-fixed-bottom" ng-controller="chats">
+<nav id="navv" class="navbar navbar-fixed-bottom" ng-controller="chats">
 
 		<div class="container-fluid" style="float: right;">
 
@@ -49,7 +49,7 @@
 			
 			// $(document).ready(function(){
 			// setTimeout(function () {
-			// 	$('div.wrapper').css('display','block');
-			// },500);
+			// 	$('#navv').css('display','block');
+			// },1000);
 			// });
 		</script>

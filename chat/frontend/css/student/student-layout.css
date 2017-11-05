@@ -119,6 +119,11 @@ nav div ul li {
 }
 
 .wrapper{
-	/*display: none;*/
+
+	height: 100%;
 	padding-bottom: 20px;
+}
+
+#navv{
+		/*display:none;*/
 }
