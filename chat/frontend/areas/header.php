@@ -18,7 +18,7 @@
 
 					</li>
 
-					<li><a href="/ChatApp/chat/frontend/logout.php">Logout</a></li>
+					<li><a href="../../frontend/logout.php">Logout</a></li>
 
 				</ul>
 

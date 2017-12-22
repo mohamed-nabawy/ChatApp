@@ -1,189 +1,115 @@
 <?php
-
-function getDates($conn)
-{
+function getDates($conn) {
   $sql = "select * from `dates`";
   $result = $conn->query($sql);
-  if ($result)
-  {
+
+  if ($result) {
     $dates = mysqli_fetch_all($result, MYSQLI_ASSOC);
     mysqli_free_result($result);
-      return $dates;
-   
+    return $dates;
   }
-  else
-  {
+  else {
     echo "Error retrieving Dates: " . $conn->error;
   }
 }
 
-function getDateById($conn, $id)
-{
-  if (!isset($id) )
-  {
-    //echo "Error: Date id is not set";
-    return;
+function getDateById($conn, $id) {
+  $sql = "select `date` from `dates` where `id` = " . $id . " LIMIT 1";
+  $result = $conn->query($sql);
+
+  if ($result) {
+    $Id = mysqli_fetch_assoc($result);
+    mysqli_free_result($result);
+    return $Id;
   }
-  else
-  {
-    $sql = "select `date` from `dates` where `id` = ".$id." LIMIT 1";
-    $result = $conn->query($sql);
-    if ($result)
-    {
-      $Id = mysqli_fetch_assoc($result);
-      mysqli_free_result($result);
-        return $Id;
-      
-    }
-    else
-    {
-      echo "Error retrieving Date: " . $conn->error;
-    }
+  else {
+    echo "Error retrieving Date: " . $conn->error;
   }
 }
 
-function getDateIdByDate($conn, $value)
-{
-  if (!isset($value) )
-  {
-    //echo "Error: Date value  is not set";
-    return;
+function getDateIdByDate($conn, $value) {
+  $sql = "select `id` from `dates` where `date` = '{$value}'";
+  $result = $conn->query($sql);
+
+  if ($result) {
+    $dateId = mysqli_fetch_assoc($result);
+    mysqli_free_result($result);
+    return $dateId["id"];
   }
-  else
-  {
-    $sql = "select `id` from `dates` where `date` = '{$value}'";
-    $result = $conn->query($sql);
-    if ($result)
-    {
-      $dateId = mysqli_fetch_assoc($result);
-      mysqli_free_result($result);
-        return $dateId["id"];
-     
-    }
-    else
-    {
-      echo "Error retrieving Dates: " . $conn->error;
-    }
+  else {
+    echo "Error retrieving Dates: " . $conn->error;
   }
 }
 
-
-function getCurrentDateId($conn) //CURDATE() mysql
-{ 
+function getCurrentDateId($conn) { // CURDATE() mysql 
   $today = date("Y-m-d");
   $sql = "select `id` from `dates` where `date` = STR_TO_DATE('{$today}', '%Y-%m-%d')";
   $result = $conn->query($sql);
-  if ($result)
-  {
+
+  if ($result) {
     $date = mysqli_fetch_assoc($result);
     mysqli_free_result($result);
-    if (isset($date["id"]) )
-    {
+    if ( isset($date["id"]) ) {
       return $date["id"];
     }
-    else
-    {
+    else {
       return false;
     }
   }
-  else
-  {
+  else {
     echo "Error retrieving Date Id: " . $conn->error;
   }
 }
 
-function addDate($conn, $date) // check format of the input
-{ 
-  if (!isset($date) )
-  {
-    //echo "Error: Date is not set";
-    return;
+function addDate($conn, $date) { // check format of the input 
+  $sql = "insert into `dates` (`date`) values (?)";
+  $stmt = $conn->prepare($sql);
+  $stmt->bind_param("s", $date);
+
+  if ($stmt->execute() === TRUE) {
+    return "Date Added successfully";
   }
-  else
-  {
-    $sql = "insert into `dates` (`date`) values (?)";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $Date);
-    $Date = $date;
-    if ($stmt->execute() === TRUE)
-    {
-      return "Date Added successfully";
-    }
-    else
-    {
-      echo "Error: ".$conn->error;
-    }
+  else {
+    echo "Error: " . $conn->error;
   }
 }
 
-function addTodayDate($conn) // check format of the input  // ************************************************
- //echo date("Y-m-d");;
-{ 
+function addTodayDate($conn) { // check format of the input  // ************************************************
   $today = date("Y-m-d");
   $sql = "insert into `dates` (`date`) values (?)";
   $stmt = $conn->prepare($sql);
-  $stmt->bind_param("s", $Date);
-  $Date = $today;
-  if ($stmt->execute() === TRUE)
-  {
+  $stmt->bind_param("s", $today);
+  
+  if ($stmt->execute() === TRUE) {
     return true;
   }
-  else
-  {
-    echo "Error: ".$conn->error;
+  else {
+    echo "Error: " . $conn->error;
   }
 }
 
-function editDate($conn, $date, $id)
-{
-  if (!isset($id) )
-  {
-   // echo "Error: Id is not set";
-    return;
+function editDate($conn, $date, $id) {
+  $sql = "update `dates` set `date` = (?) where `id` = (?)";
+  $stmt = $conn->prepare($sql);
+  $stmt->bind_param("si", $date, $id);
+  
+  if ($stmt->execute() === TRUE) {
+    return "Date updated successfully";
   }
-  elseif (!isset($date) )
-  {
-    //echo "Error: Date is not set";
-    return;
-  }
-  else
-  {
-    $sql = "update `dates` set `date` = (?) where `id` = (?)";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("si", $Date, $Id);
-    $Date = $date;
-    $Id = $id;
-    if ($stmt->execute() === TRUE)
-    {
-      return "Date updated successfully";
-    }
-    else
-    {
-      echo "Error: ".$conn->error;
-    }
+  else {
+    echo "Error: " . $conn->error;
   }
 }
 
-function deleteDate($conn, $id)
-{
-  if (!isset($id) )
-  {
-    //echo "Error: Id is not set";
-    return;
+function deleteDate($conn, $id) {
+  //$conn->query("set foreign_key_checks=0");
+  $sql = "delete from `dates` where `id` = " . $id . " LIMIT 1";
+
+  if ($conn->query($sql) === TRUE) {
+    return "Date deleted successfully";
   }
-  else
-  {
-    //$conn->query("set foreign_key_checks=0");
-    $sql = "delete from `dates` where `id` = ".$id. " LIMIT 1";
-    if ($conn->query($sql) === TRUE)
-    {
-      return "Date deleted successfully";
-    }
-    else
-    {
-      echo "Error: ".$conn->error;
-    }
+  else {
+    echo "Error: " . $conn->error;
   }
 }
-
 ?>

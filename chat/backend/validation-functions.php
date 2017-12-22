@@ -2,11 +2,10 @@
   $errors = array();
 
   function test_inputs($conn, $array) {
-    
     foreach ($array as $data) {
       $data = trim($data);
 
-      if (has_presence($data)) {
+      if ( has_presence($data) ) {
         $data = mysqli_real_escape_string($conn, $data); // for sql injection
         $data = htmlspecialchars($data);
       }
@@ -34,9 +33,11 @@
 
   function validate_presences($required_fields) {
     global $errors;
+
     foreach($required_fields as $field) {
       $value = trim( $_POST[$field] );
-    	if (!has_presence($value)) {
+
+    	if ( !has_presence($value) ) {
     		$errors[$field] = fieldname_as_text($field) . " can't be blank";
     	}
     }

@@ -13,5 +13,6 @@
 		public $passwordHash = array("type"=> "string", "max"=> "100", "not null");
 		public $image = array("type"=> "string", "max"=> "300");
 	}
+	
 	$users = new users();
 ?>

@@ -1,6 +1,5 @@
 <?php
-
-    function addImageFile($image,$userName, $dirChanged=0) {
+    function addImageFile($image, $userName, $dirChanged = 0) {
     	if ($dirChanged == 0) {
     		chdir("../../.."); // inside php dir
     	}
@@ -32,6 +31,7 @@
         }
         // Allow certain file formats
         var_dump($imageFileType);
+
         if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
         && $imageFileType != "gif") {
             echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
@@ -48,36 +48,38 @@
                 echo "Sorry, there was an error uploading your file.";
             }
         }
-        if ( file_exists('chat/backend/uploads/'. $image['name']) ) {
-            rename('chat/backend/uploads/'. $image['name'], 'chat/backend/uploads/'. $userName. ".jpg"); // rename it
+        if ( file_exists($target_dir . $image['name']) ) {
+            rename($target_dir . $image['name'], $target_dir . $userName . ".jpg"); // rename it
         }
         //$imageFileName = str_replace(':', ' ', (string)date("Y-m-d H:i:s")).".jpg";
         //$ifp = fopen($imageFileName, "x+");
         //fwrite($ifp, base64_decode($imageData));
         //fclose($ifp);
-        return "/chat/backend/uploads/" . $userName. ".jpg";
+        return $target_dir . $userName . ".jpg";
     }
 
     function editImage($imageData, $imageAttr, $userName) {
         $dirChanged = 0;
+
         if ($imageAttr != null) {
         	if (deleteImageFileIfExists($imageAttr) == 1) {
         		$dirChanged = 1;
         	}
         }
+
     	return addImageFile($imageData, $userName, $dirChanged);
     }
 
     function deleteImageFileIfExists($imageAttr) {
     	$imageFileName = basename($imageAttr);
     	chdir("../uploads");
-        if (file_exists($imageFileName)) {
-          	unlink($imageFileName);
+
+        if ( file_exists($imageFileName) ) {
+          	unlink($imageFileName); // remove it
           	return 1;
         }
         else {
         	return 0;
         }
     }
-
 ?>

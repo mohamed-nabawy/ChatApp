@@ -5,5 +5,4 @@
 	}
 
 	$classusers = new classusers();
-
 ?>

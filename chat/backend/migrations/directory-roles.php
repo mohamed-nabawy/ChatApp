@@ -1,7 +1,6 @@
 <?php
-	require('ChatApp/chat/backend/models/directory-roles.php');
-	require('ChatApp/chat/backend/migration-functions.php');
+	require('../models/directory-roles.php');
+	require('../migration-functions.php');
 
 	syncTableAndClass($conn, "directoryroles", $directoryroles);
-		
 ?>

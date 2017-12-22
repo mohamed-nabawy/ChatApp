@@ -22,7 +22,7 @@
 
     <script type="text/javascript">
 
-      angular.module('loginApp',[]).controller('loginController',['$scope',function($scope){}]);
+      angular.module('loginApp', []).controller('loginController', ['$scope', function($scope){}]);
       
     </script>
 

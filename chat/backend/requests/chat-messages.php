@@ -1,40 +1,32 @@
 <?php
-  require('ChatApp/chat/backend/controllers/chat-messages.php');
-  require('ChatApp/chat/backend/test-request-input.php');
-  require_once('ChatApp/chat/backend/session.php');
+  require('../controllers/chat-messages.php');
+  require('../test-request-input.php');
+  require_once('../session.php');
 
   //var_dump($_SERVER);
 
   if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-  
-      if (isset($_GET['firstUserId'], $_GET['secondUserId'], $_GET['offset']) && testInt($_GET['firstUserId'], $_GET['secondUserId'], $_GET['offset']) ) {
-        checkResult(getMessagesBetweenUsersIdsInClass($conn, $_GET['firstUserId'], $_GET['secondUserId'], $_GET['classId'], $_GET['offset']) );
-      } else {
-        if ( checkNewMessageForUserIdInClass($conn, $_SESSION["userId"], 1)[0] > 0)
-          echo(checkNewMessageForUserIdInClass($conn, $_SESSION["userId"], 1)[0]);
-           // RecieveNewMessageForUserIdInClass($conn, $_GET['userId']);
-      }
-    
+    if (isset($_GET['firstUserId'], $_GET['secondUserId'], $_GET['offset']) && testInt($_GET['firstUserId'], $_GET['secondUserId'], $_GET['offset']) ) {
+      checkResult(getMessagesBetweenUsersIdsInClass($conn, $_GET['firstUserId'], $_GET['secondUserId'], $_GET['classId'], $_GET['offset']) );
+    } else {
+      if ( checkNewMessageForUserIdInClass($conn, $_SESSION["userId"], 1)[0] > 0)
+        echo(checkNewMessageForUserIdInClass($conn, $_SESSION["userId"], 1)[0]);
+        // RecieveNewMessageForUserIdInClass($conn, $_GET['userId']);
+    }
   }
 
   if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    //if ($_SESSION['roleId'] == 1)
-    //echo "string";
-    //{
-      // decode the json data
-      $data = json_decode( file_get_contents('php://input') );
+    // decode the json data
+    $data = json_decode( file_get_contents('php://input') );
+    $result = isset($data->Content, $data->SentFrom, $data->SentTo, $data->ClassId) && 
+    testInt($data->SentFrom, $data->SentTo, $data->ClassId);
 
-      $result = isset($data->Content, $data->SentFrom, $data->SentTo, $data->ClassId) && 
-      //normalizeString($data->Content) && 
-      testInt($data->SentFrom, $data->SentTo, $data->ClassId);
-
-      if ($result) {
-        echo sendMessage($conn, $data->Content, $data->SentFrom, $data->SentTo, $data->ClassId);
-      }
-      else {
-        //echo "error";
-      }
-    //}
+    if ($result) {
+      echo sendMessage($conn, $data->Content, $data->SentFrom, $data->SentTo, $data->ClassId);
+    }
+    else {
+      //echo "error";
+    }
   }
 
   // if ($_SERVER['REQUEST_METHOD'] == 'PUT')
@@ -64,5 +56,5 @@
   //   }
   // }
 
-  require('ChatApp/chat/backend/footer.php');
+  require('../footer.php');
 ?>

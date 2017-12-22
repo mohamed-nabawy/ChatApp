@@ -1,6 +1,6 @@
 <?php 	
-  require_once('ChatApp/chat/backend/session.php');
-  require_once('ChatApp/chat/backend/connection.php'); 
+  require_once('session.php');
+  require_once('connection.php'); 
 
 	function redirect_to($new_location) {
 	  header("Location: " . $new_location);
@@ -13,20 +13,24 @@
 		}
 	}
 
-	function form_errors($errors=array()) {
+	function form_errors( $errors = [] ) {
 		$output = "";
-		if (!empty($errors) ) {
+
+		if ( !empty($errors) ) {
 		  $output .= "<div class=\"error\"> ";
 		  $output .= "Please fix the following errors:";
 		  $output .= "<ul class=\"error\">";
+
 		  foreach ($errors as $key => $error) {
 		    $output .= "<li>";
 				$output .= htmlentities($error);
 				$output .= "</li>";
 		  }
+
 		  $output .= "</ul>";
 		  $output .= "</div>";
 		}
+
 		return $output;
 	}
 	
@@ -36,6 +40,7 @@
 	  $salt = generate_salt($salt_length);
 	  $format_and_salt = $hash_format . $salt;
 	  $hash = crypt($password, $format_and_salt);
+
 		return $hash;
 	}
 
@@ -57,20 +62,21 @@
 	}
 	
 	function islogged_in() {
-		return (isset($_SESSION['userId']) ); // for normal user and fb user check
+		return ( isset( $_SESSION['userId'] ) ); // for normal user and fb user check
 	}
 	
 	function confirm_logged_in() {
-		if (!islogged_in() ) {
-			redirect_to("/ChatApp/chat/frontend/login.php");
+		if ( !islogged_in() ) {
+			redirect_to("../frontend/login.php");
 		}
 	}
 
   function attempt_login($conn, $email, $password) {
     $user = getUserByEmail($conn, $email);
+
     if ($user) {
       // found user, now check password
-      if (passwordCheck($password, $user["passwordHash"]) ) {
+      if (passwordCheck($password, $user['passwordHash']) ) {
         // password matches
         return $user;
       } else {
@@ -84,20 +90,20 @@
   }
 
   function getUserByEmail($conn, $email) {
-    if (!isset($email) ) {
+    if ( !isset($email) ) {
       echo "Error: User Email is not set";
       return;
     }
     else {
       $safe_email = mysqli_real_escape_string($conn, $email);
       $query  = "SELECT * ";
-      $query .= "FROM users ";
+      $query .= "FROM `users` ";
       $query .= "WHERE `email` = '{$safe_email}' ";
       $query .= "LIMIT 1";
       $user_set = mysqli_query($conn, $query);
       confirmQuery($user_set);
 
-      if ($user = mysqli_fetch_assoc($user_set) ) {
+      if ( $user = mysqli_fetch_assoc($user_set) ) {
         return $user;
       } else {
         return null;
@@ -108,6 +114,7 @@
   function passwordCheck($password, $existing_hash) {
     // existing hash contains format and salt at start
     $hash = crypt($password, $existing_hash);
+
     if ($hash === $existing_hash) {
       return true;
     } else {
@@ -115,26 +122,22 @@
     }
   }
 
-  function validatePageAccess($conn) {/*  using hash*/
+  function validatePageAccess($conn) { // using hash
     confirm_logged_in();
-    $query = "SELECT `name` FROM `directories` WHERE id IN (SELECT `dirId` FROM `directoryroles` WHERE roleId = {$_SESSION["roleId"]})";  // add RoleId
-
+    $query = "SELECT `name` FROM `directories` WHERE `id` IN ( SELECT `dirId` FROM `directoryroles` WHERE `roleId` = {$_SESSION['roleId']} )"; // add RoleId
     $result_set = mysqli_query($conn, $query);
-
     confirmQuery($result_set);
 
     if ($result_set) {
-      //$result_no = mysqli_num_rows($result_set);
       $dirs = mysqli_fetch_all($result_set, MYSQLI_ASSOC); // ??
-      //print_r($dirs); 
+
       foreach ($dirs as $key => $value) {
-        
-        if ( strpos(getcwd(), $value["name"]) !== false ) {
+        if ( strpos(getcwd(), $value['name']) !== false ) {
           return;
         }
       }
 
-      echo "<h1 style ='color:red'>Access Denied .</h2>";
+      echo "<h1 style='color: red'>Access Denied .</h2>";
 
       exit;
     }
@@ -152,5 +155,4 @@
 
     return implode($pass); // turn the array into a string
   }
-
 ?>

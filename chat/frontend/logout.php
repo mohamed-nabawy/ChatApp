@@ -1,5 +1,5 @@
 <?php
-	require('ChatApp/chat/backend/functions.php');
+	require('../backend/functions.php');
 	//require('fbConfig.php');
  
 
@@ -17,9 +17,11 @@
 	// v2: destroy session
 	// assumes nothing else in session to keep
 	$_SESSION = array();
+
 	if ( isset( $_COOKIE[session_name()] ) ) {
 	  setcookie(session_name(), null, time()-42000, '/');
 	}
+	
 	session_destroy();
 	redirect_to("login.php");
 ?>

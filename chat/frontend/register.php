@@ -36,7 +36,7 @@
 
     <script type="text/javascript">
 
-      angular.module('registerApp',['phone_number','image']).controller('registerController',['$scope',function($scope){
+      angular.module('registerApp', ['phone_number', 'image']).controller('registerController', ['$scope', function($scope){
         $scope.image = {};
         $scope.image.src = '';
       }]);

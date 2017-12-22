@@ -1,7 +1,6 @@
 <?php
-	require('ChatApp/chat/backend/models/dates.php');
-	require('ChatApp/chat/backend/migration-functions.php');
+	require('../models/dates.php');
+	require('../migration-functions.php');
 
 	syncTableAndClass($conn, "message", $dates);
-		
 ?>

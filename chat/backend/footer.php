@@ -1,5 +1,5 @@
 <?php
-	if (isset($conn)) {
+	if ( isset($conn) ) {
 	  $conn->close();
 	}
 ?>

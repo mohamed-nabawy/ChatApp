@@ -1,9 +1,8 @@
 
 <?php
-require('ChatApp/chat/backend/validation-functions.php');
-require('ChatApp/chat/backend/Controllers/User.php');
-require('ChatApp/chat/backend/test-request-input.php');
-
+require('../backend/validation-functions.php');
+require('../backend/Controllers/User.php');
+require('../backend/test-request-input.php');
 
 $upload_errors = array(UPLOAD_ERR_OK => "no errors",
 				UPLOAD_ERR_INI_SIZE => "larger than upload_max_file_size",
@@ -16,45 +15,47 @@ $upload_errors = array(UPLOAD_ERR_OK => "no errors",
 );
 
 
-	$username = false;
-	$password = false;
-	$firstName = false;
-	$lastName = false;
-	$gender = false; // need a span
-	$email = false;
-	$phone = false;
-	$dob = false;
+$username = false;
+$password = false;
+$firstName = false;
+$lastName = false;
+$gender = false; // need a span
+$email = false;
+$phone = false;
+$dob = false;
 
-  $emailExists = false;
-  $usernameExists = false;
+$emailExists = false;
+$usernameExists = false;
 
 
-if (isset($_POST['submit']) ) {
-
-	if (!normalizeString($conn, $_POST['userName']) )  {
+if ( isset($_POST['submit']) ) {
+	if ( !normalizeString($conn, $_POST['userName']) )  {
 		$username = true;
 	}
-	if (!normalizeString($conn, $_POST['password']) ) {
+
+	if ( !normalizeString($conn, $_POST['password']) ) {
 		$password = true;
 	}
-	if (!normalizeString($conn, $_POST['firstName']) )  {
+
+	if ( !normalizeString($conn, $_POST['firstName']) )  {
 		$firstName = true;
 	}
-	if (!normalizeString($conn, $_POST['lastName']) )  {
+
+	if ( !normalizeString($conn, $_POST['lastName']) )  {
 		$lastName = true;
 	}
 
-	if (!isset($_POST['gender']) || !is_int($_POST['gender']) ) {
+	if ( !isset($_POST['gender']) || !is_int($_POST['gender']) ) {
 		$gender = true; 
 	}
 
-	if (!normalizeString($conn, $_POST['email']) ) {
+	if ( !normalizeString($conn, $_POST['email']) ) {
 		$email = true;
 	}
-	if (!normalizeString($conn, $_POST['phone']) ) {
+	if ( !normalizeString($conn, $_POST['phone']) ) {
 		$phone = true;
 	}
-	if (!normalizeString($conn, $_POST['dob']) ) {
+	if ( !normalizeString($conn, $_POST['dob']) ) {
 		$dob = true;
 	}
 
@@ -62,46 +63,30 @@ if (isset($_POST['submit']) ) {
 		$uploadErrorMessage = $upload_errors[$_FILES['image']['error']];
 	}
 
-	if (!$username && !$password && !$firstName && !$lastName && !$gender && !$email && !$phone && !$dob) {//all constraints achieved	
+	if (!$username && !$password && !$firstName && !$lastName && !$gender && !$email && !$phone && !$dob) { // all constraints achieved	
 		$emailExists = checkExistingEmail($conn, $_POST['email']);
-        $usernameExists = checkExistingUserName($conn, $_POST['userName'], true);
+    $usernameExists = checkExistingUserName($conn, $_POST['userName'], true);
 
- 		 if (!$emailExists && !$usernameExists) {//total success
-        	//$fields_with_max_lengths = array($data->userName  => 100 , $data->firstName=>50 ,$data->lastName=>50,$data->phone=>13, $data->email=>100,$data->password=>100 );
-        	//validate_max_lengths($fields_with_max_lengths);
-           //test_date_of_birth($data->dob)
+ 		if (!$emailExists && !$usernameExists) {//total success
+    	//$fields_with_max_lengths = array($data->userName  => 100 , $data->firstName=>50 ,$data->lastName=>50,$data->phone=>13, $data->email=>100,$data->password=>100 );
+    	//validate_max_lengths($fields_with_max_lengths);
+       //test_date_of_birth($data->dob)
 
-        	//handling image uploaded
-        	$temp_name = $_FILES['image']['tmp_name'];
-        	$target_file = basename($_FILES['image']['name']);
-        	$upload_direc = "ChatApp/chat/backend/uploads/";
-        	move_uploaded_file($temp_name, $upload_direc.$target_file);//return true on success
-
- 		 $roleId = getRoleIdByName($conn, 'Customer');
-
-		$localeId = 1;
-
+    	//handling image uploaded
+    	$temp_name = $_FILES['image']['tmp_name'];
+    	$target_file = basename($_FILES['image']['name']);
+    	$upload_direc = "ChatApp/chat/backend/uploads/";
+    	move_uploaded_file($temp_name, $upload_direc . $target_file);//return true on success
+ 	    $roleId = getRoleIdByName($conn, 'Customer');
+		  $localeId = 1;
 		  $user_id = addUser($conn, $_POST['userName'], $_POST['firstName'], $_POST['lastName'], $Image, $_POST['email'], $_POST['phone'], $_POST['password'], $roleId, $localeId);
-
 		  $customer_id = addCustomer($conn, 0.0, $dob, $user_id, $_POST['gender']);
-
-
-
-        }
-       
-
+    }
 	}
-
-	}
-	else{ // if at first time load not submitting the form
-
-		
-
-	}
-
- ?>
-
-
+}
+else { // if at first time load not submitting the form
+}
+?>
 
 <!DOCTYPE html>
 

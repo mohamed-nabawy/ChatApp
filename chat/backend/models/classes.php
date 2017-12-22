@@ -6,5 +6,4 @@
 	}
 
 	$classes = new classes();
-
 ?>

@@ -1,8 +1,7 @@
 <?php
-
-  require('ChatApp/chat/backend/functions.php');
-  require('ChatApp/chat/backend/controllers/dates.php');
-  require('ChatApp/chat/backend/validation-functions.php');
+  require('../functions.php');
+  require('../controllers/dates.php');
+  require('../validation-functions.php');
 
   if ( isset($_GET['redirect_to']) ) {
     $_POST['redirect_to'] = $_GET['redirect_to'];
@@ -21,10 +20,10 @@
       if ($found_user) {
         // Success
   			// Mark user as logged in
-  			$_SESSION["userId"] = $found_user["id"];
-  			$_SESSION["userName"] = $found_user["userName"];
-        $_SESSION["roleId"] = $found_user["roleId"];
-        $_SESSION["chats"] = []; // empty array of chats
+  			$_SESSION['userId'] = $found_user['id'];
+  			$_SESSION['userName'] = $found_user['userName'];
+        $_SESSION['roleId'] = $found_user['roleId'];
+        $_SESSION['chats'] = []; // empty array of chats
       
         // record date
         if (!getCurrentDateId($conn) ) { // make the server add it automatically
@@ -38,19 +37,19 @@
         if ( isset($_POST['redirect_to']) ) { // make restrictions on pages that request this page ,otherwise redirect to the same page to cancel his header
 
         }
-        if ($_SESSION["roleId"] == 1) {
-          header("Location: "."/ChatApp/chat/frontend/areas/student/student-profile.php");
+        if ($_SESSION['roleId'] == 1) {
+          header("Location: " . "../../frontend/areas/student/student-profile.php");
         }
       }
       else {
         // Failure
 
-        $_SESSION["message"] = "Username/password not found.";
-        header("Location: "."/ChatApp/chat/frontend/login.php");
+        $_SESSION['message'] = "Username/password not found.";
+        header("Location: " . "../../frontend/login.php");
       }
     }
     // if already logged in and called login page
-    elseif (isset($_SESSION["userId"]) && isset($_SESSION["userName"]) && isset($_SESSION["roleId"]) ) { // This is probably a GET   request
+    elseif (isset($_SESSION['userId']) && isset($_SESSION['userName']) && isset($_SESSION['roleId']) ) { // This is probably a GET   request
 
     } // end: if (isset($_POST['submit']))
   }

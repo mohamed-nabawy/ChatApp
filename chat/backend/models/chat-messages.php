@@ -9,5 +9,6 @@
 		public $classId = array("type"=> "int", "not null", "foreign key"=> "classes(id)");
 		public $new = array("type"=> "bool", "not null");
 	}
+	
 	$chatmessages = new chatmessages();
 ?>
