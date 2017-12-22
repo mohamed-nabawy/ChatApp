@@ -17,7 +17,7 @@
   }
 
   function addChatUser($user) { //add user to open chats
-    array_push($_SESSION['chats'], $user);
+    array_unshift($_SESSION['chats'], $user);
   }
 
   function deleteChat($id) { // close the window

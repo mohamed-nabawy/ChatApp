@@ -8,17 +8,17 @@
 
     <meta name="viewport" charset="utf-8" content="width=device-width,initial-scale=1.0">
 
-    <link rel="icon" href="/ChatApp/chat/favicon.ico">
+    <link rel="icon" href="../favicon.ico">
   
-    <link href="/ChatApp/chat/frontend/css/errors.css" rel="stylesheet" type="text/css">
+    <link href="css/errors.css" rel="stylesheet" type="text/css">
 
-    <link rel="stylesheet" href="/ChatApp/chat/frontend/css/modules/materialize.css">
+    <link rel="stylesheet" href="css/modules/materialize.css">
 
-    <script src="/ChatApp/chat/frontend/javascript/modules/jquery-3.2.1.js"></script>
+    <script src="javascript/modules/jquery-3.2.1.js"></script>
 
-    <script src="/ChatApp/chat/frontend/javascript/modules/angular.js"></script>
+    <script src="javascript/modules/angular.js"></script>
 
-    <script src="/ChatApp/chat/frontend/javascript/modules/materialize.js"></script>
+    <script src="javascript/modules/materialize.js"></script>
 
     <script type="text/javascript">
 
@@ -40,7 +40,7 @@
       
       <h1 style="font-style: italic">Login</h1>
 
-      <form novalidate role="form" name="myform" ng-app="loginApp" ng-controller="loginController" action="/ChatApp/chat/backend/requests/login.php" method="post" class="login-box" style="width: 30%;margin: auto;text-align: center">
+      <form novalidate role="form" name="myform" ng-app="loginApp" ng-controller="loginController" action="../backend/requests/login.php" method="post" class="login-box" style="width: 30%;margin: auto;text-align: center">
 
         <div class="input-field col s12">
 
@@ -80,11 +80,11 @@
 
       <br>
 
-      <a href="<?php echo "/ChatApp/chat/index.php";?>">
+      <a href="<?php echo "../index.php";?>">
 
         <button class="btn waves-effect waves-light btn" type="submit" name="action">Facebook Login
 
-          <img src="/ChatApp/chat/frontend/icons/facebook.png" width="30px" height="30px" style="margin-top: 2px">
+          <img src="icons/facebook.png" width="30px" height="30px" style="margin-top: 2px">
 
         </button>
 
@@ -96,11 +96,11 @@
 
         <div>
 
-          <a href="/ChatApp/chat/frontend/register.php" name="submit" />New User ! </a>
+          <a href="register.php" name="submit" />New User ! </a>
 
         </div>
 
-        <a href="/ChatApp/chat/frontend/resetPassword.php" name="submit" />Forgot Password ! </a>
+        <a href="resetPassword.php" name="submit" />Forgot Password ! </a>
 
         <div><br></div>
 

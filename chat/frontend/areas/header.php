@@ -1,27 +1,27 @@
 <nav class="navbar navbar-fixed-top navbar-inverse" style="position: relative;">
 
-			<div class="container-fluid" style="float: right;">
+	<div class="container-fluid" style="float: right;">
 
-				<ul class="nav navbar-nav">
+		<ul class="nav navbar-nav">
 
-					<li><a href="#">Home</a></li>
+			<li><a href="#">Home</a></li>
 
-					<li style="cursor: pointer;">
+			<li style="cursor: pointer;">
 
-						<a><i class="fa fa-comments"></i></a>
+				<a><i class="fa fa-comments"></i></a>
 
-					</li>
+			</li>
 
-					<li style="cursor: pointer;">
+			<li style="cursor: pointer;">
 
-						<a><i class="fa fa-bell"></i></a>
+				<a><i class="fa fa-bell"></i></a>
 
-					</li>
+			</li>
 
-					<li><a href="../../frontend/logout.php">Logout</a></li>
+			<li><a href="../../logout.php">Logout</a></li> <!-- url relative to the main page not this template -->
 
-				</ul>
+		</ul>
 
-			</div>
+	</div>
 
-		</nav>
+</nav>

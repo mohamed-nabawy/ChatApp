@@ -8,31 +8,31 @@
 
     <meta name="viewport" charset="UTF-8" content="width=device-width, initial-scale=1.0" />
 
-    <link rel="icon" href="/ChatApp/chat/favicon.ico">
+    <link rel="icon" href="../favicon.ico">
 
-    <link rel="stylesheet" type="text/css" href="/ChatApp/chat/frontend/css/modules/materialize.css" />
+    <link rel="stylesheet" type="text/css" href="css/modules/materialize.css" />
 
-    <link href="/ChatApp/chat/frontend/css/input_file.css" rel="stylesheet" />
+    <link href="css/input_file.css" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="/ChatApp/chat/frontend/icons/icons.css" />
+    <link rel="stylesheet" type="text/css" href="icons/icons.css" />
 
-    <link href="/ChatApp/chat/frontend/css/errors.css" rel="stylesheet" type="text/css" />
+    <link href="css/errors.css" rel="stylesheet" type="text/css" />
 
-    <link rel="stylesheet" href="/ChatApp/chat/frontend/css/register.css" />
-
-    <!-- replace with the minimized version in production -->
-    <script src="/ChatApp/chat/frontend/javascript/modules/jquery-3.2.1.js"></script>
+    <link rel="stylesheet" href="css/register.css" />
 
     <!-- replace with the minimized version in production -->
-    <script src="/ChatApp/chat/frontend/javascript/modules/angular.js"></script>
+    <script src="javascript/modules/jquery-3.2.1.js"></script>
 
-    <script src="/ChatApp/chat/frontend/javascript/newjavascript.js"></script>
+    <!-- replace with the minimized version in production -->
+    <script src="javascript/modules/angular.js"></script>
 
-    <script src="/ChatApp/chat/frontend/javascript/modules/materialize.js"></script>
+    <script src="javascript/newjavascript.js"></script>
 
-    <script src="/ChatApp/chat/frontend/javascript/modules/image_module.js"></script>
+    <script src="javascript/modules/materialize.js"></script>
 
-    <script src="/ChatApp/chat/frontend/javascript/modules/phone_number_module.js"></script>
+    <script src="javascript/modules/image_module.js"></script>
+
+    <script src="javascript/modules/phone_number_module.js"></script>
 
     <script type="text/javascript">
 
@@ -65,7 +65,7 @@
 
     <div ng-app="registerApp" ng-controller="registerController" class="row">
 
-      <form novalidate role="form" name="myform" style="width: 40%;margin: auto;text-align: center" enctype="multipart/form-data" method="post" action="/ChatApp/chat/backend/requests/users.php">
+      <form novalidate role="form" name="myform" style="width: 40%;margin: auto;text-align: center" enctype="multipart/form-data" method="post" action="../backend/requests/users.php">
 
         <div class="input-field col s12">
 

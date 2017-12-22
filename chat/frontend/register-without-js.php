@@ -97,23 +97,23 @@ else { // if at first time load not submitting the form
     <title>Register Form</title>
     <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- <link rel="icon" href="images/icon.png"> -->
-    <link rel="stylesheet" type="text/css" href="/ChatApp/chat/frontend/css/materialize.css"/>
-    <link rel="stylesheet" type="text/css" href="/ChatApp/chat/frontend/icons/icons.css" />
-    <link href="/ChatApp/chat/frontend/css/errors.css" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="/ChatApp/chat/frontend/css/register.css" />
+    <link rel="stylesheet" type="text/css" href="css/materialize.css"/>
+    <link rel="stylesheet" type="text/css" href="icons/icons.css" />
+    <link href="css/errors.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="css/register.css" />
 
     <!-- <link href='https://fonts.google.com/?category=Serif,Sans+Serif,Monospace&selection.family=Roboto+Slab' rel='stylesheet'> -->
     <!-- <link href='https://fonts.googleapis.com/css?family=Lobster' rel='stylesheet'> -->
-    <script src="/ChatApp/chat/frontend/javascript/modules/jquery-3.2.1.js"></script>
-    <script src="/ChatApp/chat/frontend/javascript/newjavascript.js"></script>
-    <script src="/ChatApp/chat/frontend/javascript/modules/materialize.js"></script>
-    <script src="/ChatApp/chat/frontend/javascript/modules/angular.js"></script>
-    <script src="/ChatApp/chat/frontend/javascript/modules/angular-route.js"></script>
-    <script src="/ChatApp/chat/frontend/javascript/modules/ui-bootstrap-2.5.0.js"></script>
-    <script src="/ChatApp/chat/frontend/javascript/modules/ui-bootstrap-tpls-2.5.0.js"></script>
-    <script src="/ChatApp/chat/frontend/javascript/modules/angular-modal-service.js"></script>
-    <script src="/ChatApp/chat/frontend/javascript/modules/alertify.min.js"></script>
-    <!-- <script src="/ChatApp/chat/frontend/javascript/register.js"></script> -->
+    <script src="javascript/modules/jquery-3.2.1.js"></script>
+    <script src="javascript/newjavascript.js"></script>
+    <script src="javascript/modules/materialize.js"></script>
+    <script src="javascript/modules/angular.js"></script>
+    <script src="javascript/modules/angular-route.js"></script>
+    <script src="javascript/modules/ui-bootstrap-2.5.0.js"></script>
+    <script src="javascript/modules/ui-bootstrap-tpls-2.5.0.js"></script>
+    <script src="javascript/modules/angular-modal-service.js"></script>
+    <script src="javascript/modules/alertify.min.js"></script>
+    <!-- <script src="javascript/register.js"></script> -->
   </head>
 
 <style type="text/css">
