@@ -65,17 +65,16 @@
     $sql = "insert into `users` (userName, firstName, lastName, image, email, phoneNumber, passwordHash, dateOfBirth, gender, roleId) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("ssssssssii", $email, $firstName, $lastName, $Image, $email, $phoneNumber, password_encrypt($password), $dateOfBirth, $gender, $roleId);
-    //$PasswordHash = password_encrypt($password);
 
     if (isset($image) && $image['name'] != "") {
       $Image = addImageFile($image, $email);
     }
     else {
       if ($gender == 0) {
-        $Image = '../uploads/maleimage.jpg';
+        $Image = '/ChatApp/chat/backend/uploads/maleimage.jpg';
       }
       elseif ($gender == 1) {
-        $Image = '../uploads/femaleimage.jpg';
+        $Image = '/ChatApp/chat/backend/uploads/femaleimage.jpg';
       }
     }
 

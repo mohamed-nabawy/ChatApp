@@ -31,26 +31,40 @@ layoutApp.directive('scrollToTop', ['$http', function($http) {
 	}
 }]);
 
-// layoutApp.directive('last', function($rootScope) {
-// 	return {
-// 		link: function(scope) {
-// 			//if (scope.$last == true) {
-// 				//scope.$broadcast("1");
-// 			//}
-// 		}
-// 	}
-// });
+layoutApp.directive('last', function($rootScope, $interval, $timeout) {
+	return {
+		link: function(scope) {
+			if (scope.$last) {
+				$timeout(function() {
+					$rootScope.vis = true;
+				});
+				//$interval(function(){}, 2000);
+				//document.getElementsByClassName('view-them')[0].style.display = 'block';
+			}
+		}
+	}
+});
 
-layoutApp.directive('finished', ['$timeout', function($timeout) {
+layoutApp.directive('finished', ['$timeout', '$rootScope', function($timeout, $rootScope) {
 	return {
 		link: function(scope, elem, attr) {
-			if (scope.$last == true) { // if the current element is the last
+			//console.log(scope.$parent.$last);
+			if (scope.$last) { // if the current element is the last
 				$timeout(function() {
-					var z = elem[0].parentElement; // whole chat window
-					//var x = z.parentElement;	
-					z.scrollTop = z.scrollHeight - z.clientHeight;
-					//console.log(z.scrollTop);
-				});
+					//var z = document.getElementsByClassName('chat'); // whole chat window
+					
+					//for (var i = 0; i < z.length; i++) {
+
+						var t = elem[0].parentElement; // whole chat window
+						t.scrollTop = t.scrollHeight - t.clientHeight;
+						//console.log(t);
+					//}
+
+					
+					// $timeout(function() {
+					//document.getElementsByClassName('view-them')[0].style.display = 'block';
+					//});
+				}, 500);
 			}
 		}
 	}

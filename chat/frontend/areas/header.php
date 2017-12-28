@@ -1,3 +1,5 @@
+<link rel="icon" href="../../../favicon.ico"> <!-- url relative to the main page not this template -->
+
 <nav class="navbar navbar-fixed-top navbar-inverse" style="position: relative;">
 
 	<div class="container-fluid" style="float: right;">
@@ -18,7 +20,7 @@
 
 			</li>
 
-			<li><a href="../../logout.php">Logout</a></li> <!-- url relative to the main page not this template -->
+			<li><a href="../../logout.php">Logout</a></li>
 
 		</ul>
 

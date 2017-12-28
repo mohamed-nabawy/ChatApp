@@ -101,6 +101,7 @@ else { // if at first time load not submitting the form
     <link rel="stylesheet" type="text/css" href="icons/icons.css" />
     <link href="css/errors.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="css/register.css" />
+    <link rel="icon" href="../favicon.ico">
 
     <!-- <link href='https://fonts.google.com/?category=Serif,Sans+Serif,Monospace&selection.family=Roboto+Slab' rel='stylesheet'> -->
     <!-- <link href='https://fonts.googleapis.com/css?family=Lobster' rel='stylesheet'> -->

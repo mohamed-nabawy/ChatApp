@@ -36,9 +36,9 @@
 
     <script type="text/javascript">
 
-      angular.module('registerApp', ['phone_number', 'image']).controller('registerController', ['$scope', function($scope){
-        $scope.image = {};
-        $scope.image.src = '';
+      angular.module('registerApp', ['phone_number', 'image']).controller('registerController', ['$scope', function($scope) {
+          $scope.image = {};
+          $scope.image.src = '';
       }]);
       
     </script>
@@ -141,23 +141,29 @@
 
         <input class="with-gap" name="gender" ng-model="gender" type="radio" value="1" id="female" required />
 
-        <label for="female" style="margin-right: -150px">Female</label>
+        <label for="female" style="margin-right: -17px">Female</label>
 
         <span ng-show="myform.gender.$touched && myform.gender.$invalid">Gender is Required</span>
 
         <br>
+
         <div class="image-button">
-          <input type="file" id="file" name="image" fileread="image.src" size="10" />
 
-        <label for="file"><span class="inside-image-label">choose Image</span></label>
-      </div>
+          <!-- <input type="file"  name="image" fileread="image.src" size="5" /> -->
 
+          <label for="file" class="inside-image-label" onclick="event.preventDefault();$('#file').trigger('click')">Choose Image</label>
 
-        <img ng-src="{{image.src}}" id="profileImage" />
+        </div>
 
-        <div class="dropzone" file-dropzone="[image/png, image/jpeg, image/gif]" file="image" file-name="imageFileName" data-max-file-size="3">
+        <img ng-src="{{image.src}}" />
 
-          </div>
+        <div class="dropzone" file-dropzone="[image/png, image/jpeg]" file="image" file-name="imageFileName" data-max-file-size="3">
+
+          <input type="file" id="file" fileread="uploadme.src" name="image" class="inputfile">
+
+          <img ng-src="{{uploadme.src}}" style="width: 200px;height: 200px">
+
+        </div>
 
         <!-- <div>
         

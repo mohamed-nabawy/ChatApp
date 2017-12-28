@@ -32,7 +32,7 @@
       //header("Location: ". "/ChatApp/chat/frontend/areas/student/student-profile.php");
     }
     else {
-      header("Location: ". "../../frontend/register.php");
+      header("Location: " . "../../frontend/register.php");
     }
   }
 

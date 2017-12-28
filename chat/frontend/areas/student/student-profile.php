@@ -4,11 +4,10 @@
 <html>
 
 	<head>
+
 		<title>Profile</title>
 
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-		<link rel="icon" href="../../../favicon.ico">
 
 		<link rel="stylesheet" type="text/css" href="../../css/modules/bootstrap.css">
 
@@ -28,25 +27,23 @@
 
 		<script type="text/javascript" src="../../javascript/student/student-layout.js"></script>
 
-	<link rel="stylesheet" type="text/css" href="../../css/student/student-profile.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/student/student-profile.css" />
 
-	<script type="text/javascript" src="../../javascript/student/student-profile.js"></script>
+		<script type="text/javascript" src="../../javascript/student/student-profile.js"></script>
 
 	</head>
 
 	<body style="background-image: url('')" ng-app="student">
 
-		<?php require('../header.php'); ?>
-		<?php require('../chats.php'); ?>
-
-		
 		<?php
+			require('../header.php');
+			require('../chats.php');
 			require('../../../backend/functions.php');
 			validatePageAccess($conn);
 		?>
 
-
 		<div ng-controller="studentProfile" class="ChatmatesPanel">
+			
 			<h4 onclick="$(this).parent().toggleClass('hideShowContacts');" class="clickable">Contacts</h4>
 
 			<div ng-repeat="u in myClassMatesAndTeachers" class="panel classmate-and-teacher">
