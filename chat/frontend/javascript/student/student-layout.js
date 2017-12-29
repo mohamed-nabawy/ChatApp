@@ -31,40 +31,19 @@ layoutApp.directive('scrollToTop', ['$http', function($http) {
 	}
 }]);
 
-layoutApp.directive('last', function($rootScope, $interval, $timeout) {
-	return {
-		link: function(scope) {
-			if (scope.$last) {
-				$timeout(function() {
-					$rootScope.vis = true;
-				});
-				//$interval(function(){}, 2000);
-				//document.getElementsByClassName('view-them')[0].style.display = 'block';
-			}
-		}
-	}
-});
-
 layoutApp.directive('finished', ['$timeout', '$rootScope', function($timeout, $rootScope) {
 	return {
 		link: function(scope, elem, attr) {
-			//console.log(scope.$parent.$last);
-			if (scope.$last) { // if the current element is the last
+			if (scope.$parent.$last && scope.$last) {
 				$timeout(function() {
-					//var z = document.getElementsByClassName('chat'); // whole chat window
+					var z = document.getElementsByClassName('chat-window'); // whole chat window
 					
-					//for (var i = 0; i < z.length; i++) {
+					for (var i = 0; i < z.length; i++) {
+						z[i].scrollTop = z[i].scrollHeight - z[i].clientHeight;
+					}
 
-						var t = elem[0].parentElement; // whole chat window
-						t.scrollTop = t.scrollHeight - t.clientHeight;
-						//console.log(t);
-					//}
-
-					
-					// $timeout(function() {
-					//document.getElementsByClassName('view-them')[0].style.display = 'block';
-					//});
-				}, 500);
+					document.getElementsByClassName('view-them')[0].style.visibility = 'visible';
+				}, 800);
 			}
 		}
 	}
@@ -78,10 +57,6 @@ layoutApp.controller('chats', ['$scope', '$http', 'chat', '$rootScope', '$interv
 	 	if ($scope.chats.length > 0) { // for open chat windows >> only refresh
 	 		// check if there is a new received message
 	     	$http.get('../../../backend/requests/chat-messages.php').then(function(response) {
-				//if ( parseInt(response.data) > 0 ) {
-					//$scope.addNewMessages();
-					//$scope.getCurrentInfo();
-				//}
 	    	});
 	 	}
     }, 3000);
@@ -92,7 +67,6 @@ layoutApp.controller('chats', ['$scope', '$http', 'chat', '$rootScope', '$interv
 
 			$http.get('../../../backend/requests/users.php?flag=1').then(function(response) {
 				$scope.chats = response.data;
-				//console.log($scope.chats);
 				$scope.addNewMessages();
 			});
 		});
@@ -141,7 +115,6 @@ layoutApp.controller('chats', ['$scope', '$http', 'chat', '$rootScope', '$interv
 	$scope.getCurrentInfo();
 
 	$scope.$on('chatRequest', function() {
-		//console.log(1);
 		var x = 0;
 
 		x = $scope.chats.filter(function(e) {
@@ -149,13 +122,10 @@ layoutApp.controller('chats', ['$scope', '$http', 'chat', '$rootScope', '$interv
 		});
 
 		if (x <= 0) { // if it's not in the array add it
-			//console.log(1);
 			$scope.chats.push(chat.chatUser);
 			
 			$http.put('../../../backend/requests/users.php?flag=1', chat.chatUser).then(function(response) {
-				//console.log(1);
 				$scope.getCurrentInfo();
-				//$scope.addChatMessages(chat.chatUser.id);
 			}); // put it in the session array of chats
 		}
 	});
@@ -169,15 +139,10 @@ layoutApp.controller('chats', ['$scope', '$http', 'chat', '$rootScope', '$interv
 		};
 
 		$http.post('../../../backend/requests/chat-messages.php', data).then(function(response) {
-			//$scope.currentMessages.push(data);
-			//console.log(response);
 			$scope.getCurrentInfo();
-
-			//$scope.addChatMessages(user.id);
 		});
+
 		$scope.currentMessages.push(data);
-		//console.log($scope.currentMessages[0]);
-		//console.log(data);
 		user.message = "";
 	};
 }]);

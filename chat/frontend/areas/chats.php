@@ -1,4 +1,4 @@
-<nav id="navv" class="navbar navbar-fixed-bottom view-them" ng-controller="chats" style="display: block">
+<nav id="navv" class="navbar navbar-fixed-bottom view-them" ng-controller="chats" style="visibility: hidden">
 
 	<div class="container-fluid" style="float: right">
 
