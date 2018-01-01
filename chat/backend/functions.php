@@ -67,7 +67,7 @@
 	
 	function confirm_logged_in() {
 		if ( !islogged_in() ) {
-			redirect_to("../frontend/login.php");
+			redirect_to("/chatApp/chat/frontend/login.php");
 		}
 	}
 

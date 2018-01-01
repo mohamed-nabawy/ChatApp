@@ -1,4 +1,4 @@
-<nav id="navv" class="navbar navbar-fixed-bottom view-them" ng-controller="chats" style="visibility: hidden">
+<nav id="nav" class="navbar navbar-fixed-bottom view-them" ng-controller="chats" style="visibility: hidden">
 
 	<div class="container-fluid" style="float: right">
 
@@ -6,7 +6,7 @@
 
 			<div class="wrapper">
 
-				<div  class="chat-head" ng-click="changeCurrentChatUser(c)">
+				<div class="chat-head" ng-click="changeCurrentChatUser(c)">
 
 					<span ng-bind="c.firstName" class="name-position"></span>
 
@@ -28,7 +28,7 @@
 
 				<div>
 
-					<textarea type="text" class="message-input" ng-model="c.message" placeholder="send a message..." ></textarea>
+					<textarea type="text" send-button="{{c}}" class="message-input" ng-model="c.message" placeholder="send a message..." ></textarea>
 
 				</div>
 

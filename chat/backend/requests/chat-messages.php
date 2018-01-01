@@ -18,11 +18,11 @@
   if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // decode the json data
     $data = json_decode( file_get_contents('php://input') );
-    $result = isset($data->Content, $data->SentFrom, $data->SentTo, $data->ClassId) && 
-    testInt($data->SentFrom, $data->SentTo, $data->ClassId);
+    $result = isset($data->content, $data->sentFrom, $data->sentTo, $data->classId) && 
+    testInt($data->sentFrom, $data->sentTo, $data->classId);
 
     if ($result) {
-      echo sendMessage($conn, $data->Content, $data->SentFrom, $data->SentTo, $data->ClassId);
+      echo sendMessage($conn, $data->content, $data->sentFrom, $data->sentTo, $data->classId);
     }
     else {
       //echo "error";

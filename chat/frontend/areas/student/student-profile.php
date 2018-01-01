@@ -38,7 +38,7 @@
 		<?php
 			require('../header.php');
 			require('../chats.php');
-			require('../../../backend/functions.php');
+			require('chatApp/chat/backend/functions.php');
 			validatePageAccess($conn);
 		?>
 

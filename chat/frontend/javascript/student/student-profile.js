@@ -2,7 +2,6 @@ layoutApp.controller('studentProfile', ['$scope', '$rootScope', '$http', 'chat',
 	$scope.getMyClassMatesAndTeachers = function() {
 		$http.get('../../../backend/requests/users.php').then(function(response) {
 			$scope.myClassMatesAndTeachers = response.data;
-			//console.log(response);
 		});
 	};
 	
@@ -18,7 +17,9 @@ layoutApp.controller('studentProfile', ['$scope', '$rootScope', '$http', 'chat',
 		chat.chatUser = user;
 
 		$http.put('../../../backend/requests/users.php?flag=2', user).then(function(response) { // change current active chat user
+			//$rootScope.addedChat = user;
 			$rootScope.$broadcast('chatRequest');
+
 		});		
 	};
 
