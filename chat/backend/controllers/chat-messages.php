@@ -25,12 +25,17 @@
 
 
   function recieveNewMessageForUserIdInClass($conn, $UserId, $classId) {
-    $sql = "select * from `chatmessages` where `sentTo` = {$UserId} and `new` = true"; // can be order in the front end
+    $sql = "select * from `chatmessages` where `sentTo` = {$UserId} and `new` = 1"; // can be order in the front end
     $result = $conn->query($sql);
 
     if ($result) {
       $messages = mysqli_fetch_all($result, MYSQLI_ASSOC);
       mysqli_free_result($result);
+
+      foreach ($messages as $key => $value) {
+        markMessageAsRead($conn, $value['id']);
+      }
+      
       return $messages;
     }
     else {
@@ -53,7 +58,7 @@
   }
 
   function getMessageById($conn, $id) { // check validations on this
-    $sql = "select * from `chatmessages` where `id` = ".$id." limit 1";
+    $sql = "select * from `chatmessages` where `id` = " . $id . " limit 1";
     $result = $conn->query($sql);
 
     if ($result) {
@@ -70,8 +75,6 @@
     // date and time are from now
     $dateId = getCurrentDateId($conn);
     $timeId = getCurrentTimeId($conn);
-
-    echo "date: ". $dateId;
 
     $sql = "insert into `chatmessages` (content, sentFrom, sentTo, dateId, timeId, classId) values (?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);

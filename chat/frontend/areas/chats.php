@@ -2,7 +2,7 @@
 
 	<div class="container-fluid" style="float: right">
 
-		<div class="nav navbar-nav separate-between-windows chat" ng-repeat="c in chats" ng-cloak last>
+		<div class="nav navbar-nav separate-between-windows chat" ng-repeat="c in chats" ng-cloak>
 
 			<div class="wrapper">
 

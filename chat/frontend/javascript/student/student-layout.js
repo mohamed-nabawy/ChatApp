@@ -4,27 +4,40 @@ layoutApp.directive('scrollToTop', ['$http', function($http) {
 	return {
 		link: function(scope, elem, attr) {
 
-			elem.bind('scroll', function() { // on scroll event				
-				if (elem[0].scrollTop <= 5) { // make sure the element is at the top
+			function loadAnother() {
+				scope.offset += 10;
+				// load another ten messages
+
+				$http.get('../../../backend/requests/chat-messages.php?firstUserId=' +
+					scope.currentUser.id + "&secondUserId=" + attr.scrollToTop + "&classId=" + 1 +
+					"&offset=" + scope.offset).then(function(response) {
+						if (response.data.length > 0) {
+							elem[0].scrollTop += 50;
+							var data = response.data;
+							var len = data.length;
+
+							for (var j = 0; j < len; j++) {
+								data[j]['id'] = parseInt(data[j]['id']);
+								scope.currentMessages.push(data[j]);
+							}
+						}
+				});
+			}
+
+			elem.bind('scroll', function() { // on scroll event
+
+				if (elem[0].scrollTop <= 10) { // make sure the element is at the top
 					elem.bind('mouseup', function() {
-						scope.offset += 10;
-						// load another ten messages
+						loadAnother();
+					});
 
-						$http.get('../../../backend/requests/chat-messages.php?firstUserId=' +
-							scope.currentUser.id + "&secondUserId=" + attr.scrollToTop + "&classId=" + 1 +
-							"&offset=" + scope.offset).then(function(response) {
-								if (response.data.length > 0) {
-									elem[0].scrollTop += 50;
-									var data = response.data;
-									var len = data.length;
-
-									for (var j = 0; j < len; j++) {
-										data[j]['id'] = parseInt(data[j]['id']);
-										scope.currentMessages.push(data[j]);
-									}
-								}
-						});
-					});	
+					// why need another up scroll ???
+					elem.bind('mousewheel', function() {
+						loadAnother();
+					});
+					elem.bind('DOMMouseScroll', function() {
+						loadAnother();
+					});
 				}
 			});
 		}
@@ -44,7 +57,6 @@ layoutApp.directive('sendButton', function() {
 	}
 })
 
-// doesn't work properly ???
 layoutApp.directive('finished', ['$timeout', '$rootScope', function($timeout, $rootScope) {
 	return {
 		link: function(scope, elem, attr) {
@@ -71,6 +83,22 @@ layoutApp.controller('chats', ['$scope', '$http', 'chat', '$rootScope', '$interv
 		 	if ($scope.chats.length > 0) { // for open chat windows >> only refresh
 		 		// check if there is a new received message
 		     	$http.get('../../../backend/requests/chat-messages.php').then(function(response) {
+		     		if (response.data.length > 0) {
+			     		var data = response.data;
+			     		var len = data.length;
+
+		     			for (var i = 0; i < len; i++) {
+		     				var d = {
+		     					id: data[i].id,
+								sentFrom: data[i].sentFrom,
+								sentTo: data[i].sentTo,
+								content: data[i].content,
+								classId: 1
+		     				}
+
+		     				$scope.currentMessages.push(d);
+		     			}
+		     		}
 		    	});
 		 	}
 	    }, 3000);
@@ -110,7 +138,16 @@ layoutApp.controller('chats', ['$scope', '$http', 'chat', '$rootScope', '$interv
 
 					for (var j = 0; j < len; j++) {
 						data[j]['id'] = parseInt(data[j]['id']); // convert it to int
-						$scope.currentMessages.push(data[j]);
+
+						var d = {
+							id: data[j]['id'],
+							sentFrom: data[j].sentFrom,
+							sentTo: data[j].sentTo,
+							content: data[j].content,
+							classId: 1
+						};
+
+						$scope.currentMessages.push(d);
 					}
 				}
 			});
@@ -166,12 +203,11 @@ layoutApp.controller('chats', ['$scope', '$http', 'chat', '$rootScope', '$interv
 			};
 
 			// post request to add this message
-			$http.post('../../../backend/requests/chat-messages.php', data).then(function(response) {
-				console.log(response);
-				$scope.getCurrentInfo(); // update current info ???
+			$http.post('../../../backend/requests/chat-messages.php', data).then(function(response) {				
+				data.id = parseInt(response.data); // id of new message
+				$scope.currentMessages.push(data);
+				// empty the message again so user can start typing new messages
 			});
-
-			// empty the message again so user can start typing new messages
 			user.message = "";
 		};
 }]);
