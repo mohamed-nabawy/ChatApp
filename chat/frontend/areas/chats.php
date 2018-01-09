@@ -2,25 +2,25 @@
 
 	<div class="container-fluid" style="float: right">
 
-		<div class="nav navbar-nav separate-between-windows chat" ng-repeat="c in chats" ng-cloak>
+		<div class="nav navbar-nav separate-between-windows chat" ng-repeat="c in chats | orderBy: 'i' " style="visibility: hidden" ng-cloak>
 
 			<div class="wrapper">
 
-				<div class="chat-head" ng-click="changeCurrentChatUser(c)">
+				<div class="chat-head">
 
 					<span ng-bind="c.firstName" class="name-position"></span>
 
-					<span class="close-chat-window" ng-click="closeWindow(c)" title="close">x</span>
+					<span class="close-chat-window" ng-click="closeWindow(c.id)" title="close">x</span>
 				
-				</div>	
+				</div>
 
-				<div class="chat-window" scroll-to-top="{{c.id}}">
+				<div class="chat-window" scroll-to-top="1">
 
-					<li ng-repeat="m in getCurrentMessages(c.id) | orderBy: 'id' " class="each-message" finished>
+					<li ng-repeat="m in c.messages | orderBy: 'id' " class="each-message" message>
 
-						<span ng-if="m.sentFrom == c.id" class="message-content" ng-bind="m.content" style="background-color: grey;border: 2px solid grey;right: 50px"></span>
+						<span ng-if="m.sentFrom == c.id" class="message-content" ng-bind="m.content" style="background-color: grey;border: 2px solid grey;left: 10px"></span>
 
-						<span ng-if="m.sentTo == c.id" class="message-content" ng-bind="m.content" style="background-color: mediumblue;border: 2px solid mediumblue;left: 50px"></span>
+						<span ng-if="m.sentTo == c.id" class="message-content" ng-bind="m.content" style="background-color: mediumblue;border: 2px solid mediumblue;left: 60px"></span>
 
 					</li>
 
@@ -28,7 +28,7 @@
 
 				<div>
 
-					<textarea type="text" send-button="{{c}}" class="message-input" ng-model="c.message" placeholder="send a message..." ></textarea>
+					<textarea type="text" class="message-input" ng-model="c.message" send-button placeholder="send a message..." ></textarea>
 
 				</div>
 

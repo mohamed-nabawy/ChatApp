@@ -17,7 +17,7 @@ layoutApp.controller('studentProfile', ['$scope', '$rootScope', '$http', 'chat',
 		chat.chatUser = user;
 
 		$http.put('../../../backend/requests/users.php?flag=2', user).then(function(response) { // change current active chat user
-			//$rootScope.addedChat = user;
+			$rootScope.addedChat = user;
 			$rootScope.$broadcast('chatRequest');
 
 		});		
