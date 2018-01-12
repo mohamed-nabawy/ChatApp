@@ -15,4 +15,5 @@
 	}
 	
 	$users = new users();
+	$arr['users'] = $users;
 ?>

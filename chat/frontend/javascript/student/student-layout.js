@@ -41,7 +41,7 @@ layoutApp.directive('scrollToTop', ['$http', function($http) {
 
 			// why need another up scroll ???
 			elem.bind('mousewheel', function() { // mousewheel (all browsers except firefox)
-				if (elem[0].scrollTop <= 5) {
+				if (elem[0].scrollTop <= 350) {
 					loadAnother();
 				}
 			});

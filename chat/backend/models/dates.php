@@ -5,4 +5,5 @@
 	}
 	
 	$dates = new dates();
+	$arr['dates'] = $dates;
 ?>

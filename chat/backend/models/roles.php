@@ -5,4 +5,5 @@
 	}
 
 	$roles = new roles();
+	$arr['roles'] = $roles;
 ?>

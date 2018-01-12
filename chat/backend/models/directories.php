@@ -5,4 +5,5 @@
 	}
 	
 	$directories = new directories();
+	$arr['directories'] = $directories;
 ?>
