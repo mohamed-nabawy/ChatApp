@@ -34,14 +34,16 @@ layoutApp.directive('scrollToTop', ['$http', function($http) {
 			
 			elem.bind('mouseup', function() {
 				// make sure the element is at the top
-				if (elem[0].scrollTop <= 5) {
+				if (elem[0].scrollTop <= 25) {
 					loadAnother();
 				}
 			});
 
 			// why need another up scroll ???
 			elem.bind('mousewheel', function() { // mousewheel (all browsers except firefox)
-				if (elem[0].scrollTop <= 5) {
+				//console.log(elem[0].scrollTop);
+				if (elem[0].scrollTop <= 400) {
+					
 					loadAnother();
 				}
 			});
@@ -91,7 +93,7 @@ layoutApp.directive('message', ['$timeout', '$rootScope', function($timeout, $ro
 
 					$('.view-them')[0].style.visibility = 'visible'; // then make their container visible
 
-					scope.$parent.load = 0;
+					scope.$parent.load = 0;//flag (cancel)
 				}, 1500);
 			}
 		}
@@ -125,10 +127,12 @@ layoutApp.controller('chats', ['$scope', '$http', 'chat', '$rootScope', '$interv
 		     						}
 
 		     						$scope.chats[j].messages.push(d);
+
 		     						break;
 		     					}
 		     				}
 		     			}
+
 		     		}
 		    	});
 		 	}
@@ -268,9 +272,14 @@ layoutApp.controller('chats', ['$scope', '$http', 'chat', '$rootScope', '$interv
 				}
 
 				for (var i = 0; i < len; i++) {
-					if ($scope.chats[i].id == user.id) {
+					if ($scope.chats[i].id == user.id) { // get his receiver chat window
 						$scope.chats[i].messages.unshift(data);
-						$scope.$emit('scrollToTop', i);
+						//$scope.$emit('scrollToTop', i);
+						setTimeout( function(){ 
+							console.log($( "#chat"+user.id ).scrollTop());
+							$( "#chat"+user.id ).scrollTop( $( "#chat"+user.id ).scrollTop()*2); },100);
+							
+						//$( "#"+user.id ).scrollTop($( "#"+user.id ).scrollTop());
 						break;
 					}
 				}
@@ -278,4 +287,6 @@ layoutApp.controller('chats', ['$scope', '$http', 'chat', '$rootScope', '$interv
 
 			});
 		};
+
+
 }]);

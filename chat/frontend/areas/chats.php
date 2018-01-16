@@ -14,7 +14,7 @@
 				
 				</div>
 
-				<div class="chat-window" scroll-to-top="1">
+				<div id="chat{{c.id}}" class="chat-window" scroll-to-top="1">
 
 					<li ng-repeat="m in c.messages | orderBy: 'id' " class="each-message" message>
 
