@@ -5,4 +5,5 @@
 	}
 
 	$classusers = new classusers();
+	$arr['classusers'] = $classusers;
 ?>

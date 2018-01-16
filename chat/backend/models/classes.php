@@ -6,4 +6,5 @@
 	}
 
 	$classes = new classes();
+	$arr['classes'] = $classes;
 ?>

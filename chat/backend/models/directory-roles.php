@@ -5,4 +5,5 @@
 	}
 	
 	$directoryroles = new directoryroles();
+	$arr['directoryroles'] = $directoryroles;
 ?>

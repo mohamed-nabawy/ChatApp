@@ -11,4 +11,5 @@
 	}
 	
 	$chatmessages = new chatmessages();
+	$arr['chatmessages'] = $chatmessages;
 ?>
