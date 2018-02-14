@@ -17,6 +17,8 @@
 
 		<script type="text/javascript" src="../../javascript/modules/jquery-3.2.1.js"></script>
 
+		<script type="text/javascript" src="../../javascript/modules/bootstrap.js"></script>
+
 		<script type="text/javascript" src="../../javascript/modules/angular.js"></script>
 
 		<script type="text/javascript" src="../../javascript/modules/angular-route.js"></script>
@@ -33,16 +35,18 @@
 
 	</head>
 
-	<body style="background-image: url('')" ng-app="student">
+	<body style="background-image: url('')" ng-app="student" ng-controller="studentProfile">
 
-		<?php
-			require('../header.php');
-			require('../chats.php');
-			require('chatApp/chat/backend/functions.php');
-			validatePageAccess($conn);
-		?>
+		<div>
+			<?php
+				require('../header.php');
+				require('../chats.php');
+				require('chatApp/chat/backend/functions.php');
+				validatePageAccess($conn);
+			?>
+		</div>
 
-		<div ng-controller="studentProfile" class="ChatmatesPanel">
+		<div class="ChatmatesPanel">
 			
 			<h4 onclick="$(this).parent().toggleClass('hideShowContacts');" class="clickable">Contacts</h4>
 

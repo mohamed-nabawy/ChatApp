@@ -39,11 +39,8 @@ layoutApp.directive('scrollToTop', ['$http', function($http) {
 				}
 			});
 
-			// why need another up scroll ???
 			elem.bind('mousewheel', function() { // mousewheel (all browsers except firefox)
-				//console.log(elem[0].scrollTop);
 				if (elem[0].scrollTop <= 400) {
-					
 					loadAnother();
 				}
 			});
@@ -99,6 +96,27 @@ layoutApp.directive('message', ['$timeout', '$rootScope', function($timeout, $ro
 		}
 	}
 }]);
+
+// layoutApp.controller('allMessages', ['$http', '$scope', function($http, $scope) {
+// 	// $scope.getCurrentInfo = function() { // current info of user
+// 	// 	// get the user in the session
+// 	// 	$http.get('../../../backend/requests/users.php?flag=3').then(function(response) {
+// 	// 		$scope.currentUser = response.data;
+// 	// 		//$scope.getCurrentUserMessages();
+// 	// 	});
+// 	// };
+
+// 	//$scope.getCurrentInfo();
+
+// 	$scope.getAllMessages = function() {
+// 		$http.get('../../../backend/requests/chat-messages.php?flag=2').then(function(response) {
+// 			$scope.messages = response.data;
+// 			console.log($scope.messages);
+// 		});
+// 	};
+
+// 	$scope.getAllMessages();
+// }]);
 
 layoutApp.controller('chats', ['$scope', '$http', 'chat', '$rootScope', '$interval', '$timeout',
 	function($scope, $http, chat, $rootScope, $interval, $timeout) {
@@ -206,7 +224,8 @@ layoutApp.controller('chats', ['$scope', '$http', 'chat', '$rootScope', '$interv
 
 		// initialize the current user
 		$scope.setCurrentUser = function(data) {
-			$scope.currentUser = data; // id of user
+			$scope.currentUser = data;
+			//console.log(data);
 		};
 
 		// close chat window of a user
@@ -263,6 +282,7 @@ layoutApp.controller('chats', ['$scope', '$http', 'chat', '$rootScope', '$interv
 
 			// post request to add this message
 			$http.post('../../../backend/requests/chat-messages.php', data).then(function(response) {
+				console.log(response);
 				data.id = parseInt(response.data); // id of new message
 				var len = $scope.chats.length;
 

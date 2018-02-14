@@ -12,15 +12,27 @@ layoutApp.controller('studentProfile', ['$scope', '$rootScope', '$http', 'chat',
 	// 		//console.log(response);
 	// 	});
 	// }
+	$scope.getAllMessages = function() {
+		$http.get('../../../backend/requests/chat-messages.php?flag=2').then(function(response) {
+			$scope.messages = response.data;
+		});
+	};
+
+	$scope.openChat = function(data) {
+		user = {
+			id: data.id,
+			firstName: data.firstName,
+		}
+
+		$scope.addChatWindow(user);
+	}
+
+	$scope.getAllMessages();
 
 	$scope.addChatWindow = function(user) { // this will communicate with chats controller in layout
 		chat.chatUser = user;
-
-		$http.put('../../../backend/requests/users.php?flag=2', user).then(function(response) { // change current active chat user
-			$rootScope.addedChat = user;
-			$rootScope.$broadcast('chatRequest');
-
-		});		
+		$rootScope.addedChat = user;
+		$rootScope.$broadcast('chatRequest');
 	};
 
 	$scope.getMyClassMatesAndTeachers();

@@ -25,6 +25,9 @@
 			}
 
 			$create .= ");";
+
+			echo $create;
+
 			$r = $conn->query($create);
 
 			if ($r) {
@@ -33,6 +36,8 @@
 			else {
 				echo "error: ", $conn->error;
 			}
+
+			exit();
 		}
 	}
 
@@ -73,8 +78,10 @@
 			$pr = "SHOW INDEXES FROM `$tableName` WHERE Key_name = 'PRIMARY'";
 			$pr1 = $conn->query($pr);
 			$pr2 = false;
+
+			echo $pr1;
 			
-			if ($pr1 === null) {
+			if ($pr1 == null) {
 				$statment .= " primary key";
 			}
 		}
@@ -250,13 +257,13 @@
 					echo "error: ", $conn->error, "\n";
 				}
 
-				if ($result) {
-					echo "column added\n";
-				}
-				else {
-					print_r(8);
-					echo "error: ", $conn->error, "\n";
-				}
+				// if ($result) {
+				// 	echo "column added\n";
+				// }
+				// else {
+				// 	print_r(8);
+				// 	echo "error: ", $conn->error, "\n";
+				// }
 			}
 		}
 	}

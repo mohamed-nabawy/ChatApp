@@ -8,6 +8,8 @@
   if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     if ( isset($_GET['firstUserId'], $_GET['secondUserId'], $_GET['offset']) && testInt($_GET['firstUserId'], $_GET['secondUserId'], $_GET['offset']) ) {
       checkResult(getMessagesBetweenUsersIdsInClass($conn, $_GET['firstUserId'], $_GET['secondUserId'], $_GET['classId'], $_GET['offset']) );
+    } elseif (isset($_GET['flag']) && $_GET['flag'] == 2) {
+      checkResult( getLastCurrentUserMessages($conn) );
     } else {
       if ( checkNewMessageForUserIdInClass($conn, $_SESSION['userId'], 1)[0] > 0)
         //echo( checkNewMessageForUserIdInClass($conn, $_SESSION['userId'], 1)[0] );

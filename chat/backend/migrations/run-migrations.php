@@ -10,6 +10,7 @@
 	require('../models/roles.php');
 	require('../models/times.php');
 	require('../models/users.php');
+	require('../models/last-messages.php');
 	require('migration-functions.php');
 
 	foreach ($arr as $key => $value) {

@@ -30,6 +30,10 @@ nav div ul li {
 	word-wrap: break-word;
 }
 
+.mes:hover {
+	background-color: lightgrey;
+}
+
 .close-chat-window {
 	text-align: center;
 	cursor: pointer;
@@ -58,7 +62,6 @@ nav div ul li {
 }
 
 .chat-window {
-	
 	border: 2px solid grey;
 	border-radius: 6px;
 	height: 280px;
@@ -67,9 +70,6 @@ nav div ul li {
 	overflow-x: hidden;
 	padding: 0px;
 	margin-bottom: 2px;
-
-	/*overflow-wrap: break-word;
-	word-wrap: break-word;*/
 }
 
 .name-position {
@@ -80,14 +80,6 @@ nav div ul li {
 .send-button {
 	float: right;
 	width: 60px;
-}
-
-.closed-window {
-	/*width: 200px;
-	height: 20px;
-	background-color: lightblue;
-	position: relative;
-	right: -40px;*/
 }
 
 .message-input:focus {
@@ -118,12 +110,18 @@ nav div ul li {
 	font-size: 1.2em;
 }
 
-.wrapper{
-
-	height: 100%;
-	padding-bottom: 20px;
+.wrapword {
+	white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+	white-space: -webkit-pre-wrap; /*Chrome & Safari */
+	white-space: -pre-wrap;      /* Opera 4-6 */
+	white-space: -o-pre-wrap;    /* Opera 7 */
+	white-space: pre-wrap;       /* css-3 */
+	word-wrap: break-word;       /* Internet Explorer 5.5+ */
+	word-break: break-all;
+	white-space: normal;
 }
 
-#navv{
-		/*display:none;*/
+.wrapper {
+	height: 100%;
+	padding-bottom: 20px;
 }
