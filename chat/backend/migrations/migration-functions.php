@@ -9,6 +9,7 @@
 	}
 
 	function createTableIfNotExisted($conn, $tableName, $object) {
+		//echo $tableName;
 		$val = $conn->query("select 1 from `$tableName` limit 1"); // use this to check existence of table
 
 		if (!$val) { // table doesn't exist so we will create it from the model
@@ -16,7 +17,7 @@
 			$create = "create table `$tableName` (";
 
 			foreach ($object as $key => $value) {
-				addOrUpdateField($conn, $create, $key, $value, 6);
+				addOrUpdateField($conn, $create, $key, $value, 6, $tableName);
 				$create .= ",";
 			}
 
@@ -26,7 +27,7 @@
 
 			$create .= ");";
 
-			echo $create;
+			//echo $create;
 
 			$r = $conn->query($create);
 
@@ -73,17 +74,33 @@
 			$statment .= "($x)";
 		}
 
+		// if (!$conn->query("select 1 from `$tableName` limit 1") ) {
+		// 	if (mysqli_num_rows($pr1) == 0) {
+		// 		$statment .= " primary key";
+		// 	}
+		// }
 		// check other paramters
 		if ( in_array("primary key", $value) && ($flag === null || $flag === 6) ) {
-			$pr = "SHOW INDEXES FROM `$tableName` WHERE Key_name = 'PRIMARY'";
-			$pr1 = $conn->query($pr);
-			$pr2 = false;
-
-			echo $pr1;
-			
-			if ($pr1 == null) {
+			if (!$conn->query("select 1 from `$tableName` limit 1") ) {
+				//if (mysqli_num_rows($pr1) == 0) {
 				$statment .= " primary key";
+				//}
 			}
+			else {
+				$pr = "SHOW INDEXES FROM `$tableName` WHERE Key_name = 'PRIMARY'";
+				$pr1 = $conn->query($pr);
+
+				if (!$pr1) {
+					echo "error: ", $conn->error;
+				}
+			}
+			//$pr2 = false;
+
+			//var_dump($pr);
+
+			//var_dump($pr1);
+			
+			
 		}
 
 		if ( in_array("not null", $value) ) {
@@ -102,11 +119,11 @@
 			$statment .= " unique";
 		}
 
-		if ( isset($value["foreign key"]) && ($flag === null || $flag === 6) ) {
-			$tableNameAndColumn = $value['foreign key'];
-			$statment .= ",";
-			$statment .= "foreign key($key) references $tableNameAndColumn";
-		}
+		// if ( isset($value["foreign key"]) && ($flag === null || $flag === 6) ) {
+		// 	$tableNameAndColumn = $value['foreign key'];
+		// 	$statment .= ",";
+		// 	$statment .= "foreign key($key) references $tableNameAndColumn";
+		// }
 
 		$conn->query("set foreign_key_checks = 0");
 		
@@ -124,6 +141,7 @@
 		}
 		else {
 			if ($flag !== 6) {
+				//echo $statment;
 				$result = $conn->query($statment);
 
 				if ($result) {
@@ -242,6 +260,7 @@
 			if (!array_key_exists($key, $tableFields) ) {
 				$alter = "alter table `$tableName` add column ";
 				addOrUpdateField($conn, $alter, $key, $object[$key], 1);
+				$r = false;
 
 				if (isset($object[$key]['foreign key']) ) {
 					$v = $object[$key]['foreign key'];
@@ -249,13 +268,13 @@
 					$r = $conn->query("alter table `$tableName` add constraint $key foreign key ($key) references $v");
 				}
 
-				if ($r) {
-					echo "foreign key added\n";
-				}
-				else {
-					print_r(7);
-					echo "error: ", $conn->error, "\n";
-				}
+				// if ($r) {
+				// 	echo "foreign key added\n";
+				// }
+				// else {
+				// 	print_r(7);
+				// 	echo "error: ", $conn->error, "\n";
+				// }
 
 				// if ($result) {
 				// 	echo "column added\n";
@@ -321,17 +340,25 @@
 
 	function dropPrimaryKeyIfExisted($conn, $tableName, $key = null) {
 		//$conn->query("set foreign_key_checks = 0");
-		$pr = "SHOW `INDEXES` FROM `$tableName` WHERE `Key_name` = 'PRIMARY'";
+		$pr = "SHOW INDEXES FROM `$tableName` WHERE `Key_name` = 'PRIMARY'";
 		$sql = "SELECT * FROM `information_schema`.`KEY_COLUMN_USAGE` WHERE `REFERENCED_TABLE_NAME` = '$tableName' AND `REFERENCED_COLUMN_NAME` = '$key'";
+		//var_dump($tableName);
 		$r = mysqli_fetch_assoc( $conn->query($sql) );
+		// if (!$conn->query($pr) ) {
+		// 	echo "error: ", $conn->error;
+		// }
 		$x = mysqli_fetch_assoc( $conn->query($pr) );
 
-		if ( $x && $x !== null && !($r || $r !== null) ) {
+		if ( ($x && $x !== null) && !($r !== null) ) {
 			$c = "alter table `$tableName` drop primary key";
 			$z = $conn->query($c);
 
 			if ($z) {
-				
+				// $s = "SELECT * FROM `tableName` WHERE `$key` IS NOT NULL;"
+
+				// if (mysqli_num_rows( $conn->query($sql) ) > 0) {
+
+				// }
 			}
 			else {
 				print_r(5);
@@ -339,7 +366,7 @@
 			}
 		}
 		else {
-			echo "primary can't be dropped because it's referenced from another table or it's not existed";
+			echo "primary key can't be dropped because it's referenced from another table or it's not existed";
 		}
 	}
 
@@ -373,7 +400,7 @@
 
 						if ($v === "primary key" || ($v === "auto_increment" && in_array("primary key", $object[$key]) ) ) {
 							$alter3 = "alter table `$tableName` modify column ";
-							addOrUpdateField($conn, $alter3, $key, $object[$key]);
+							addOrUpdateField($conn, $alter3, $key, $object[$key], null, $tableName);
 						}
 						elseif ($v === "auto_increment" && !in_array("primary key", $object[$key]) && in_array("primary key", $tableFields[$key]) ) {
 							echo "error: auto_increment must be associated with primary key";
@@ -403,15 +430,23 @@
 									}
 								}
 							}
-							$conn->query("set foreign_key_checks = 0");
-							print_r(11);
-							$r = $conn->query("alter table `$tableName` add constraint `$key` foreign key ($key) references $v");
 
-							if ($r) {
-								echo "foreign key added\n";
-							}
-							else {
-								echo "error: ", $conn->error, "\n";
+							//echo $key;
+							//echo "1";
+							$conn->query("set foreign_key_checks = 0");
+							//print_r(11);
+							$y = "SELECT * FROM INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS WHERE CONSTRAINT_NAME ='$key'";
+							$x = $conn->query($y);
+
+							if ( mysqli_num_rows($x) == 0 ) {
+								$r = $conn->query("alter table `$tableName` add constraint `$key` foreign key ($key) references $v");
+
+								if ($r) {
+									echo "foreign key added\n";
+								}
+								else {
+									echo "error: ", $conn->error, "\n";
+								}
 							}
 						}
 					}
@@ -422,7 +457,7 @@
 				foreach ($tableFields[$key] as $k => $v) {
 					if ( !in_array($v, $object[$key]) || ( !key_exists($k, $object[$key]) && !is_int($k) ) ) {
 						if ($v === "primary key" || $v === "auto_increment") {
-							print_r(12);
+							//print_r(12);
 
 							if ( $v === "primary key" && in_array("auto_increment", $tableFields[$key]) && in_array("auto_increment", $object[$key]) ) {
 								handlePrimaryKeyAndAutoIncrement($conn, $key, $object[$key], $tableName, 1);
