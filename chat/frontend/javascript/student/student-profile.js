@@ -12,7 +12,7 @@ layoutApp.controller('studentProfile', ['$scope', '$rootScope', '$http', 'chat',
 		$rootScope.newLen = 0;
 
 		$http.put('../../../backend/requests/chat-messages.php?flag=1').then(function(response) {
-			console.log(response);
+			//console.log(response);
 		});
 	}
 	
@@ -34,7 +34,7 @@ layoutApp.controller('studentProfile', ['$scope', '$rootScope', '$http', 'chat',
 	$scope.getAllMessages();
 
 	$scope.addChatWindow = function(user) { // this will communicate with chats controller in layout
-		if ( $rootScope.newMessages.includes(user.id) ) {
+		if ($rootScope.newMessages.indexOf(user.id) > 0) {
 			$rootScope.newLen--;
 			$rootScope.newMessages.splice($rootScope.newMessages.indexOf(user.id), 1);
 		}

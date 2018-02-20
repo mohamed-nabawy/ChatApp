@@ -5,16 +5,17 @@
 .badge1 {
 	position: relative;
 }
-.badge1[ng-bind]:after {
+
+.badge1[ng-bind]::after {
 	content: attr(ng-bind);
 	position: absolute;
-	top: -10px;
-	right: -10px;
+	top: -20px;
+	right: -20px;
 	font-size: .7em;
 	background: red;
 	color: white;
-	width: 18px;
-	height: 18px;
+	width: 15px;
+	height: 16px;
 	text-align: center;
 	line-height: 18px;
 	border-radius: 50%;
@@ -24,7 +25,7 @@
 nav div ul li {
 	display: inline-block;
 	zoom: 1.3;
-	-moz-transform: scale(1.3); /* firefox */
+	-moz-transform: scale(2); /* firefox */
 	-webkit-transform: scale(1.3) /* chrome and safari */
 }
 
@@ -83,6 +84,7 @@ nav div ul li {
 .chat-window {
 	border: 2px solid grey;
 	border-radius: 6px;
+	
 	height: 280px;
 	max-width: 295px;
 	overflow-y: scroll;
@@ -130,7 +132,7 @@ nav div ul li {
 }
 
 .wrapword {
-	white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+	white-space: -moz-pre-wrap !important; /* Mozilla, since 1999 */
 	white-space: -webkit-pre-wrap; /*Chrome & Safari */
 	white-space: -pre-wrap;      /* Opera 4-6 */
 	white-space: -o-pre-wrap;    /* Opera 7 */
@@ -143,4 +145,90 @@ nav div ul li {
 .wrapper {
 	height: 100%;
 	padding-bottom: 20px;
+}
+
+@media all and (-webkit-min-device-pixel-ratio:10000), not all and (-webkit-min-device-pixel-ratio:0) {
+	.badge1[ng-bind]:after {
+		content: attr(ng-bind);
+		position: absolute;
+		top: -20px;
+		right: -20px;
+		font-size: .7em;
+		background: red;
+		color: white;
+		width: 35px;
+		height: 36px;
+		text-align: center;
+		line-height: 18px;
+		border-radius: 70%;
+		box-shadow:2 2 1px #333;
+	}
+}
+
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+    	/* IE10+ CSS styles go here */
+	.chat-window {
+		width: 280px;
+		max-width: 320px;
+	}
+
+	.chat-head {
+		position: relative;
+		right: -0.4px;
+		top: 10px;
+		width: 280px;
+		height: 20px;
+	}
+
+	.close-chat-window {
+		text-align: center;
+		cursor: pointer;
+		margin-right: -12px;
+		top: -15px;
+		margin-top: 2px;
+	}
+
+	.badge1[ng-bind]::after {
+		top: -7px;
+		right: -7px;
+	}
+}
+
+@-moz-document url-prefix() {
+	.wrapper {
+		margin-top: -20px;
+	}
+
+	.message-input {
+		padding: 0 9px 2px 9px;
+	}
+
+	.chat-window {
+		width: 280px;
+		max-width: 320px;
+		top: -20px;
+	}
+	
+	.chat-head {
+		position: relative;
+		right: -0.4px;
+		top: 10px;
+		width: 280px;
+		height: 20px;
+	}
+
+	.close-chat-window {
+		text-align: center;
+		cursor: pointer;
+		zoom: 0.3;
+		-moz-transform: scale(0.65);
+		margin-right: -3px;
+		top: -15px;
+		margin-top: -6px;
+	}
+
+	.badge1[ng-bind]::after {
+		top: -7px;
+		right: -7px;
+	}
 }

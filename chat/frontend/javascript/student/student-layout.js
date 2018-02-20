@@ -14,7 +14,7 @@ layoutApp.directive('scrollToTop', ['$http', function($http) {
 						if (response.data.length > 0) {
 							elem[0].scrollTop += 50; // scroll down 50px
 							var data = response.data; // older messages from database
-							console.log(data);
+							//console.log(data);
 							var len = data.length;
 
 							for (var j = 0; j < len; j++) {
@@ -106,13 +106,13 @@ layoutApp.controller('chats', ['$scope', '$http', 'chat', '$rootScope', '$interv
 		$rootScope.newMessages = [];
 
 		$scope.removefromNewMessagesIfAny = function(chat) {
-			if ( $rootScope.newLen > 0 && $rootScope.newMessages.includes(chat.id) ) {
+			if ( $rootScope.newLen > 0 && $rootScope.newMessages.indexOf(chat.id) > -1) {
 				$rootScope.newLen--;
 				$rootScope.newMessages.splice( $rootScope.newMessages.indexOf(chat.id) );
 			}
 
 			$http.put('../../../backend/requests/chat-messages.php?sentFrom=' + chat.id).then(function(response) {
-				console.log(response);
+				//console.log(response);
 			});
 		};
 
@@ -122,12 +122,14 @@ layoutApp.controller('chats', ['$scope', '$http', 'chat', '$rootScope', '$interv
 			$http.get('../../../backend/requests/chat-messages.php?flag=3').then(function(response) {
 				$scope.notifications = response.data;
 				$rootScope.newLen = response.data.length;
+
+				//console.log($rootScope.newLen);
 				
 				var newmes = response.data;				
 				var thelen = newmes.length
 
 				for (var h = 0; h < thelen; h++) {
-					if ( !$rootScope.newMessages.includes(newmes[h].sentFrom) ) {
+					if ($rootScope.newMessages.indexOf(newmes[h].sentFrom) == -1) {
 						$rootScope.newMessages.push(newmes[h].sentFrom);
 					}
 				}
@@ -136,37 +138,34 @@ layoutApp.controller('chats', ['$scope', '$http', 'chat', '$rootScope', '$interv
 
 		$scope.getNotifications();
 
-		$scope.getNewMessages = function(flag = 0) {
+		$scope.getNewMessages = function() {
 			$http.get('../../../backend/requests/chat-messages.php').then(function(response) {
 	     		if (response.data.length > 0) {
 		     		var data = response.data;
 		     		var len = data.length;
+		     		var chatLen = $scope.chats.length;
 
-		     		if (flag == 0) {
-			     		var chatLen = $scope.chats.length;
+	     			for (var i = 0; i < len; i++) {
+	     				for (var j = 0; j < chatLen; j++) {
+	     					if (data[i].sentFrom == $scope.chats[j].id) {
+	     						var d = {
+	     							id: parseInt(data[i].id),
+									sentFrom: data[i].sentFrom,
+									sentTo: data[i].sentTo,
+									content: data[i].content,
+									classId: 1
+	     						};
 
-		     			for (var i = 0; i < len; i++) {
-		     				for (var j = 0; j < chatLen; j++) {
-		     					if (data[i].sentFrom == $scope.chats[j].id) {
-		     						var d = {
-		     							id: parseInt(data[i].id),
-										sentFrom: data[i].sentFrom,
-										sentTo: data[i].sentTo,
-										content: data[i].content,
-										classId: 1
-		     						};
+	     						$scope.newids = $scope.chats[j].messages.filter(function(e) {
+	     							return e.id == d.id;
+	     						});
 
-		     						$scope.newids = $scope.chats[j].messages.filter(function(e) {
-		     							return e.id == d.id;
-		     						});
-
-		     						if ($scope.newids.length == 0) {
-		     							$scope.chats[j].messages.push(d);
-		     						};
-		     					}
-		     				}
-		     			}
-		     		}
+	     						if ($scope.newids.length == 0) {
+	     							$scope.chats[j].messages.push(d);
+	     						};
+	     					}
+	     				}
+	     			}
 	     		}
 	    	});
 		};
@@ -307,7 +306,7 @@ layoutApp.controller('chats', ['$scope', '$http', 'chat', '$rootScope', '$interv
 
 			// post request to add this message
 			$http.post('../../../backend/requests/chat-messages.php', data).then(function(response) {
-				console.log(response);
+				//console.log(response);
 				data.id = parseInt(response.data); // id of new message
 				var len = $scope.chats.length;
 
@@ -321,7 +320,7 @@ layoutApp.controller('chats', ['$scope', '$http', 'chat', '$rootScope', '$interv
 						$scope.chats[i].messages.unshift(data);
 						//$scope.$emit('scrollToTop', i);
 						setTimeout( function(){ 
-							console.log($( "#chat"+user.id ).scrollTop());
+							//console.log($( "#chat"+user.id ).scrollTop());
 							$( "#chat"+user.id ).scrollTop( $( "#chat"+user.id ).scrollTop()*2); },100);
 							
 						//$( "#"+user.id ).scrollTop($( "#"+user.id ).scrollTop());

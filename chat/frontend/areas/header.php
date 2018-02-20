@@ -12,7 +12,9 @@
 
 				<a class="dropdown-toggle" data-toggle="dropdown">
 
-					<i class="fa fa-comments badge1" ng-cloak ng-bind={{newLen}}></i>
+					<i class="fa fa-comments" ng-cloak>
+						<span ng-show="newLen > 0" ng-bind={{newLen}} class="badge1"></span>
+					</i>
 
 				</a>
 
