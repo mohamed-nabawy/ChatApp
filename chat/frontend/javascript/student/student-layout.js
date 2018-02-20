@@ -97,40 +97,52 @@ layoutApp.directive('message', ['$timeout', '$rootScope', function($timeout, $ro
 	}
 }]);
 
-// layoutApp.controller('allMessages', ['$http', '$scope', function($http, $scope) {
-// 	// $scope.getCurrentInfo = function() { // current info of user
-// 	// 	// get the user in the session
-// 	// 	$http.get('../../../backend/requests/users.php?flag=3').then(function(response) {
-// 	// 		$scope.currentUser = response.data;
-// 	// 		//$scope.getCurrentUserMessages();
-// 	// 	});
-// 	// };
-
-// 	//$scope.getCurrentInfo();
-
-// 	$scope.getAllMessages = function() {
-// 		$http.get('../../../backend/requests/chat-messages.php?flag=2').then(function(response) {
-// 			$scope.messages = response.data;
-// 			console.log($scope.messages);
-// 		});
-// 	};
-
-// 	$scope.getAllMessages();
-// }]);
-
 layoutApp.controller('chats', ['$scope', '$http', 'chat', '$rootScope', '$interval', '$timeout',
 	function($scope, $http, chat, $rootScope, $interval, $timeout) {
 		$scope.offset = 0;
 		$scope.m = 0;
 		$scope.load = 1;
+		$rootScope.newLen = 0;
+		$rootScope.newMessages = [];
 
-	  	$interval(function () {
-		 	if ($scope.chats.length > 0) { // for open chat windows >> only refresh
-		 		// check if there is a new received message
-		     	$http.get('../../../backend/requests/chat-messages.php').then(function(response) {
-		     		if (response.data.length > 0) {
-			     		var data = response.data;
-			     		var len = data.length;
+		$scope.removefromNewMessagesIfAny = function(chat) {
+			if ( $rootScope.newLen > 0 && $rootScope.newMessages.includes(chat.id) ) {
+				$rootScope.newLen--;
+				$rootScope.newMessages.splice( $rootScope.newMessages.indexOf(chat.id) );
+			}
+
+			$http.put('../../../backend/requests/chat-messages.php?sentFrom=' + chat.id).then(function(response) {
+				console.log(response);
+			});
+		};
+
+		$scope.newMessagesIds = [];
+
+		$scope.getNotifications = function() {
+			$http.get('../../../backend/requests/chat-messages.php?flag=3').then(function(response) {
+				$scope.notifications = response.data;
+				$rootScope.newLen = response.data.length;
+				
+				var newmes = response.data;				
+				var thelen = newmes.length
+
+				for (var h = 0; h < thelen; h++) {
+					if ( !$rootScope.newMessages.includes(newmes[h].sentFrom) ) {
+						$rootScope.newMessages.push(newmes[h].sentFrom);
+					}
+				}
+			});
+		};
+
+		$scope.getNotifications();
+
+		$scope.getNewMessages = function(flag = 0) {
+			$http.get('../../../backend/requests/chat-messages.php').then(function(response) {
+	     		if (response.data.length > 0) {
+		     		var data = response.data;
+		     		var len = data.length;
+
+		     		if (flag == 0) {
 			     		var chatLen = $scope.chats.length;
 
 		     			for (var i = 0; i < len; i++) {
@@ -142,17 +154,30 @@ layoutApp.controller('chats', ['$scope', '$http', 'chat', '$rootScope', '$interv
 										sentTo: data[i].sentTo,
 										content: data[i].content,
 										classId: 1
-		     						}
+		     						};
 
-		     						$scope.chats[j].messages.push(d);
+		     						$scope.newids = $scope.chats[j].messages.filter(function(e) {
+		     							return e.id == d.id;
+		     						});
 
-		     						break;
+		     						if ($scope.newids.length == 0) {
+		     							$scope.chats[j].messages.push(d);
+		     						};
 		     					}
 		     				}
 		     			}
-
 		     		}
-		    	});
+	     		}
+	    	});
+		};
+
+	  	$interval(function () {
+	  		$rootScope.getAllMessages();
+	  		$scope.getNotifications();
+	  		
+		 	if ($scope.chats.length > 0) { // for open chat windows >> only refresh
+		 		// check if there is a new received message
+		 		$scope.getNewMessages();
 		 	}
 	    }, 3000);
 
@@ -303,10 +328,6 @@ layoutApp.controller('chats', ['$scope', '$http', 'chat', '$rootScope', '$interv
 						break;
 					}
 				}
-
-
 			});
 		};
-
-
 }]);

@@ -74,6 +74,12 @@
 			$statment .= "($x)";
 		}
 
+		// check if default is set
+		if (isset($value['default']) ) {
+			$y = $value['default'];
+			$statment .= " default $y";
+		}
+
 		// if (!$conn->query("select 1 from `$tableName` limit 1") ) {
 		// 	if (mysqli_num_rows($pr1) == 0) {
 		// 		$statment .= " primary key";
@@ -94,21 +100,10 @@
 					echo "error: ", $conn->error;
 				}
 			}
-			//$pr2 = false;
-
-			//var_dump($pr);
-
-			//var_dump($pr1);
-			
-			
 		}
 
 		if ( in_array("not null", $value) ) {
 			$statment .= " not null";
-		}
-
-		if ( in_array("default", $value) ) {
-			$statment .= " default $x";
 		}
 
 		if ( in_array("auto_increment", $value) && $flag !== 3) {
@@ -119,11 +114,11 @@
 			$statment .= " unique";
 		}
 
-		// if ( isset($value["foreign key"]) && ($flag === null || $flag === 6) ) {
-		// 	$tableNameAndColumn = $value['foreign key'];
-		// 	$statment .= ",";
-		// 	$statment .= "foreign key($key) references $tableNameAndColumn";
-		// }
+		if ( isset($value["foreign key"]) && ($flag === null || $flag === 6) ) {
+			$tableNameAndColumn = $value['foreign key'];
+			$statment .= ",";
+			$statment .= "constraint `$key` foreign key($key) references $tableNameAndColumn";
+		}
 
 		$conn->query("set foreign_key_checks = 0");
 		

@@ -8,15 +8,15 @@
 
 			<li><a href="#">Home</a></li>
 
-			<li style="cursor: pointer" class="dropdown">
+			<li style="cursor: pointer" class="dropdown" ng-click="setAllNotificationsToRead()">
 
 				<a class="dropdown-toggle" data-toggle="dropdown">
 
-					<i class="fa fa-comments"></i>
+					<i class="fa fa-comments badge1" ng-cloak ng-bind={{newLen}}></i>
 
 				</a>
 
-				<ul class="panel dropdown-menu wrapword" style="height: 300px;width: 200px;overflow-y: scroll;overflow-x: hidden">
+				<ul class="panel dropdown-menu wrapword" scroll-to-down style="height: 300px;width: 200px;overflow-y: scroll;overflow-x: hidden">
 
 					<div ng-repeat="m in messages" class="mes" ng-click="addChatWindow(m)">
 
