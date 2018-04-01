@@ -20,13 +20,21 @@
 
 				<ul class="panel dropdown-menu wrapword" scroll-to-down style="height: 300px;width: 200px;overflow-y: scroll;overflow-x: hidden">
 
-					<div ng-repeat="m in messages" class="mes" ng-click="addChatWindow(m)">
+					<div ng-repeat="m in messages | orderBy: 'messageId': true" class="mes" ng-click="addChatWindow({id: m.id, firstName: m.firstName}, m)">
+						<div ng-if="m.new == 1 && currentUser.id != m.sentFrom" style="background-color: grey">
+							<li class="panel-heading" ng-bind="m.firstName" style="text-align: center;margin-left: 20px"></li>
 
-						<li class="panel-heading" ng-bind="m.firstName" style="text-align: center;margin-left: 20px"></li>
+			        		<li class="panel-body" ng-bind="m.content" style="text-align: center;margin-left: 20px;font-size: 8px"></li>
 
-		        		<li class="panel-body" ng-bind="m.content" style="text-align: center;margin-left: 20px;font-size: 8px"></li>
+			        		<hr/>
+		        		</div>
+		        		<div ng-if="m.new == 0 || (m.new == 1 && currentUser.id == m.sentFrom)">
+							<li class="panel-heading" ng-bind="m.firstName" style="text-align: center;margin-left: 20px"></li>
 
-		        		<hr/>
+			        		<li class="panel-body" ng-bind="m.content" style="text-align: center;margin-left: 20px;font-size: 8px"></li>
+
+			        		<hr/>
+		        		</div>
 		        		
 		        	</div>
 		        	

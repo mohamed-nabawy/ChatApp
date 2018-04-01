@@ -2,6 +2,8 @@
   require('../controllers/users.php');
   require('../test-request-input.php');
 
+  //var_dump($_SERVER);
+
   if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     //if ($_SESSION['roleId'] == 1) // admin only can call these methods
     //{
@@ -24,16 +26,29 @@
   }
 
   if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $result = isset($_POST['firstName'], $_POST['lastName'], $_POST['phone'], $_POST['email'], $_POST['DOB'], $_POST['gender'], $_POST['password']) && normalizeString($conn, $_POST['firstName'], $_POST['lastName']) && testPhone($_POST['phone']) && testEmail($_POST['email']) && testDateOfBirth($_POST['DOB']) && testInt($_POST['gender']) && testPassword($_POST['password']);
-
-    if ($result) {
-      normalizeString($conn, $_FILES['image']['name']);
-      echo addUser($conn, $_POST['firstName'], $_POST['lastName'], $_FILES['image'], $_POST['email'], $_POST['phone'], $_POST['password'], $_POST['DOB'], $_POST['gender'], 1);
-      //header("Location: ". "/ChatApp/chat/frontend/areas/student/student-profile.php");
+    if (isset($_GET['userId']) && testInt($_GET['userId']) ) {
+        deleteUser($conn, $_GET['userId']);
+    }
+    elseif (isset($_GET['id']) && testInt($_GET['id']) ) {
+        deleteChat($_GET['id']);
+    }
+    elseif (isset($_GET['flag']) && $_GET['flag'] == 1) {
+        addChatUser( json_decode( file_get_contents('php://input') ) );
     }
     else {
-      header("Location: " . "../../frontend/register.php");
-    }
+        $result = isset($_POST['firstName'], $_POST['lastName'], $_POST['phone'], $_POST['email'], $_POST['DOB'], $_POST['gender'], $_POST['password']) && normalizeString($conn, $_POST['firstName'], $_POST['lastName']) && testPhone($_POST['phone']) && testEmail($_POST['email']) && testDateOfBirth($_POST['DOB']) && testInt($_POST['gender']) && testPassword($_POST['password']);
+    
+        //var_dump($result);
+    
+        if ($result) {
+          normalizeString($conn, $_FILES['image']['name']);
+          echo addUser($conn, $_POST['firstName'], $_POST['lastName'], $_FILES['image'], $_POST['email'], $_POST['phone'], $_POST['password'], $_POST['DOB'], $_POST['gender'], 1);
+          //header("Location: ". "/ChatApp/chat/frontend/areas/student/student-profile.php");
+        }
+        else {
+          header("Location: " . "../../frontend/register.php");
+        }
+     }
   }
 
   if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
@@ -48,7 +63,7 @@
       }
     }
     elseif ($_GET['flag'] == 1) {
-      addChatUser( json_decode( file_get_contents('php://input') ) );
+        addChatUser( json_decode( file_get_contents('php://input') ) );
     }
     elseif ($_GET['flag'] == 2) {
       changeActiveUser( json_decode( file_get_contents('php://input') ) );
@@ -56,12 +71,12 @@
   }
 
   if ($_SERVER['REQUEST_METHOD'] == 'DELETE') {
-    if (isset($_GET['userId']) && testInt($_GET['userId']) ) {
-      deleteUser($conn, $_GET['userId']);
-    }
-    elseif (isset($_GET['id']) && testInt($_GET['id']) ) {
-      deleteChat($_GET['id']);
-    }
+    // if (isset($_GET['userId']) && testInt($_GET['userId']) ) {
+    //   deleteUser($conn, $_GET['userId']);
+    // }
+    // elseif (isset($_GET['id']) && testInt($_GET['id']) ) {
+    //   deleteChat($_GET['id']);
+    // }
   }
 
   require('../footer.php');

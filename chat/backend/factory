@@ -15,7 +15,7 @@ if ($argv[1] == 'create' && $argv[2] == 'model') {
 	$fh = fopen('migrations/includes.php', 'a');
 	fwrite($fh, "\n" . "require('../models/{$modelName}.php');");
 }
-else if ($argv[1] == 'delete' && $argv[2] == 'model') {
+elseif ($argv[1] == 'delete' && $argv[2] == 'model') {
 	$modelName = $argv[3];
 	unlink("models/{$modelName}.php");
 	$line = "\n" . "require('../models/{$modelName}.php');";
@@ -23,4 +23,10 @@ else if ($argv[1] == 'delete' && $argv[2] == 'model') {
 	$contents = file_get_contents($dir);
 	$contents = str_replace($line, '', $contents);
 	file_put_contents($dir, $contents);
+}
+elseif ($argv[1] == 'create' && $argv[2] == 'updatename') {
+	# code...
+}
+elseif ($argv[1] == 'delete' && $argv[2] == 'updatename') {
+	# code...
 }

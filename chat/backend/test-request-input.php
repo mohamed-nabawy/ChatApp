@@ -24,15 +24,17 @@
 	}
 
 	function testEmail(&$value) {
+		// $value = trim($value);
+		// $x = filter_var($value, FILTER_VALIDATE_EMAIL);
+
+		// if (!$x) {
+		// 	echo "false email";
+		// 	return false;
+		// }
+
+		// return true;
 		$value = trim($value);
-		$x = filter_var($value, FILTER_VALIDATE_EMAIL);
-
-		if (!$x) {
-			echo "false email";
-			return false;
-		}
-
-		return true;
+		return filter_var($value, FILTER_VALIDATE_EMAIL);
 	}
 
 	function normalizeString($conn, &...$values) {
@@ -71,15 +73,22 @@
 	}
 
 	function testPhone(&$value) {
-		$value = trim($value);
-		$x = preg_match('/^\d{0,13}$/', $value);
+		// $value = trim($value);
+		// $x = preg_match('/^\d{0,13}$/', $value);
 
-		if (!$x) {
-			echo "false phone";
-			return false;
+		// if (!$x) {
+		// 	echo "false phone";
+		// 	return false;
+		// }
+
+		// return true;
+		$value = trim($value);
+
+		if ( preg_match('/^\d{0,13}$/', $value) ) {
+			return true;
 		}
 
-		return true;
+		return false;
 	}
 
 	function testInt(&...$values) {

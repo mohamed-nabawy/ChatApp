@@ -43,7 +43,11 @@
 
   // select last message for every chat between current user and other users
   function getLastCurrentUserMessages($conn, $offset) {
-    $sql = "select `chatmessages`.`content`, `users`.`id`, `users`.`firstName`, `users`.`lastName` from `chatmessages` inner join `lastmessages` on `chatmessages`.`id` = `lastmessages`.`messageId` inner join `users` where (`users`.`id` = `chatmessages`.`sentFrom` or `users`.`id` = `chatmessages`.`sentTo`) and (`chatmessages`.`sentFrom` = {$_SESSION['userId']} or `chatmessages`.`sentTo` = {$_SESSION['userId']}) and (`users`.`id` != {$_SESSION['userId']}) order by `chatmessages`.`id` desc limit {$offset}, 10";
+    $sql = "select c.id as messageId, c.new, c.`content`, case when `sentFrom` = {$_SESSION['userId']} then `sentTo` else `sentFrom` end as id, users.firstName as firstName, c.`sentFrom`
+from (
+   select max(id) as maxid
+   from `chatmessages` where `sentFrom` = {$_SESSION['userId']} or `sentTo` = {$_SESSION['userId']} group by case when `sentFrom` != {$_SESSION['userId']} then `sentFrom` else `sentTo` end
+) as x inner join `chatmessages` as c on c.id = x.maxid inner join users on users.id = case when `sentFrom` = {$_SESSION['userId']} then `sentTo` else `sentFrom` end order by `messageId` desc limit {$offset}, 10";
     $result = $conn->query($sql);
 
     if ($result) {
@@ -114,73 +118,83 @@
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("siiiii", $content, $sentFrom, $sentTo, $dateId, $timeId, $classId);
 
-    if ($stmt->execute() === TRUE) {    
+    if ($stmt->execute() === TRUE) {
       $messageId = mysqli_insert_id($conn);
 
-      $sql1 = "select `messageid` from `lastmessages` inner join `chatmessages` on `chatmessages`.`id` = `lastmessages`.`messageId` where (`chatmessages`.`sentFrom` = {$sentFrom} and `chatmessages`.`sentTo` = {$sentTo}) or (`chatmessages`.`sentFrom` = {$sentTo} and `chatmessages`.`sentTo` = {$sentFrom}) limit 1";
+      $sql1 = "select `id` from `notifications` where `type` = 1 and `sentTo` = {$sentTo} and `sentFrom` = {$sentFrom}";
+
+      // $sql1 = "select `messageid` from `lastmessages` inner join `chatmessages` on `chatmessages`.`id` = `lastmessages`.`messageId` where (`chatmessages`.`sentFrom` = {$sentFrom} and `chatmessages`.`sentTo` = {$sentTo}) or (`chatmessages`.`sentFrom` = {$sentTo} and `chatmessages`.`sentTo` = {$sentFrom}) limit 1";
 
       $stmt1 = $conn->query($sql1);
 
-      if ($stmt1) {
+      if (mysqli_num_rows($stmt1) > 0) {
+        $id = mysqli_fetch_assoc($stmt1)['id'];
+        $sql = "update `notifications` set `read` = 0 where `id` = " . $id;
+        $stmt = $conn->query($sql);
 
-        if (mysqli_num_rows($stmt1) > 0) {
-
-          $sql = "update `lastmessages` inner join `chatmessages` set `messageId` = '{$messageId}' where ((`chatmessages`.`sentFrom` = {$sentFrom} and `chatmessages`.`sentTo` = {$sentTo}) or (`chatmessages`.`sentFrom` = {$sentTo} and `chatmessages`.`sentTo` = {$sentFrom})) and `chatmessages`.`id` = `lastmessages`.`messageId`";
-          $res = $conn->query($sql);
-
-          if ($res) {
-            addOrUpdateMessageNotification($conn, $sentFrom, $sentTo);
-            return 1;
-          }
-          else {
-            return "error update last message " . $conn->error;
-          }
+        if ($stmt) {
+          return $messageId;
         }
         else {
-          $sql = "insert into `lastmessages` values ({$messageId})";
-          $res = $conn->query($sql);
-
-          if ($res) {
-            addOrUpdateMessageNotification($conn, $sentFrom, $sentTo);
-            return 1;
-          }
-          else {
-            return "error insert last message " . $conn->error;
-          }
+          return "error: ". $conn->error;
         }
+
+        //   $sql = "update `lastmessages` inner join `chatmessages` set `messageId` = '{$messageId}' where ((`chatmessages`.`sentFrom` = {$sentFrom} and `chatmessages`.`sentTo` = {$sentTo}) or (`chatmessages`.`sentFrom` = {$sentTo} and `chatmessages`.`sentTo` = {$sentFrom})) and `chatmessages`.`id` = `lastmessages`.`messageId`";
+        //   $res = $conn->query($sql);
+
+        //   if ($res) {
+        //     addOrUpdateMessageNotification($conn, $sentFrom, $sentTo);
+        //   }
+        //   else {
+        //     return "error update last message " . $conn->error;
+        //   }
+        // }
+        // else {
+        //   $sql = "insert into `lastmessages` values ({$messageId})";
+        //   $res = $conn->query($sql);
+
+        //   if ($res) {
+        //     addOrUpdateMessageNotification($conn, $sentFrom, $sentTo);
+        //   }
+        //   else {
+        //     return "error insert last message " . $conn->error;
+        //   }
+        // }
       }
       else {
-        return "error " . $conn->error;
-      }
+        $sql = "insert into `notifications` (`sentFrom`, `sentTo`, `type`, `read`) values ({$sentFrom}, {$sentTo}, 1, 0)";
+        $stmt = $conn->query($sql);
 
-      return $messageId;
+        if ($stmt) {
+          return $messageId;
+        }
+        else {
+          return "error ". $conn->error;
+        }
+      }
     }
     else {
       return "Error: " . $conn->error;
-    }
-
-    
+    }    
   }
 
   function addOrUpdateMessageNotification($conn, $sentFrom, $sentTo) {
-    $sql = "select * from `messagenotification` where `sentTo` = {$sentTo} and `sentFrom` = {$sentFrom}";
+    $sql = "select * from `notifications` where `sentTo` = {$sentTo} and `sentFrom` = {$sentFrom} and `type` = 1";
     $stmt = $conn->query($sql);
 
-    //echo $stmt;
-
     if (mysqli_num_rows($stmt) == 0) {
-      $sql = "insert into `messagenotification` (`sentFrom`, `sentTo`) values ({$sentFrom}, {$sentTo})";
+      $sql = "insert into `notifications` (`sentFrom`, `sentTo`, `type`) values ({$sentFrom}, {$sentTo}, 1)";
       $stmt = $conn->query($sql);
 
       if ($stmt) {
-        return "2";
+        //return "2";
       }
       else {
         return "error add messagenotification : " . $conn->error;
       }
     }
     else {
-      $sql = "update `messagenotification` set `read` = 0 where `sentTo` = {$sentTo} and `sentFrom` = {$sentFrom}";
+      $sql = "update `notifications` set `read` = 0 where `sentTo` = {$sentTo} and `sentFrom` = {$sentFrom} and `type` = 1";
       $stmt = $conn->query($sql);
 
       if ($stmt) {
@@ -193,7 +207,7 @@
   }
 
   function getMessageNotifications($conn) {
-    $sql = "select * from `messagenotification` where `sentTo` = {$_SESSION['userId']} and `read` = false";
+    $sql = "select * from `notifications` where `sentTo` = {$_SESSION['userId']} and `read` = false and `type` = 1";
     $stmt = $conn->query($sql);
 
     if ($stmt) {
@@ -205,7 +219,7 @@
   }
 
   function markAllMessageNotificationsAsRead($conn) {
-    $sql = "update `messagenotification` set `read` = true where `sentTo` = " . $_SESSION['userId'];
+    $sql = "update `notifications` set `read` = true where `sentTo` = " . $_SESSION['userId'] . " and `type` = 1";
 
     if ($conn->query($sql) === true) {
       return "notifications are read";
@@ -217,8 +231,8 @@
 
 function markMessageAsReadFromSomeUser($conn, $userId) { // cascaded delete ?? 
     //$conn->query("set foreign_key_checks = 0"); // ????????/
-    $sql = "update `chatmessages` set `new` = false where `sentFrom` = " . $userId . " and `sentTo` = {$_SESSION['userId']}";
-    $sql1 = "update `messagenotification` set `read` = true where `sentFrom` = " . $userId . " and `sentTo` = {$_SESSION['userId']}";
+    $sql = "update `chatmessages` set `new` = false where `sentFrom` = " . $userId . " and `sentTo` = {$_SESSION['userId']} and `new` = true";
+    $sql1 = "update `notifications` set `read` = true where `sentFrom` = " . $userId . " and `sentTo` = {$_SESSION['userId']} and `type` = 1 and `read` = false";
 
     if ($conn->query($sql) === TRUE && $conn->query($sql1) === TRUE) {
       return "notification is read and message is seen";

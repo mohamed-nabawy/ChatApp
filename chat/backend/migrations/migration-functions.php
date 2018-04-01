@@ -1,15 +1,14 @@
 <?php
 	require('../connection.php');
+	require('../columnnames/naming-functions.php');
 
 	function getTableFields($conn, $tableName) {
 		$result = $conn->query("show columns from `$tableName`");
 
 		return $result;
-		
 	}
 
 	function createTableIfNotExisted($conn, $tableName, $object) {
-		//echo $tableName;
 		$val = $conn->query("select 1 from `$tableName` limit 1"); // use this to check existence of table
 
 		if (!$val) { // table doesn't exist so we will create it from the model
@@ -26,9 +25,6 @@
 			}
 
 			$create .= ");";
-
-			//echo $create;
-
 			$r = $conn->query($create);
 
 			if ($r) {
@@ -52,7 +48,10 @@
 
 		$type = $value['type'];
 
-		if ($type == "string") {
+		if ( $type == "string" && !isset($value['max']) ) {
+			$statment .= " varchar(255)";
+		}
+		elseif ($type == 'string') {
 			$statment .= " varchar";
 		}
 		elseif ($type == "int") {
@@ -75,22 +74,45 @@
 		}
 
 		// check if default is set
-		if (isset($value['default']) ) {
+		if ( isset($value['default']) ) {
 			$y = $value['default'];
 			$statment .= " default $y";
 		}
 
-		// if (!$conn->query("select 1 from `$tableName` limit 1") ) {
-		// 	if (mysqli_num_rows($pr1) == 0) {
-		// 		$statment .= " primary key";
-		// 	}
-		// }
+		if ( isset($value['newName']) ) {
+			$fh = fopen('../columnnames/newcolumnnames.php', 'a');
+			//$var1 = "$sql";
+			//$conn1 = "$conn";
+			fwrite($fh, "\n" . "$" . "sql = " . '"' . "insert into columnnames (`oldColumnName`, `newColumnName`, `tableName`) values ('{$key}', '{$new}', '{$tableName}')" . '";' . "\n" . "$" . "conn" . "->query(" . "$" . "sql);");
+			$dir = "../models/{$tableName}.php";
+			$n = explode("\n", $dir);
+
+			foreach($n as $line) {
+				echo "hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh";
+				echo strpos($line, "public ${$key}");
+			    if ( strpos($line, "public ${$key}") > -1) {
+			    	echo "rgogkpfdokgpodfkgpokdfgp";
+			        // do whatever you want with the line
+			        var_dump(str_replace($key, $new, $line));
+			        str_replace(", " . "'" . "newName" . "'" . " =>" . "'" . $new . "'", "", $line);
+			    }
+			}
+			$contents = file_get_contents($dir);
+			$contents = str_replace($line, '', $contents);
+			file_put_contents($dir, $contents);
+
+
+			$new = $value['newName'];
+			updateColumnName($conn, $tableName, $key, $new);
+			
+
+
+		}
+
 		// check other paramters
 		if ( in_array("primary key", $value) && ($flag === null || $flag === 6) ) {
-			if (!$conn->query("select 1 from `$tableName` limit 1") ) {
-				//if (mysqli_num_rows($pr1) == 0) {
+			if ($conn->query("select 1 from `$tableName` limit 1") === false || mysqli_fetch_assoc( $conn->query("select 1 from `$tableName` limit 1") )['num_rows'] == 0) {
 				$statment .= " primary key";
-				//}
 			}
 			else {
 				$pr = "SHOW INDEXES FROM `$tableName` WHERE Key_name = 'PRIMARY'";
@@ -130,19 +152,18 @@
 				echo "can't remove primary key because it's referenced from another table";
 			}
 			else {
-				//echo "error: ",$conn->error, "\n";
 				dropPrimaryKeyIfExisted($conn, $tableName);
 			}
 		}
 		else {
 			if ($flag !== 6) {
-				//echo $statment;
 				$result = $conn->query($statment);
 
 				if ($result) {
 
 				}
 				else {
+					echo $statment;
 					print_r(3);
 					echo "error: ", $conn->error, "\n";
 				}
@@ -161,77 +182,77 @@
 		}
 	}
 
-	function constructModelObjectFromTableFields($conn, $tableName) {
-		$result = getTableFields($conn, $tableName);
-		$arr = array();
-		$flag = 0;
+	// function constructModelObjectFromTableFields($conn, $tableName) {
+	// 	$result = getTableFields($conn, $tableName);
+	// 	$arr = array();
+	// 	$flag = 0;
 
-		while ( $row = mysqli_fetch_assoc($result) ) {
-			$arr[$row['Field']] = array();
+	// 	while ( $row = mysqli_fetch_assoc($result) ) {
+	// 		$arr[$row['Field']] = array();
 
-			if (strpos($row['Type'], "int") !== false && strpos($row['Type'], "tiny") === false) {
-				$arr[$row['Field']]['type'] = "int";
-			}
-			elseif (strpos($row['Type'], "varchar") !== false) {
-				$arr[$row['Field']]['type'] = "string";
-			}
-			elseif (strpos($row['Type'], "date") !== false) {
-				$arr[$row['Field']]['type'] = "date";
-			}
-			elseif (strpos($row['Type'], "time") !== false) {
-				$arr[$row['Field']]['type'] = "time";
-			}
-			elseif (strpos($row['Type'], "tinyint") !== false) {
-				$arr[$row['Field']]['type'] = "bool";
-			}
-			elseif (strpos($row['Type'], "text") !== false) {
-				$arr[$row['Field']]['type'] = "text";
-			}
+	// 		if (strpos($row['Type'], "int") !== false && strpos($row['Type'], "tiny") === false) {
+	// 			$arr[$row['Field']]['type'] = "int";
+	// 		}
+	// 		elseif (strpos($row['Type'], "varchar") !== false) {
+	// 			$arr[$row['Field']]['type'] = "string";
+	// 		}
+	// 		elseif (strpos($row['Type'], "date") !== false) {
+	// 			$arr[$row['Field']]['type'] = "date";
+	// 		}
+	// 		elseif (strpos($row['Type'], "time") !== false) {
+	// 			$arr[$row['Field']]['type'] = "time";
+	// 		}
+	// 		elseif (strpos($row['Type'], "tinyint") !== false) {
+	// 			$arr[$row['Field']]['type'] = "bool";
+	// 		}
+	// 		elseif (strpos($row['Type'], "text") !== false) {
+	// 			$arr[$row['Field']]['type'] = "text";
+	// 		}
 
-			if (strpos($row['Type'], "(") !== false && strpos($row['Type'], "tinyint") === false) {
-				$start = strpos($row['Type'], "(");
-				$end = strpos($row['Type'], ")");
-				$length = $end - $start;
-				$max = substr($row['Type'], $start + 1, $length - 1);
-				$arr[$row['Field']]['max'] = $max;
-			}
+	// 		if (strpos($row['Type'], "(") !== false && strpos($row['Type'], "tinyint") === false) {
+	// 			$start = strpos($row['Type'], "(");
+	// 			$end = strpos($row['Type'], ")");
+	// 			$length = $end - $start;
+	// 			$max = substr($row['Type'], $start + 1, $length - 1);
+	// 			$arr[$row['Field']]['max'] = $max;
+	// 		}
 
-			if ($row['Null'] == "NO") {
-				array_push($arr[$row['Field']], "not null");
-			}
+	// 		if ($row['Null'] == "NO") {
+	// 			array_push($arr[$row['Field']], "not null");
+	// 		}
 
-			if ($row['Key'] == "PRI") {
-				array_push($arr[$row['Field']], "primary key");
-			}
-			elseif ($row['Key'] == "UNI") {
-				array_push($arr[$row['Field']], "unique");
-			}
-			elseif ($row['Key'] == "MUL") {
-				$foriegnKeys = getAllForeignKeys($conn, $tableName);
+	// 		if ($row['Key'] == "PRI") {
+	// 			array_push($arr[$row['Field']], "primary key");
+	// 		}
+	// 		elseif ($row['Key'] == "UNI") {
+	// 			array_push($arr[$row['Field']], "unique");
+	// 		}
+	// 		elseif ($row['Key'] == "MUL") {
+	// 			$foriegnKeys = getAllForeignKeys($conn, $tableName);
 
-				while ($row1 = mysqli_fetch_assoc($foriegnKeys) ) {
-					if ($row1['column_name'] == $row['Field']) {
-						$foreignTable = $row1['foreign_table'];
-						$foreignColumn = $row1['foreign_column'];
-						$arr[$row['Field']]['foreign key'] = "$foreignTable($foreignColumn)";
-						break;
-					}
-				}
-			}
+	// 			while ($row1 = mysqli_fetch_assoc($foriegnKeys) ) {
+	// 				if ($row1['column_name'] == $row['Field']) {
+	// 					$foreignTable = $row1['foreign_table'];
+	// 					$foreignColumn = $row1['foreign_column'];
+	// 					$arr[$row['Field']]['foreign key'] = "$foreignTable($foreignColumn)";
+	// 					break;
+	// 				}
+	// 			}
+	// 		}
 
-			if ($row['Default'] !== null && $row['Default'] !== "") {
-				$x = $row['Default'];
-				array_push($arr[$row['Field']], "default $x");
-			}
+	// 		if ($row['Default'] !== null && $row['Default'] !== "") {
+	// 			$x = $row['Default'];
+	// 			array_push($arr[$row['Field']], "default $x");
+	// 		}
 
-			if ($row['Extra'] !== null && $row['Extra'] !== "") {
-				$x = $row['Extra'];
-				array_push($arr[$row['Field']], $x);
-			}
-		}
+	// 		if ($row['Extra'] !== null && $row['Extra'] !== "") {
+	// 			$x = $row['Extra'];
+	// 			array_push($arr[$row['Field']], $x);
+	// 		}
+	// 	}
 
-		return $arr;
-	}
+	// 	return $arr;
+	// }
 
 	function getAllForeignKeys($conn, $tableName) {
 		$foreignKeysStatment = "SELECT `column_name`, `constraint_name`, `referenced_table_schema` AS foreign_db, `referenced_table_name` AS foreign_table, `referenced_column_name`  AS foreign_column FROM `information_schema`.`KEY_COLUMN_USAGE` WHERE `constraint_schema` = SCHEMA() AND `table_name` = '$tableName' AND `referenced_column_name` IS NOT NULL ORDER BY `column_name`;";
@@ -253,6 +274,7 @@
 
 		foreach ($object as $key => $value) {
 			if (!array_key_exists($key, $tableFields) ) {
+				echo "1";
 				$alter = "alter table `$tableName` add column ";
 				addOrUpdateField($conn, $alter, $key, $object[$key], 1);
 				$r = false;
@@ -262,22 +284,6 @@
 					$conn->query("set foreign_key_checks = 0");
 					$r = $conn->query("alter table `$tableName` add constraint $key foreign key ($key) references $v");
 				}
-
-				// if ($r) {
-				// 	echo "foreign key added\n";
-				// }
-				// else {
-				// 	print_r(7);
-				// 	echo "error: ", $conn->error, "\n";
-				// }
-
-				// if ($result) {
-				// 	echo "column added\n";
-				// }
-				// else {
-				// 	print_r(8);
-				// 	echo "error: ", $conn->error, "\n";
-				// }
 			}
 		}
 	}
@@ -334,14 +340,9 @@
 	}
 
 	function dropPrimaryKeyIfExisted($conn, $tableName, $key = null) {
-		//$conn->query("set foreign_key_checks = 0");
 		$pr = "SHOW INDEXES FROM `$tableName` WHERE `Key_name` = 'PRIMARY'";
 		$sql = "SELECT * FROM `information_schema`.`KEY_COLUMN_USAGE` WHERE `REFERENCED_TABLE_NAME` = '$tableName' AND `REFERENCED_COLUMN_NAME` = '$key'";
-		//var_dump($tableName);
 		$r = mysqli_fetch_assoc( $conn->query($sql) );
-		// if (!$conn->query($pr) ) {
-		// 	echo "error: ", $conn->error;
-		// }
 		$x = mysqli_fetch_assoc( $conn->query($pr) );
 
 		if ( ($x && $x !== null) && !($r !== null) ) {
@@ -349,11 +350,6 @@
 			$z = $conn->query($c);
 
 			if ($z) {
-				// $s = "SELECT * FROM `tableName` WHERE `$key` IS NOT NULL;"
-
-				// if (mysqli_num_rows( $conn->query($sql) ) > 0) {
-
-				// }
 			}
 			else {
 				print_r(5);
@@ -402,7 +398,7 @@
 						}
 						elseif ($k !== "foreign key") {
 							$alter = "alter table `$tableName` modify column ";
-							addOrUpdateField($conn, $alter, $key, $object[$key], 1);
+							addOrUpdateField($conn, $alter, $key, $object[$key], 1, $tableName); // changed 25/3/2018
 						}
 						else {
 							if ( key_exists($k, $tableFields[$key]) ) {
@@ -426,10 +422,7 @@
 								}
 							}
 
-							//echo $key;
-							//echo "1";
 							$conn->query("set foreign_key_checks = 0");
-							//print_r(11);
 							$y = "SELECT * FROM INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS WHERE CONSTRAINT_NAME ='$key'";
 							$x = $conn->query($y);
 
@@ -452,8 +445,6 @@
 				foreach ($tableFields[$key] as $k => $v) {
 					if ( !in_array($v, $object[$key]) || ( !key_exists($k, $object[$key]) && !is_int($k) ) ) {
 						if ($v === "primary key" || $v === "auto_increment") {
-							//print_r(12);
-
 							if ( $v === "primary key" && in_array("auto_increment", $tableFields[$key]) && in_array("auto_increment", $object[$key]) ) {
 								handlePrimaryKeyAndAutoIncrement($conn, $key, $object[$key], $tableName, 1);
 							}

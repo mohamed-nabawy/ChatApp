@@ -2,6 +2,12 @@
   require('../functions.php');
   require('../image-handle.php');
 
+  use PHPMailer\PHPMailer\PHPMailer;
+  use PHPMailer\PHPMailer\Exception;
+
+  //Load Composer's autoloader
+  require('../apis/vendor/autoload.php');
+
   function getUsers($conn) { // in the same class
     $sql = "select * from `users` where `id` != " . $_SESSION['userId'];
     $result = $conn->query($sql);
@@ -64,7 +70,8 @@
   function addUser($conn, $firstName, $lastName, $image, $email, $phoneNumber, $password, $dateOfBirth, $gender, $roleId) {
     $sql = "insert into `users` (userName, firstName, lastName, image, email, phoneNumber, passwordHash, dateOfBirth, gender, roleId) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssssssssii", $email, $firstName, $lastName, $Image, $email, $phoneNumber, password_encrypt($password), $dateOfBirth, $gender, $roleId);
+    $pass = password_encrypt($password);
+    $stmt->bind_param("ssssssssii", $email, $firstName, $lastName, $Image, $email, $phoneNumber, $pass, $dateOfBirth, $gender, $roleId);
 
     if (isset($image) && $image['name'] != "") {
       $Image = addImageFile($image, $email);
@@ -80,6 +87,43 @@
 
     if ($stmt->execute() === TRUE) {
       $user_id = mysqli_insert_id($conn);
+
+      try {
+
+        $acc = hash("sha256", $user_id, false);
+        $hashKey = hash("sha256", $dateOfBirth . $user_id . $gender, false);
+         //send confirm mail
+        $mail = new PHPMailer(true);                          // Passing `true` enables exceptions
+        $mail->isSMTP();                                      // Set mailer to use SMTP
+        $mail->Host = "smtp.gmail.com";                       // Specify main and backup SMTP servers
+        $mail->SMTPAuth = true;                               // Enable SMTP authentication
+        $mail->Username = 'mostafaelsayed9419@gmail.com';     // SMTP username
+        $mail->Password = 'nacxgewvqqhvydoa';                 // SMTP password
+        $mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
+        $mail->Port = 587;                                    // TCP port to connect to
+        $mail->setFrom('mostafaelsayed9419@gmail.com', 'Chat App');
+        $mail->addAddress($email, "");
+        $mail->Subject = "Chat App Info Confirm";
+        $mail->Body = "thank you for joining us";
+
+        $mail->SMTPOptions = array(
+          'ssl' => array(
+            'verify_peer' => true,
+            'verify_peer_name' => true,
+            'allow_self_signed' => true
+          )
+        );
+        
+        $result = $mail->Send();
+      }
+
+      catch (phpmailerException $e) {
+        echo $e->errorMessage();
+      }
+
+      catch (Exception $e) {
+        echo $e->getMessage();
+      }
       
       // Success
       // Mark user as logged in
