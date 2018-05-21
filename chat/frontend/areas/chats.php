@@ -2,7 +2,7 @@
 
 	<div class="container-fluid" style="float: right">
 
-		<div class="nav navbar-nav separate-between-windows chat" ng-repeat="c in chats | orderBy: 'i' " style="visibility: hidden" ng-cloak ng-click="removefromNewMessagesIfAny(c.id)">
+		<div class="nav navbar-nav separate-between-windows chat" ng-repeat="c in chats | orderBy: 'i' " style="visibility: hidden" ng-cloak ng-click="removefromNewMessagesIfAny(c)">
 
 			<div class="wrapper">
 

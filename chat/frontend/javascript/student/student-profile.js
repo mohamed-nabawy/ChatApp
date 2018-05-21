@@ -11,46 +11,35 @@ layoutApp.controller('studentProfile', ['$scope', '$rootScope', '$http', 'chat',
 		$rootScope.newMessages = [];
 		$rootScope.newLen = 0;
 
-		$http.post('../../../backend/requests/chat-messages.php?flag=1');
+		$http.put('../../../backend/requests/chat-messages.php?flag=1').then(function(response) {
+			//console.log(response);
+		});
 	}
-
-	$scope.messages = [];
 	
 	$rootScope.getAllMessages = function() {
 		$http.get('../../../backend/requests/chat-messages.php?flag=2&offset=' + $scope.offset).then(function(response) {
-			var d = response.data;
-			var len = d.length;
-
-			// iterate over last messages array
-			for (var t = 0; t < len; t++) {
-				var ind = $scope.messages.filter(function(e) {
-					return e.id == d[t].id
-				});
-
-				if (ind.length > 0) {
-					$scope.messages.splice($scope.messages.indexOf(ind[0]), 1);
-					$scope.messages.push(d[t]);
-				}
-				else {
-					$scope.messages.push(d[t]);
-				}
-			}
+			$scope.messages = response.data;
 		});
 	};
 
-	$scope.getAllMessages();
-
-	$scope.addChatWindow = function(user, m = 0) { // this will communicate with chats controller in layout
-		if (m !== 0) {
-			m.new = 0;
+	$scope.openChat = function(data) {
+		user = {
+			id: data.id,
+			firstName: data.firstName,
 		}
 
-		if ($rootScope.newMessages.indexOf(user.id) >= 0) {
+		$scope.addChatWindow(user);
+	}
+
+	$scope.getAllMessages();
+
+	$scope.addChatWindow = function(user) { // this will communicate with chats controller in layout
+		if ($rootScope.newMessages.indexOf(user.id) > 0) {
 			$rootScope.newLen--;
 			$rootScope.newMessages.splice($rootScope.newMessages.indexOf(user.id), 1);
 		}
 
-		$http.post('../../../backend/requests/chat-messages.php?sentFrom=' + user.id);
+		$http.put('../../../backend/requests/chat-messages.php?sentFrom=' + user.id);
 		chat.chatUser = user;
 		$rootScope.addedChat = user;
 		$rootScope.$broadcast('chatRequest');
@@ -72,6 +61,7 @@ layoutApp.directive('scrollToDown', ['$http', function($http) {
 						if (response.data.length > 0) {
 							elem[0].scrollTop -= 50; // scroll up 50px
 							var data = response.data; // older last messages from database
+							console.log(data);
 							var len = data.length;
 
 							for (var j = 0; j < len; j++) {
@@ -82,6 +72,7 @@ layoutApp.directive('scrollToDown', ['$http', function($http) {
 			}
 
 			elem.bind('mouseup', function() {
+				console.log(elem[0].scrollTop);
 				// make sure the element is at the top
 				if (elem[0].scrollTop <= 150) {
 					loadAnother();

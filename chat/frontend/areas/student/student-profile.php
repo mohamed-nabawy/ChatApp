@@ -1,8 +1,4 @@
-<?php 
-	require('../../../backend/functions.php');
-	validatePageAccess($conn);
-?>
-
+	
 <!DOCTYPE html>
 
 <html>
@@ -45,8 +41,8 @@
 			<?php
 				require('../header.php');
 				require('../chats.php');
-				//require('../../../backend/functions.php');
-				//validatePageAccess($conn);
+				require('chatApp/chat/backend/functions.php');
+				validatePageAccess($conn);
 			?>
 		</div>
 

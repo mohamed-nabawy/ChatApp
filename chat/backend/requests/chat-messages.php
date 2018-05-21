@@ -24,32 +24,26 @@
 
   if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // decode the json data
-    if ( isset($_GET['sentFrom']) && testInt($_GET['sentFrom']) ) {
-      markMessageAsReadFromSomeUser($conn, $_GET['sentFrom']);
-    }
-    elseif (isset($_GET['flag']) && $_GET['flag'] == 1) {
-      markAllMessageNotificationsAsRead($conn);
+    $data = json_decode( file_get_contents('php://input') );
+    $result = isset($data->content, $data->sentFrom, $data->sentTo, $data->classId) && 
+    testInt($data->sentFrom, $data->sentTo, $data->classId);
+
+    if ($result) {
+      echo sendMessage($conn, $data->content, $data->sentFrom, $data->sentTo, $data->classId);
     }
     else {
-        $data = json_decode( file_get_contents('php://input') );
-        $result = isset($data->content, $data->sentFrom, $data->sentTo, $data->classId) && 
-        testInt($data->sentFrom, $data->sentTo, $data->classId);
-    
-        if ($result) {
-          checkResult( sendMessage($conn, $data->content, $data->sentFrom, $data->sentTo, $data->classId) );
-        }
-        else {
-          //echo "error";
-        }
+      //echo "error";
     }
   }
+
+
 
   if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
     if ( isset($_GET['sentFrom']) && testInt($_GET['sentFrom']) ) {
       markMessageAsReadFromSomeUser($conn, $_GET['sentFrom']);
     }
     elseif (isset($_GET['flag']) && $_GET['flag'] == 1) {
-      //markAllMessageNotificationsAsRead($conn);
+      markAllMessageNotificationsAsRead($conn);
     }
     
     //$messages = checkNewMessageForUserIdInClass($conn, $_SESSION['userId'], 1)[0];

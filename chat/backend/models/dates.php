@@ -1,7 +1,7 @@
 <?php
 	class dates {
-		public $id = ['type' => 'int', 'auto_increment', 'primary key'];
-		public $date = ['type' => 'date', 'not null'];
+		public $id = array("type"=> "int", "auto_increment", "primary key");
+		public $date = array("type"=> "date", "not null");
 	}
 	
 	$dates = new dates();
