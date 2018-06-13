@@ -10,7 +10,7 @@
     if ($result) {
       $messages = [];
 
-      while ($row = mysqli_fetch_assoc($result)) {
+      while ( $row = mysqli_fetch_assoc($result) ) {
         $row['id'] = (int)($row['id']);
         array_push($messages, $row);
       }
@@ -57,7 +57,13 @@ from (
     $result = $conn->query($sql);
 
     if ($result) {
-      $messages = mysqli_fetch_all($result, MYSQLI_ASSOC);
+      $messages = [];
+
+      while ( $row = mysqli_fetch_assoc($result) ) {
+        $row['messageId'] = (int)($row['messageId']);
+        array_push($messages, $row);
+      }
+
       mysqli_free_result($result);
 
       return $messages;

@@ -27,6 +27,7 @@ layoutApp.controller('studentProfile', ['$scope', '$rootScope', '$http', 'chat',
 
 			for (var i = 0; i < len; i++) {
 				var f = 0;
+				
 				for (var j = 0; j < lenMes; j++) {
 					if ($scope.messages[j].messageId == data[i].messageId) {
 						f = 1;

@@ -1,4 +1,4 @@
-<link rel="icon" href="../../../favicon.ico"> <!-- url relative to the main page not this template -->
+<link rel="icon" href="/ChatApp/chat/favicon.ico"> <!-- url relative to the main page not this template -->
 
 <nav class="navbar navbar-fixed-top navbar-inverse" style="position: relative">
 	<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
@@ -57,7 +57,7 @@
 
 			<li>
 
-				<a href="../../logout.php">Logout</a>
+				<a href="/ChatApp/chat/frontend/logout.php">Logout</a>
 
 			</li>
 
