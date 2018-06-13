@@ -1,6 +1,9 @@
 layoutApp.controller('studentProfile', ['$scope', '$rootScope', '$http', 'chat', function($scope, $rootScope, $http, chat) {
 	$scope.getMyClassMatesAndTeachers = function() {
-		$http.get('../../../backend/requests/users.php').then(function(response) {
+		$scope.messages = [];
+
+		$http.get('/ChatApp/chat/backend/requests/users.php').then(function(response) {
+			//console.log(response);
 			$scope.myClassMatesAndTeachers = response.data;
 		});
 	};
@@ -11,22 +14,45 @@ layoutApp.controller('studentProfile', ['$scope', '$rootScope', '$http', 'chat',
 		$rootScope.newMessages = [];
 		$rootScope.newLen = 0;
 
-		$http.put('../../../backend/requests/chat-messages.php?flag=1').then(function(response) {
+		$http.put('/ChatApp/chat/backend/requests/chat-messages.php?flag=1').then(function(response) {
 			//console.log(response);
 		});
 	}
 	
 	$rootScope.getAllMessages = function() {
-		$http.get('../../../backend/requests/chat-messages.php?flag=2&offset=' + $scope.offset).then(function(response) {
-			$scope.messages = response.data;
+		$http.get('/ChatApp/chat/backend/requests/chat-messages.php?flag=2&offset=' + $scope.offset).then(function(response) {
+			var data = response.data;
+			var len = data.length;
+			var lenMes = $scope.messages.length;
+
+			for (var i = 0; i < len; i++) {
+				var f = 0;
+				for (var j = 0; j < lenMes; j++) {
+					if ($scope.messages[j].messageId == data[i].messageId) {
+						f = 1;
+						break;
+					}
+				}
+
+				if (f == 0) {
+					for (var j = 0; j < lenMes; j++) {
+						if ($scope.messages[j].sentFrom == data[i].sentFrom) {
+							$scope.messages.splice(j, 1);
+							break;
+						}
+					}
+
+					$scope.messages.push(data[i]);
+				}
+			}
 		});
 	};
 
 	$scope.openChat = function(data) {
-		user = {
+		var user = {
 			id: data.id,
 			firstName: data.firstName,
-		}
+		};
 
 		$scope.addChatWindow(user);
 	}
@@ -39,7 +65,16 @@ layoutApp.controller('studentProfile', ['$scope', '$rootScope', '$http', 'chat',
 			$rootScope.newMessages.splice($rootScope.newMessages.indexOf(user.id), 1);
 		}
 
-		$http.put('../../../backend/requests/chat-messages.php?sentFrom=' + user.id);
+		var lenMes = $scope.messages.length;
+
+		for (var j = 0; j < lenMes; j++) {
+			if ($scope.messages[j].sentFrom == user.id) {
+				$scope.messages[j].new = 0;
+				break;
+			}
+		}
+
+		$http.put('/ChatApp/chat/backend/requests/chat-messages.php?sentFrom=' + user.id);
 		chat.chatUser = user;
 		$rootScope.addedChat = user;
 		$rootScope.$broadcast('chatRequest');
@@ -56,7 +91,7 @@ layoutApp.directive('scrollToDown', ['$http', function($http) {
 
 				// load another ten messages
 				// scope.c is the current chat we scrolling
-				$http.get('../../../backend/requests/chat-messages.php?flag=2&offset=' +
+				$http.get('/ChatApp/chat/backend/requests/chat-messages.php?flag=2&offset=' +
 					scope.offset).then(function(response) {
 						if (response.data.length > 0) {
 							elem[0].scrollTop -= 50; // scroll up 50px
@@ -72,20 +107,13 @@ layoutApp.directive('scrollToDown', ['$http', function($http) {
 			}
 
 			elem.bind('mouseup', function() {
-				console.log(elem[0].scrollTop);
 				// make sure the element is at the top
 				if (elem[0].scrollTop <= 150) {
 					loadAnother();
 				}
 			});
 
-			elem.bind('mousewheel', function() { // mousewheel (all browsers except firefox)
-				if (elem[0].scrollTop <= 150) {
-					loadAnother();
-				}
-			});
-
-			elem.bind('DOMMouseScroll', function() { // firefox
+			elem.bind('wheel', function() { // mousewheel event
 				if (elem[0].scrollTop <= 150) {
 					loadAnother();
 				}

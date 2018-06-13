@@ -1,10 +1,15 @@
 <link rel="icon" href="../../../favicon.ico"> <!-- url relative to the main page not this template -->
 
 <nav class="navbar navbar-fixed-top navbar-inverse" style="position: relative">
+	<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
 
-	<div class="container-fluid" style="float: right;margin-right: 130px">
+	<div class="container-fluid collapse navbar-collapse" id="myNavbar">
 
-		<ul class="nav navbar-nav">
+		<ul class="nav navbar-nav navbar-right">
 
 			<li><a href="#">Home</a></li>
 
@@ -18,13 +23,23 @@
 
 				</a>
 
-				<ul class="panel dropdown-menu wrapword" scroll-to-down style="height: 300px;width: 200px;overflow-y: scroll;overflow-x: hidden">
+				<ul class="panel dropdown-menu wrapword" scroll-to-down style="height: 300px;width: 200px;">
 
-					<div ng-repeat="m in messages" class="mes" ng-click="addChatWindow(m)">
+					<!-- the dash is for descending order -->
+					<div ng-repeat="m in messages | orderBy: '-messageId'" class="mes" ng-click="addChatWindow(m)">
+						<div ng-if="m.sentFrom != currentUser.id && m.new == 1" style="background-color: grey">
+							<li class="panel-heading" ng-bind="m.firstName" style="text-align: center;margin-left: 20px"></li>
 
-						<li class="panel-heading" ng-bind="m.firstName" style="text-align: center;margin-left: 20px"></li>
+			        		<li class="panel-body" ng-bind="m.content" style="text-align: center;margin-left: 20px;font-size: 8px"></li>
 
-		        		<li class="panel-body" ng-bind="m.content" style="text-align: center;margin-left: 20px;font-size: 8px"></li>
+			        	</div>
+
+			        	<div ng-if="(m.sentFrom != currentUser.id && m.new == 0) || m.sentFrom == currentUser.id">
+							<li class="panel-heading" ng-bind="m.firstName" style="text-align: center;margin-left: 20px"></li>
+
+			        		<li class="panel-body" ng-bind="m.content" style="text-align: center;margin-left: 20px;font-size: 8px"></li>
+
+			        	</div>
 
 		        		<hr/>
 		        		

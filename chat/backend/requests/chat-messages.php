@@ -1,7 +1,7 @@
 <?php
-  require('../controllers/chat-messages.php');
-  require('../test-request-input.php');
-  require_once('../session.php');
+  require(__DIR__ . '/../controllers/chat-messages.php');
+  require(__DIR__ . '/../test-request-input.php');
+  require_once(__DIR__ . '/../session.php');
 
   //var_dump($_SERVER);
 
@@ -26,7 +26,7 @@
     // decode the json data
     $data = json_decode( file_get_contents('php://input') );
     $result = isset($data->content, $data->sentFrom, $data->sentTo, $data->classId) && 
-    testInt($data->sentFrom, $data->sentTo, $data->classId);
+    testInt($data->sentFrom, $data->sentTo, $data->classId) && normalizeString($conn, $data->content);
 
     if ($result) {
       echo sendMessage($conn, $data->content, $data->sentFrom, $data->sentTo, $data->classId);
@@ -72,5 +72,5 @@
   //   }
   // }
 
-  require('../footer.php');
+  require(__DIR__ . '/../footer.php');
 ?>

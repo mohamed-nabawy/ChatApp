@@ -1,6 +1,6 @@
 <?php 	
-  require_once('session.php');
-  require_once('connection.php'); 
+  require_once(__DIR__ . '/session.php');
+  require_once(__DIR__ . '/connection.php'); 
 
 	function redirect_to($new_location) {
 	  header("Location: " . $new_location);

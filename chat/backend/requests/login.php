@@ -1,7 +1,7 @@
 <?php
-  require('../functions.php');
-  require('../controllers/dates.php');
-  require('../validation-functions.php');
+  require(__DIR__ . '/../functions.php');
+  require(__DIR__ . '/../controllers/dates.php');
+  require(__DIR__ . '/../validation-functions.php');
 
   if ( isset($_GET['redirect_to']) ) {
     $_POST['redirect_to'] = $_GET['redirect_to'];
@@ -53,4 +53,6 @@
 
     } // end: if (isset($_POST['submit']))
   }
+
+  require(__DIR__ . '/../footer.php');
 ?>

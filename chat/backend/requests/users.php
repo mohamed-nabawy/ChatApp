@@ -1,12 +1,20 @@
 <?php
-  require('../controllers/users.php');
-  require('../test-request-input.php');
+  require(__DIR__ . '/../controllers/users.php');
+  require(__DIR__ . '/../controllers/chat-messages.php');
+  require(__DIR__ . '/../test-request-input.php');
 
   if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     //if ($_SESSION['roleId'] == 1) // admin only can call these methods
     //{
       if (isset($_GET['flag']) && testInt($_GET['flag']) && $_GET['flag'] == 1) {
-        checkResult( $_SESSION['chats'] );
+        $users = $_SESSION['chats'];
+        
+        foreach ($users as $key => $value) {
+          $messages = getMessagesBetweenUsersIdsInClass($conn, $_SESSION['userId'], $value->id, 1, 0);
+          $value->messages = ($messages);
+        }
+
+        checkResult($users);
       }
       elseif (isset($_GET['flag']) && testInt($_GET['flag']) && $_GET['flag'] == 2) {
         checkResult( $_SESSION['active'] );
@@ -22,18 +30,58 @@
       }
     //}
   }
-
-  if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $result = isset($_POST['firstName'], $_POST['lastName'], $_POST['phone'], $_POST['email'], $_POST['DOB'], $_POST['gender'], $_POST['password']) && normalizeString($conn, $_POST['firstName'], $_POST['lastName']) && testPhone($_POST['phone']) && testEmail($_POST['email']) && testDateOfBirth($_POST['DOB']) && testInt($_POST['gender']) && testPassword($_POST['password']);
-
-    if ($result) {
-      normalizeString($conn, $_FILES['image']['name']);
-      echo addUser($conn, $_POST['firstName'], $_POST['lastName'], $_FILES['image'], $_POST['email'], $_POST['phone'], $_POST['password'], $_POST['DOB'], $_POST['gender'], 1);
-      //header("Location: ". "/ChatApp/chat/frontend/areas/student/student-profile.php");
-    }
+  elseif ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    //die(var_dump($_POST));
+    if (isset($_GET['flag']) && $_GET['flag'] == 2) {
+      $data = json_decode( file_get_contents('php://input') );
+      $email = $data->Email;
+      echo checkExistingEmail($conn, $email);
+    } 
     else {
-      header("Location: " . "../../frontend/register.php");
+      $result = isset($_POST['firstName'], $_POST['lastName'], $_POST['phone'], $_POST['email'], $_POST['DOB'], $_POST['genderId'], $_POST['password']) && normalizeString($conn, $_POST['firstName'], $_POST['lastName']) && testPhone($_POST['phone']) && testEmail($_POST['email']) && testDateOfBirth($_POST['DOB']) && testInt($_POST['genderId']) && testPassword($_POST['password']);
+      if ($result) {
+        
+        // normalizeString($conn, $_FILES['image']['name']);
+        // echo addUser($conn, $_POST['firstName'], $_POST['lastName'], $_FILES['image'], $_POST['email'], $_POST['phone'], $_POST['password'], $_POST['DOB'], $_POST['genderId'], 1);
+        //header("Location: ". "/ChatApp/chat/frontend/areas/student/student-profile.php");
+
+
+        if (isset($_POST['update']) && $_POST['update'] == 1) {
+          $x1 = $_POST['x1'];
+          $y1 = $_POST['y1'];
+          $w  = $_POST['w'];
+          $h  = $_POST['h'];
+
+          handlePictureUpdate($conn, $_FILES['image'], $x1, $y1, $w, $h);
+          header("Location: " . '/ChatApp/chat/frontend/areas/student/student-profile.php');
+        }
+        else {
+          $result = isset($_POST['firstName'], $_POST['lastName'], $_POST['phone'], $_POST['email'], $_POST['DOB'], $_POST['genderId'], $_POST['password']) && normalizeString($conn, $_POST['firstName'], $_POST['lastName']) && testPhone($_POST['phone']) && testEmail($_POST['email']) && testDateOfBirth($_POST['DOB']) && testInt($_POST['genderId']) && testPassword($_POST['password']) && ($_POST['confirmPassword'] == $_POST['password']);
+
+          if ($result) {
+            $x1 = $_POST['x1'];
+            $y1 = $_POST['y1'];
+            $w  = $_POST['w'];
+            $h  = $_POST['h'];
+            normalizeString($conn, $_FILES['image']['name']);
+            $userId = addUser($conn, $_POST['firstName'], $_POST['lastName'], $_FILES['image'], $_POST['email'], $_POST['phone'], $_POST['password'], $_POST['DOB'], $_POST['genderId'], 1, $x1, $y1, $w, $h);
+            $_SESSION['userId'] = $userId;
+            $x = mysqli_fetch_assoc( $conn->query('select `image`, `croppedImage` from `users` where `id` = ' . $userId) );
+            $_SESSION['genderId'] = $_POST['genderId'];
+            $_SESSION['image'] = $x['image'];
+            $_SESSION['email']  = $_POST['email'];
+            $_SESSION['croppedImage'] = $x['croppedImage'];
+            header("Location: " . '/ChatApp/chat/frontend/areas/student/student-profile.php');
+          }
+          else {
+            header("Location: " . '/ChatApp/chat/frontend/register.php');
+          }
+        }
+      }
     }
+    // else {
+    //   header("Location: " . '/ChatApp/chat/frontend/register.php');
+    // }
   }
 
   if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
@@ -64,5 +112,5 @@
     }
   }
 
-  require('../footer.php');
+  require(__DIR__ . '/../footer.php');
 ?>

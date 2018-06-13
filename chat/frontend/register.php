@@ -30,13 +30,11 @@
 
     <script src="javascript/modules/materialize.js"></script>
 
-    <script src="javascript/modules/image_module.js"></script>
-
-    <script src="javascript/modules/phone_number_module.js"></script>
+    <link rel="stylesheet" type="text/css" href="javascript/modules/croppie/croppie.css">
 
     <script type="text/javascript">
 
-      angular.module('registerApp', ['phone_number', 'image']).controller('registerController', ['$scope', function($scope) {
+      angular.module('registerApp', ['registerFormValidation']).controller('registerController', ['$scope', function($scope) {
           $scope.image = {};
           $scope.image.src = '';
       }]);
@@ -65,7 +63,7 @@
 
     <div ng-app="registerApp" ng-controller="registerController" class="row">
 
-      <form novalidate role="form" name="myform" style="width: 40%;margin: auto;text-align: center" enctype="multipart/form-data" method="post" action="../backend/requests/users.php">
+      <form ng-cloak novalidate role="form" name="myform" style="width: 40%;margin: auto;text-align: center" enctype="multipart/form-data" method="post" action="../backend/requests/users.php">
 
         <div class="input-field col s12">
 
@@ -91,9 +89,25 @@
 
           <label>E-mail</label>
 
-          <input type="email" name="email" ng-model="email" style="text-align: center" required />
+          <input check type="email" name="email" ng-model="email" style="text-align: center" required />
 
-          <span ng-show="myform.email.$touched && myform.email.$invalid">Email is Required</span>
+          <div class="errorMes" ng-show="(myform.email.$touched || myform.$submitted) && myform.email.$error.emailEmpty">
+
+            Email is Required
+
+          </div>
+
+          <div class="errorMes" ng-show="(myform.email.$touched || myform.$submitted) && !myform.email.$error.emailEmpty && !myform.email.$error.emailExisted && myform.email.$invalid">
+
+            Email is invalid
+
+          </div>
+
+          <div class="errorMes" ng-show="(myform.email.$touched || myform.$submitted) && myform.email.$error.emailExisted">
+
+            Email already existed
+
+          </div>
 
         </div>
 
@@ -101,9 +115,45 @@
 
           <label>Password</label>
 
-          <input type="password" name="password" ng-model="password" style="text-align: center" required />
+          <input check type="password" name="password" ng-model="password" style="text-align: center" required />
 
-          <span ng-show="myform.password.$touched && myform.password.$invalid">Password is Required</span>
+          <div class="errorMes" ng-show="(myform.password.$touched || myform.$submitted) && myform.password.$error.passEmpty">
+
+            Password is Required
+
+          </div>
+
+          <div class="errorMes" ng-show="(myform.password.$touched || myform.$submitted) && myform.password.$error.checkPassword && !myform.password.$error.passEmpty">
+
+            Password is Invalid. It must contain at least one lowercase letter, one uppercase letter and one digit
+
+          </div>
+
+        </div>
+
+        <div class="input-field col s12">
+          
+          <label>Confirm Password</label>
+
+          <input check class="inputField" check type="password" class="form-control" ng-model="confirmPassword" name="confirmPassword" required />
+
+          <div class="errorMes" ng-show="(myform.confirmPassword.$touched || myform.$submitted) && myform.confirmPassword.$error.confirmPassEmpty">
+
+            Confirm Password is Required
+
+          </div>
+
+          <div class="errorMes" ng-show="(myform.confirmPassword.$touched || myform.$submitted) && !myform.confirmPassword.$error.checkConfirmPassword && !myform.confirmPassword.$error.confirmPassEmpty && password != confirmPassword">
+
+            Confirm Password is not as the password
+
+          </div>
+
+          <div class="errorMes" ng-show="(myform.confirmPassword.$touched || myform.$submitted) && myform.confirmPassword.$error.checkConfirmPassword && !myform.confirmPassword.$error.confirmPassEmpty">
+            
+            Confirm Password is Invalid. It must contain at least one lowercase letter, one uppercase letter and one digit
+
+          </div>
 
         </div>
 
@@ -111,79 +161,91 @@
 
           <label>Phone Number</label>
 
-          <input type="text" name="phone" ng-model="phone" style="text-align: center" required />
+          <input check type="text" name="phone" ng-model="phone" style="text-align: center" required />
 
-          <span ng-show="myform.phone.$touched && myform.phone.$invalid">Phone Number is Required</span>
+          <div class="errorMes" ng-show="(myform.phone.$touched || myform.$submitted) && myform.phone.$error.checkPhoneNumber && !myform.phone.$error.phoneEmpty">
+
+            Phone Number is Invalid. It must has 11 digits starting with 01
+
+          </div>
+
+          <div class="errorMes" ng-show="(myform.phone.$touched || myform.$submitted) && myform.phone.$error.phoneEmpty">
+
+            Phone Number is Required
+
+          </div>
 
         </div>
 
         <div class="input-field col s12">
 
-          <input name="DOB" type="date" ng-model="DOB" class="datepicker" required />
+          <input check name="DOB" type="date" ng-model="DOB" class="datepicker" required />
 
           <label>Date of Birth</label>
 
-          <span ng-show="myform.DOB.$touched && myform.DOB.$invalid">Date of Birth is Required</span>
+          <div class="errorMes" ng-show="(myform.DOB.$touched || myform.$submitted) && myform.DOB.$error.birthEmpty">
+
+            Date of Birth is Required
+
+          </div>
+
+          <div class="errorMes" ng-show="(myform.DOB.$touched || myform.$submitted) && !myform.DOB.$error.birthEmpty && myform.DOB.$error.checkBirth">
+
+            Date of Birth is Invalid
+
+          </div>
+
+          <br><br>
 
         </div>
-
-        <div><br><br></div>
 
         <label class="labels" style="font-size: 16px">Gender</label>
 
         <br><br>
 
-        <input class="with-gap" name="gender" ng-model="gender" type="radio" value="0" id="male" required />
+        <input class="with-gap" name="genderId" ng-model="genderId" type="radio" value="1" id="male" required />
 
         <label for="male">Male</label>
 
         <br>
 
-        <input class="with-gap" name="gender" ng-model="gender" type="radio" value="1" id="female" required />
+        <input class="with-gap" name="genderId" ng-model="genderId" type="radio" value="2" id="female" required />
 
         <label for="female" style="margin-right: -17px">Female</label>
 
-        <span ng-show="myform.gender.$touched && myform.gender.$invalid">Gender is Required</span>
+        <span ng-show="myform.genderId.$touched && myform.genderId.$invalid">Gender is Required</span>
+
+        <br><br><br>
+
+        <button class="btn btn-info" onclick="event.preventDefault();$('#file').trigger('click')">Choose Image</button> 
+
+        <br><br>
+
+        <!-- let user decide whether to crop or not -->
+        <!-- <button onclick="event.preventDefault();crop();">Crop Image</button> -->
+
+        <input type="file" id="file" name="image" class="inputfile" onchange="readURL(this)">
+
+        <div id="container">
+
+          <div id="parent"></div>
+
+          <br><br><br>
+
+          <div id="cont">
+
+            <img id="inner" />
+
+          </div>
+
+        </div>
 
         <br>
 
-        <div class="image-button">
-
-          <!-- <input type="file"  name="image" fileread="image.src" size="5" /> -->
-
-          <label for="file" class="inside-image-label" onclick="event.preventDefault();$('#file').trigger('click')">Choose Image</label>
-
-        </div>
-
-        <img ng-src="{{image.src}}" />
-
-        <div class="dropzone" file-dropzone="[image/png, image/jpeg]" file="image" file-name="imageFileName" data-max-file-size="3">
-
-          <input type="file" id="file" fileread="uploadme.src" name="image" class="inputfile">
-
-          <img ng-src="{{uploadme.src}}" style="width: 200px;height: 200px">
-
-        </div>
-
-        <!-- <div>
-        
-          <div class="dropzone" file-dropzone="[image/png, image/jpeg, image/gif]" file="image" file-name="imageFileName" data-max-file-size="3">
-
-          </div>
-        
-          <input type="file" fileread="imageSrc" name="file" id="file" class="inputfile" />
-
-          <img style="margin-left:-50px;width:200px;height:200px" ng-src="{{imageSrc}}" id="profileImage" />
-
-          <div><br></div>
-
-          <button class="btn btn-primary" style="margin-left:-50px" onclick="mylabel.click()">Choose Image</button>
-
-          <label id="mylabel" for="file"></label>
-
-          <div><br><br><br></div>
-
-        </div> -->
+        <input type="hidden" name="x1" value="" />
+        <input type="hidden" name="y1" value="" />
+        <input type="hidden" name="w" value="" />
+        <input type="hidden" name="h" value="" />
 
         <input ng-if="myform.$invalid" type="button" name="submit" style="margin-left: -50px" class="btn btn-primary" value="Next" />
         
@@ -195,6 +257,18 @@
 
     <br>
 
+    <style type="text/css">
+      .errorMes {
+        color: red;
+      }
+    </style>
+
   </body>
 
 </html>
+
+<script type="text/javascript" src="javascript/modules/croppie/croppie.js"></script>
+
+<script src="javascript/modules/crop.js"></script>
+
+<script type="text/javascript" src="javascript/modules/register_form_validation.js"></script>

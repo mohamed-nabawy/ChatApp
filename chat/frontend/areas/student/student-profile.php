@@ -1,4 +1,8 @@
-	
+<?php 
+	require(__DIR__ . '/../../../backend/functions.php');
+	validatePageAccess($conn)
+?>
+
 <!DOCTYPE html>
 
 <html>
@@ -9,54 +13,56 @@
 
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-		<link rel="stylesheet" type="text/css" href="../../css/modules/bootstrap.css">
+		<link rel="icon" href="/ChatApp/chat/favicon.ico">
 
-		<link rel="stylesheet" type="text/css" href="../../css/student/student-layout.css">
+		<link rel="stylesheet" type="text/css" href="/ChatApp/chat/frontend/css/modules/bootstrap.css">
 
-		<link rel="stylesheet" type="text/css" href="../../css/modules/font-awesome.css">
+		<link rel="stylesheet" type="text/css" href="/ChatApp/chat/frontend/css/student/student-layout.css">
 
-		<script type="text/javascript" src="../../javascript/modules/jquery-3.2.1.js"></script>
+		<link rel="stylesheet" type="text/css" href="/ChatApp/chat/frontend/css/modules/font-awesome.css">
 
-		<script type="text/javascript" src="../../javascript/modules/bootstrap.js"></script>
+		<script type="text/javascript" src="/ChatApp/chat/frontend/javascript/modules/jquery-3.2.1.js"></script>
 
-		<script type="text/javascript" src="../../javascript/modules/angular.js"></script>
+		<script type="text/javascript" src="/ChatApp/chat/frontend/javascript/modules/bootstrap.js"></script>
 
-		<script type="text/javascript" src="../../javascript/modules/angular-route.js"></script>
+		<script type="text/javascript" src="/ChatApp/chat/frontend/javascript/modules/angular.js"></script>
 
-		<script type="text/javascript" src="../../javascript/modules/location_provider.js"></script>
+		<script type="text/javascript" src="/ChatApp/chat/frontend/javascript/student/student-service.js"></script>
 
-		<script type="text/javascript" src="../../javascript/student/student-service.js"></script>
-
-		<script type="text/javascript" src="../../javascript/student/student-layout.js"></script>
-
-		<link rel="stylesheet" type="text/css" href="../../css/student/student-profile.css" />
-
-		<script type="text/javascript" src="../../javascript/student/student-profile.js"></script>
-
+		<link rel="stylesheet" type="text/css" href="/ChatApp/chat/frontend/css/student/student-profile.css" />
+		
 	</head>
 
 	<body style="background-image: url('')" ng-app="student" ng-controller="studentProfile">
 
-		<div>
-			<?php
-				require('../header.php');
-				require('../chats.php');
-				require('chatApp/chat/backend/functions.php');
-				validatePageAccess($conn);
-			?>
-		</div>
+		<?php
+			require(__DIR__ . '/../header.php');
+		?>
+		<div style="position: fixed;bottom: 0">
 
-		<div class="ChatmatesPanel">
-			
-			<h4 onclick="$(this).parent().toggleClass('hideShowContacts');" class="clickable">Contacts</h4>
+			<div class="ChatmatesPanel" style="display: inline-block;">
+				
+				<h4 onclick="$(this).parent().toggleClass('hideShowContacts');" class="clickable">Contacts</h4>
 
-			<div ng-repeat="u in myClassMatesAndTeachers" class="panel classmate-and-teacher">
+				<div ng-repeat="u in myClassMatesAndTeachers" class="panel classmate-and-teacher">
 
-				<label class="panel-body clickable" ng-bind="u.userName" ng-click="addChatWindow(u)"></label>
+					<label class="panel-body clickable" ng-bind="u.email" ng-click="addChatWindow(u)"></label>
+
+				</div>
 
 			</div>
 
+			<div style="display: inline-block;">
+				<?php
+					readfile(__DIR__ . '/../chats.php');
+				?>
+			</div>
+
 		</div>
+
+		<script type="text/javascript" src="/ChatApp/chat/frontend/javascript/student/student-layout.js"></script>
+
+		<script type="text/javascript" src="/ChatApp/chat/frontend/javascript/student/student-profile.js"></script>
 
 	</body>
 

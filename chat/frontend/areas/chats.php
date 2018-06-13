@@ -1,8 +1,8 @@
-<nav id="nav" class="navbar navbar-fixed-bottom view-them" ng-controller="chats" style="visibility: hidden">
+<div class="view-them" ng-controller="chats">
 
-	<div class="container-fluid" style="float: right">
+	<div class="container-fluid">
 
-		<div class="nav navbar-nav separate-between-windows chat" ng-repeat="c in chats | orderBy: 'i' " style="visibility: hidden" ng-cloak ng-click="removefromNewMessagesIfAny(c)">
+		<div class="nav navbar-nav separate-between-windows chat" ng-repeat="c in chats" style="margin-right: 50px" ng-cloak ng-click="removefromNewMessagesIfAny(c)">
 
 			<div class="wrapper">
 
@@ -16,11 +16,17 @@
 
 				<div id="chat{{c.id}}" class="chat-window" scroll-to-top="1">
 
-					<li ng-repeat="m in c.messages | orderBy: 'id' " class="each-message" message>
+					<li ng-repeat="m in c.messages | orderBy: '-id'" class="each-message">
 
-						<span ng-if="m.sentFrom == c.id" class="message-content" ng-bind="m.content" style="background-color: grey;border: 2px solid grey;left: 10px"></span>
+						<div ng-if="m.sentFrom == c.id" style="background-color: grey;border: 2px solid grey;left: 10px;position: relative;text-align: center;max-width: 125px" class="message-content">
+							<div ng-bind="m.content"></div>
 
-						<span ng-if="m.sentTo == c.id" class="message-content" ng-bind="m.content" style="background-color: mediumblue;border: 2px solid mediumblue;left: 60px"></span>
+							
+						</div>
+
+						<div ng-if="m.sentTo == c.id" id="mes{{m.id}}" style="background-color: mediumblue;border: 2px solid mediumblue;left: 60px;text-align: center;max-width: 125px" class="message-content">
+							<div ng-bind="m.content"></div>
+						</div>
 
 					</li>
 
@@ -28,7 +34,7 @@
 
 				<div>
 
-					<textarea type="text" class="message-input" ng-model="c.message" send-button placeholder="send a message..." ></textarea>
+					<textarea type="text" class="message-input" ng-model="c.message" send-button placeholder="send a message..."></textarea>
 
 				</div>
 
@@ -38,10 +44,12 @@
 
 				</div>
 
+
+
 			</div>
 
 		</div>
 
 	</div>
 
-</nav>
+</div>

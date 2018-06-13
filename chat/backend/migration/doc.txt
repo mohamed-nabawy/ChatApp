@@ -1,0 +1,12 @@
+go to migration folder, open cmd and run the following
+
+	to run migration :
+		run (php factory run migration)
+
+		to reverse migrate :
+			run (php factory run migration down --option)
+			if option = number => number of steps back
+			if option = 'reset' => reset all migrations
+	to create migration :
+		run (php factory create migration filename --option)
+		if option = 'createTable' => stub created for creating table and the table name will be the filename

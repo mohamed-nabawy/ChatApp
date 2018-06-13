@@ -1,0 +1,7 @@
+- reverse the scroll bar (with css scale) to show the newest messages
+
+- preserve the order of adding and deleting chats correctly on server and client
+
+- check the target element in the mouseup event and act accordingly
+
+- take care of the data types because it may change the order of the messages

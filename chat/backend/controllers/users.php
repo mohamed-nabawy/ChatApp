@@ -1,6 +1,6 @@
 <?php
-  require('../functions.php');
-  require('../image-handle.php');
+  require(__DIR__ . '/../functions.php');
+  require(__DIR__ . '/../image-handle.php');
 
   function getUsers($conn) { // in the same class
     $sql = "select * from `users` where `id` != " . $_SESSION['userId'];
@@ -17,7 +17,12 @@
   }
 
   function addChatUser($user) { //add user to open chats
-    array_unshift($_SESSION['chats'], $user);
+    if (count($_SESSION['chats']) < 3) {
+      array_push($_SESSION['chats'], $user);
+    }
+    else {
+      array_splice($_SESSION['chats'], 2, 0, [$user]);
+    }
   }
 
   function deleteChat($id) { // close the window
@@ -61,19 +66,26 @@
     } 
   }
 
-  function addUser($conn, $firstName, $lastName, $image, $email, $phoneNumber, $password, $dateOfBirth, $gender, $roleId) {
-    $sql = "insert into `users` (userName, firstName, lastName, image, email, phoneNumber, passwordHash, dateOfBirth, gender, roleId) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssssssssii", $email, $firstName, $lastName, $Image, $email, $phoneNumber, password_encrypt($password), $dateOfBirth, $gender, $roleId);
+  function addUser($conn, $firstName, $lastName, $image, $email, $phoneNumber, $password, $dateOfBirth, $genderId, $roleId, $x1 = null, $y1 = null, $w = null, $h = null) {
+    $x = checkExistingEmail($conn, $email);
 
-    if (isset($image) && $image['name'] != "") {
-      $Image = addImageFile($image, $email);
+    if ($x) {
+      return "email already existed";
+    }
+
+    $sql = "insert into `users` (firstName, lastName, image, email, phoneNumber, passwordHash, dateOfBirth, genderId, roleId) values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    $pass =  password_encrypt($password);
+    $stmt->bind_param("sssssssii", $firstName, $lastName, $Image, $email, $phoneNumber, $pass, $dateOfBirth, $genderId, $roleId);
+
+    if (isset($image) && $image['size'] != 0) {
+      $Image = addImageFile($image, $email, $x1, $y1, $w, $h)[0];
     }
     else {
-      if ($gender == 0) {
+      if ($genderId == 1) {
         $Image = '/ChatApp/chat/backend/uploads/maleimage.jpg';
       }
-      elseif ($gender == 1) {
+      elseif ($genderId == 2) {
         $Image = '/ChatApp/chat/backend/uploads/femaleimage.jpg';
       }
     }
@@ -84,10 +96,10 @@
       // Success
       // Mark user as logged in
       $_SESSION['userId'] = $user_id;
-      $_SESSION['userName'] = $email;
       $_SESSION['roleId'] = $roleId;
       $_SESSION['chats'] = [];
-      header("Location: ". "../../frontend/areas/student/student-profile.php");
+      //header("Location: ". "../../frontend/areas/student/student-profile.php");
+      
       return $user_id;
     }
     else {
@@ -225,12 +237,13 @@
     if ($result) {
       $result = mysqli_fetch_array($result, MYSQLI_NUM);
       $result = (int)$result[0];
+
       if ($result > 0) { // if he wants to change the mail and not keeping the old
         //echo "existing email";
         return true; // exist
       }
       else {
-        return false;//not exist
+        return false; //not exist
       }
 
       mysqli_free_result($result);

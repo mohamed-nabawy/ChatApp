@@ -30,7 +30,6 @@ nav div ul li {
 }
 
 .separate-between-windows {
-	margin-right: 100px;
 	background-color: white;
 	height: 360px;
 	width: 280px;
@@ -44,7 +43,7 @@ nav div ul li {
 	border-radius: 8px;
 	position: relative;
 	left: -15px;
-	max-width: 205px;
+	/*max-width: 205px;*/
 	display: block;
 	white-space: normal;
 	word-wrap: break-word;
@@ -52,6 +51,55 @@ nav div ul li {
 
 .mes:hover {
 	background-color: lightgrey;
+}
+
+/*.view-them {
+	-webkit-transform: rotate(180deg);
+	-moz-transform: rotate(180deg);
+	-o-transform: rotate(180deg);
+	-ms-transform: rotate(180deg);
+	transform: rotate(180deg);
+}*/
+
+.chat-window:not(.curchat) {
+	-webkit-transform: scale(1, -1);
+	-moz-transform: scale(1, -1);
+	-o-transform: scale(1, -1);
+	-ms-transform: scale(1, -1);
+	transform: scale(1, -1);
+}
+
+.message-content:not(.lastmes) {
+	-webkit-transform: scale(1, -1);
+	-moz-transform: scale(1, -1);
+	-o-transform: scale(1, -1);
+	-ms-transform: scale(1, -1);
+	transform: scale(1, -1);
+}
+
+@media (max-width: 1366px) {
+	.chat:nth-child(n+4) {
+		display: none;
+    }
+}
+
+@media (max-width: 1250px) {
+	.chat:nth-child(3) {
+		display: none;
+	}
+}
+
+@media (max-width: 920px) {
+	.chat:nth-child(2) {
+		display: none;
+	}
+}
+
+/*@media (max-width: 570px) {*/
+@media (max-width: 767px) {
+	.chat:first-child {
+		display: none;
+	}
 }
 
 .close-chat-window {
@@ -69,11 +117,6 @@ nav div ul li {
 
 .each-message {
 	padding: 20px 20px;
-	width: 165px;
-	max-width: 165px;
-	text-align: center;
-	/*overflow-wrap: break-word;*/
-	/*word-wrap: break-word;*/
 	display: block;
 	zoom: 1.1;
 	-moz-transform: scale(1.1);
