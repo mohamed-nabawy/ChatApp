@@ -11,13 +11,10 @@
         
         foreach ($users as $key => $value) {
           $messages = getMessagesBetweenUsersIdsInClass($conn, $_SESSION['userId'], $value->id, 1, 0);
-          $value->messages = ($messages);
+          $value->messages = $messages;
         }
 
         checkResult($users);
-      }
-      elseif (isset($_GET['flag']) && testInt($_GET['flag']) && $_GET['flag'] == 2) {
-        checkResult( $_SESSION['active'] );
       }
       elseif (isset($_GET['id']) && testInt($_GET['id']) ) {
         checkResult( getUserById( $conn, $_GET['id'] ) );
@@ -85,8 +82,11 @@
   }
 
   if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
+    if (isset($_GET['open'], $_GET['chatId']) && testInt($_GET['open'], $_GET['chatId']) ) {
+      openOrCloseChat($_GET['chatId'], $_GET['open']);
+    }
       // decode the json data
-    if ( !isset( $_GET['flag'] ) ) {
+    elseif ( !isset( $_GET['flag'] ) ) {
       $data = json_decode( file_get_contents('php://input') );
       $result = isset($data->RoleId, $data->Id, $data->UserName, $data->FirstName, $data->LastName, $data->Email, $data->PhoneNumber) && testInt($data->RoleId, $data->Id) && normalizeString($conn, $data->UserName, $data->FirstName, $data->LastName) && testPhone($data->PhoneNumber) && testEmail($data->Email);
 
@@ -97,9 +97,6 @@
     }
     elseif ($_GET['flag'] == 1) {
       addChatUser( json_decode( file_get_contents('php://input') ) );
-    }
-    elseif ($_GET['flag'] == 2) {
-      changeActiveUser( json_decode( file_get_contents('php://input') ) );
     }
   }
 

@@ -48,8 +48,13 @@
     }
   }
 
-  function changeActiveUser($user) {
-    $_SESSION['active'] = $user;
+  function openOrCloseChat($chatId, $open) {
+    foreach ($_SESSION['chats'] as $key => &$value) {
+      if ($value->id == $chatId) {
+        $value->open = $open;
+        break;
+      }
+    }
   }
 
   function getCurrentUser($conn) {

@@ -1,12 +1,12 @@
-<div class="view-them" ng-controller="chats">
+<div ng-controller="chats">
 
-	<div class="container-fluid">
+	<div ng-cloak class="container-fluid">
 
-		<div class="nav navbar-nav separate-between-windows chat" ng-repeat="c in chats" style="margin-right: 50px" ng-cloak ng-click="removefromNewMessagesIfAny(c)">
+		<div class="nav navbar-nav chats" ng-repeat="c in chats" style="margin-right: 50px" ng-click="removefromNewMessagesIfAny(c)">
 
 			<div class="wrapper">
 
-				<div class="chat-head">
+				<div class="chat-head" ng-click="showHideChat($index)" ng-class="{hideShowChats: c.open == 0}">
 
 					<span ng-bind="c.firstName" class="name-position"></span>
 
@@ -19,13 +19,15 @@
 					<li ng-repeat="m in c.messages | orderBy: '-id'" class="each-message">
 
 						<div ng-if="m.sentFrom == c.id" style="background-color: grey;border: 2px solid grey;left: 10px;position: relative;text-align: center;max-width: 125px" class="message-content">
+
 							<div ng-bind="m.content"></div>
 
-							
 						</div>
 
 						<div ng-if="m.sentTo == c.id" id="mes{{m.id}}" style="background-color: mediumblue;border: 2px solid mediumblue;left: 60px;text-align: center;max-width: 125px" class="message-content">
+
 							<div ng-bind="m.content"></div>
+							
 						</div>
 
 					</li>
@@ -43,8 +45,6 @@
 					<input type="submit" value="send" class="btn btn-primary send-button" ng-click="sendMessageToUser(c)" />
 
 				</div>
-
-
 
 			</div>
 

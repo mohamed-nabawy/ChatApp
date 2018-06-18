@@ -1,22 +1,38 @@
-layoutApp.controller('studentProfile', ['$scope', '$rootScope', '$http', 'chat', function($scope, $rootScope, $http, chat) {
+layoutApp.controller('studentProfile', ['$scope', '$rootScope', '$http', function($scope, $rootScope, $http) {
 	$scope.getMyClassMatesAndTeachers = function() {
 		$scope.messages = [];
 
 		$http.get('/ChatApp/chat/backend/requests/users.php').then(function(response) {
-			//console.log(response);
 			$scope.myClassMatesAndTeachers = response.data;
 		});
 	};
 
+	$scope.lastMessagesClicked = 0;
+
+	$(window).click(function(e) {
+		if (e.target.classList[0] != 'panel' && $scope.lastMessagesClicked == 1) {
+			$scope.$apply(function() {
+				$scope.lastMessagesClicked = 0;
+			})
+		}
+	})
+
 	$scope.offset = 0;
 
-	$scope.setAllNotificationsToRead = function() {
+	$scope.setAllNotificationsToRead = function($event) {
+		if ($scope.lastMessagesClicked == 0) {
+			$scope.lastMessagesClicked = 1;
+			$('nav').css('height', '62px');
+		}
+		else {
+			$scope.lastMessagesClicked = 0;
+		}
+		
+		$event.stopPropagation();
 		$rootScope.newMessages = [];
 		$rootScope.newLen = 0;
 
-		$http.put('/ChatApp/chat/backend/requests/chat-messages.php?flag=1').then(function(response) {
-			//console.log(response);
-		});
+		$http.put('/ChatApp/chat/backend/requests/chat-messages.php?flag=1');
 	}
 	
 	$rootScope.getAllMessages = function() {
@@ -30,6 +46,10 @@ layoutApp.controller('studentProfile', ['$scope', '$rootScope', '$http', 'chat',
 				
 				for (var j = 0; j < lenMes; j++) {
 					if ($scope.messages[j].messageId == data[i].messageId) {
+						if (data[i].new != $scope.messages[j].new) {
+							$scope.messages[j].new = data[i].new;
+						}
+						
 						f = 1;
 						break;
 					}
@@ -49,18 +69,15 @@ layoutApp.controller('studentProfile', ['$scope', '$rootScope', '$http', 'chat',
 		});
 	};
 
-	$scope.openChat = function(data) {
+	$scope.getAllMessages();
+
+	$scope.addChatWindow = function(data) { // this will communicate with chats controller in layout
 		var user = {
 			id: data.id,
 			firstName: data.firstName,
+			open: 1
 		};
 
-		$scope.addChatWindow(user);
-	}
-
-	$scope.getAllMessages();
-
-	$scope.addChatWindow = function(user) { // this will communicate with chats controller in layout
 		if ($rootScope.newMessages.indexOf(user.id) > 0) {
 			$rootScope.newLen--;
 			$rootScope.newMessages.splice($rootScope.newMessages.indexOf(user.id), 1);
@@ -75,8 +92,8 @@ layoutApp.controller('studentProfile', ['$scope', '$rootScope', '$http', 'chat',
 			}
 		}
 
+		// mark messages as read
 		$http.put('/ChatApp/chat/backend/requests/chat-messages.php?sentFrom=' + user.id);
-		chat.chatUser = user;
 		$rootScope.addedChat = user;
 		$rootScope.$broadcast('chatRequest');
 	};
@@ -97,7 +114,6 @@ layoutApp.directive('scrollToDown', ['$http', function($http) {
 						if (response.data.length > 0) {
 							elem[0].scrollTop -= 50; // scroll up 50px
 							var data = response.data; // older last messages from database
-							console.log(data);
 							var len = data.length;
 
 							for (var j = 0; j < len; j++) {

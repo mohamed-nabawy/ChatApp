@@ -6,7 +6,7 @@
 
     <title>Login</title>
 
-    <meta name="viewport" charset="utf-8" content="width=device-width,initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" name="viewport" charset="utf-8" content="IE=11,width=device-width,initial-scale=1.0">
 
     <link rel="icon" href="../favicon.ico">
   
@@ -96,11 +96,11 @@
 
         <div>
 
-          <a href="register.php" name="submit" />New User ! </a>
+          <a href="register.php" name="submit">New User ! </a>
 
         </div>
 
-        <a href="resetPassword.php" name="submit" />Forgot Password ! </a>
+        <a href="resetPassword.php" name="submit">Forgot Password ! </a>
 
         <div><br></div>
 
@@ -108,8 +108,9 @@
 
     </div>
 
+    <div style="align-content: center;text-align: center;font-style: italic;color: white">&copy; 2010-<?php echo date("Y");?></div>
+
   </body>
 
 </html>
 
-<div style="align-content: center;text-align: center;font-style: italic;color: white">&copy; 2010-<?php echo date("Y");?></div>
