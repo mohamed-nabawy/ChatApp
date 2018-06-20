@@ -14,21 +14,21 @@
 		<!-- if run with ie 10 compatible -->
 		<meta http-equiv="X-UA-Compatible" name="viewport" content="IE=11,width=device-width,initial-scale=1.0">
 
-		<link rel="icon" href="/ChatApp/chat/favicon.ico">
+		<link rel="icon" href="/chat/favicon.ico">
 
-		<link rel="stylesheet" type="text/css" href="/ChatApp/chat/frontend/css/modules/bootstrap.css">
+		<link rel="stylesheet" type="text/css" href="/chat/frontend/css/modules/bootstrap.css">
 
-		<link rel="stylesheet" type="text/css" href="/ChatApp/chat/frontend/css/student/student-layout.css">
+		<link rel="stylesheet" type="text/css" href="/chat/frontend/css/student/student-layout.css">
 
-		<link rel="stylesheet" type="text/css" href="/ChatApp/chat/frontend/css/modules/font-awesome.css">
+		<link rel="stylesheet" type="text/css" href="/chat/frontend/css/modules/font-awesome.css">
 
-		<script type="text/javascript" src="/ChatApp/chat/frontend/javascript/modules/jquery-3.2.1.js"></script>
+		<script type="text/javascript" src="/chat/frontend/javascript/modules/jquery-3.2.1.js"></script>
 
-		<script type="text/javascript" src="/ChatApp/chat/frontend/javascript/modules/bootstrap.js"></script>
+		<script type="text/javascript" src="/chat/frontend/javascript/modules/bootstrap.js"></script>
 
-		<script type="text/javascript" src="/ChatApp/chat/frontend/javascript/modules/angular.js"></script>
+		<script type="text/javascript" src="/chat/frontend/javascript/modules/angular.js"></script>
 
-		<link rel="stylesheet" type="text/css" href="/ChatApp/chat/frontend/css/student/student-profile.css" />
+		<link rel="stylesheet" type="text/css" href="/chat/frontend/css/student/student-profile.css" />
 		
 	</head>
 
@@ -60,9 +60,9 @@
 
 		</div>
 
-		<script type="text/javascript" src="/ChatApp/chat/frontend/javascript/student/student-layout.js"></script>
+		<script type="text/javascript" src="/chat/frontend/javascript/student/student-layout.js"></script>
 
-		<script type="text/javascript" src="/ChatApp/chat/frontend/javascript/student/student-profile.js"></script>
+		<script type="text/javascript" src="/chat/frontend/javascript/student/student-profile.js"></script>
 
 	</body>
 

@@ -2,7 +2,7 @@ layoutApp.controller('studentProfile', ['$scope', '$rootScope', '$http', functio
 	$scope.getMyClassMatesAndTeachers = function() {
 		$scope.messages = [];
 
-		$http.get('/ChatApp/chat/backend/requests/users.php').then(function(response) {
+		$http.get('/chat/backend/requests/users.php').then(function(response) {
 			$scope.myClassMatesAndTeachers = response.data;
 		});
 	};
@@ -32,11 +32,11 @@ layoutApp.controller('studentProfile', ['$scope', '$rootScope', '$http', functio
 		$rootScope.newMessages = [];
 		$rootScope.newLen = 0;
 
-		$http.put('/ChatApp/chat/backend/requests/chat-messages.php?flag=1');
+		$http.put('/chat/backend/requests/chat-messages.php?flag=1');
 	}
 	
 	$rootScope.getAllMessages = function() {
-		$http.get('/ChatApp/chat/backend/requests/chat-messages.php?flag=2&offset=' + $scope.offset).then(function(response) {
+		$http.get('/chat/backend/requests/chat-messages.php?flag=2&offset=' + $scope.offset).then(function(response) {
 			var data = response.data;
 			var len = data.length;
 			var lenMes = $scope.messages.length;
@@ -93,7 +93,7 @@ layoutApp.controller('studentProfile', ['$scope', '$rootScope', '$http', functio
 		}
 
 		// mark messages as read
-		$http.put('/ChatApp/chat/backend/requests/chat-messages.php?sentFrom=' + user.id);
+		$http.put('/chat/backend/requests/chat-messages.php?sentFrom=' + user.id);
 		$rootScope.addedChat = user;
 		$rootScope.$broadcast('chatRequest');
 	};
@@ -109,7 +109,7 @@ layoutApp.directive('scrollToDown', ['$http', function($http) {
 
 				// load another ten messages
 				// scope.c is the current chat we scrolling
-				$http.get('/ChatApp/chat/backend/requests/chat-messages.php?flag=2&offset=' +
+				$http.get('/chat/backend/requests/chat-messages.php?flag=2&offset=' +
 					scope.offset).then(function(response) {
 						if (response.data.length > 0) {
 							elem[0].scrollTop -= 50; // scroll up 50px

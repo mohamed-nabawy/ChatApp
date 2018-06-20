@@ -9,7 +9,7 @@ layoutApp.directive('scrollToTop', ['$http', '$rootScope', function($http, $root
 
 				// load another ten messages
 				// scope.c is the current chat we scrolling
-				$http.get('/ChatApp/chat/backend/requests/chat-messages.php?firstUserId=' +
+				$http.get('/chat/backend/requests/chat-messages.php?firstUserId=' +
 					scope.currentUser.id + "&secondUserId=" + scope.c.id + "&classId=" + 1 +
 					"&offset=" + scope.offset).then(function(response) {
 						if (response.data.length > 0) {
@@ -33,7 +33,7 @@ layoutApp.directive('scrollToTop', ['$http', '$rootScope', function($http, $root
 
 			elem.bind('wheel', function(e) {
 				// check if it's moved from the wheel not from the scrollbar
-				if (e.originalEvent.deltaY < 0) {
+				if (e.originalEvent.deltaY < 0) { // // scroll up
 					// if it's the top of the scroll, load another messages
 					if (elem[0].scrollTop >= elem[0].scrollHeight - 300) {
 						loadAnother();
@@ -93,7 +93,7 @@ layoutApp.controller('chats', ['$scope', '$http', '$rootScope', '$interval', '$t
 			var f = ($scope.chats[ind].open == 1) ? 0 : 1;
 			
 			// update the open state in the session
-			$http.put('/ChatApp/chat/backend/requests/users.php?chatId=' + $scope.chats[ind].id + '&open=' + f).then(function(response) {
+			$http.put('/chat/backend/requests/users.php?chatId=' + $scope.chats[ind].id + '&open=' + f).then(function(response) {
 				$scope.chats[ind].open = (f == 1) ? 1 : 0;
 			});
 		}
@@ -105,13 +105,13 @@ layoutApp.controller('chats', ['$scope', '$http', '$rootScope', '$interval', '$t
 				$rootScope.newMessages.splice( $rootScope.newMessages.indexOf(chat.id) );
 			}
 
-			$http.put('/ChatApp/chat/backend/requests/chat-messages.php?sentFrom=' + chat.id);
+			$http.put('/chat/backend/requests/chat-messages.php?sentFrom=' + chat.id);
 		};
 
 		$scope.newMessagesIds = [];
 
 		$scope.getNotifications = function() {
-			$http.get('/ChatApp/chat/backend/requests/chat-messages.php?flag=3').then(function(response) {
+			$http.get('/chat/backend/requests/chat-messages.php?flag=3').then(function(response) {
 				$scope.notifications = response.data;
 				$rootScope.newLen = response.data.length;
 				var newmes = response.data;
@@ -128,7 +128,7 @@ layoutApp.controller('chats', ['$scope', '$http', '$rootScope', '$interval', '$t
 		$scope.getNotifications();
 
 		$scope.getNewMessages = function() {
-			$http.get('/ChatApp/chat/backend/requests/chat-messages.php').then(function(response) {
+			$http.get('/chat/backend/requests/chat-messages.php').then(function(response) {
 	     		if (response.data.length > 0) {
 		     		var data = response.data;
 		     		var len = data.length;
@@ -171,7 +171,7 @@ layoutApp.controller('chats', ['$scope', '$http', '$rootScope', '$interval', '$t
 
 		$scope.getCurrentInfo = function() { // current info of user
 			// get the user in the session
-			$http.get('/ChatApp/chat/backend/requests/users.php?flag=3').then(function(response) {
+			$http.get('/chat/backend/requests/users.php?flag=3').then(function(response) {
 				$scope.setCurrentUser(response.data);
 				$scope.getChatsAndItsMessages();
 			});
@@ -179,14 +179,14 @@ layoutApp.controller('chats', ['$scope', '$http', '$rootScope', '$interval', '$t
 
 		$scope.getChatsAndItsMessages = function() {
 			// get chats array in the session and its messages
-			$http.get('/ChatApp/chat/backend/requests/users.php?flag=1').then(function(response) {
+			$http.get('/chat/backend/requests/users.php?flag=1').then(function(response) {
 				$scope.chats = response.data; // current chat windows
 			});
 		};
 
 		$scope.addChatMessages = function(chat) {
 			// load first ten messages
-			$http.get('/ChatApp/chat/backend/requests/chat-messages.php?firstUserId=' + $rootScope.currentUser.id + "&secondUserId=" + chat.id + "&classId=" + 1 + "&offset=" + $scope.offset).then(function(response) {
+			$http.get('/chat/backend/requests/chat-messages.php?firstUserId=' + $rootScope.currentUser.id + "&secondUserId=" + chat.id + "&classId=" + 1 + "&offset=" + $scope.offset).then(function(response) {
 				var data = response.data;
 				var len = data.length;
 
@@ -229,7 +229,7 @@ layoutApp.controller('chats', ['$scope', '$http', '$rootScope', '$interval', '$t
 			}
 
 			// delete it from the chats array in the session passing the chat user id
-			$http.delete('/ChatApp/chat/backend/requests/users.php?id=' + userId);
+			$http.delete('/chat/backend/requests/users.php?id=' + userId);
 		};
 		
 		$scope.getCurrentInfo();
@@ -245,7 +245,7 @@ layoutApp.controller('chats', ['$scope', '$http', '$rootScope', '$interval', '$t
 			if (x <= 0) {
 				data = $rootScope.addedChat;
 				$scope.addChatMessages(data);
-				$http.put('/ChatApp/chat/backend/requests/users.php?flag=1', data);
+				$http.put('/chat/backend/requests/users.php?flag=1', data);
 			}
 		});
 
@@ -263,7 +263,7 @@ layoutApp.controller('chats', ['$scope', '$http', '$rootScope', '$interval', '$t
 				user.message = "";
 
 				// post request to add this message
-				$http.post('/ChatApp/chat/backend/requests/chat-messages.php', data).then(function(response) {
+				$http.post('/chat/backend/requests/chat-messages.php', data).then(function(response) {
 					data.id = parseInt(response.data); // id of new message
 					var len = $scope.chats.length;
 
