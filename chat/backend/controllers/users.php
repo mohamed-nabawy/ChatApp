@@ -27,7 +27,7 @@
 
   function deleteChat($id) { // close the window
     foreach ($_SESSION['chats'] as $key => $value) {
-      if ($value->id == $id) {
+      if ($value->secondUserId == $id) {
         array_splice($_SESSION['chats'], $key, 1);
         break;
       }
@@ -50,7 +50,7 @@
 
   function openOrCloseChat($chatId, $open) {
     foreach ($_SESSION['chats'] as $key => &$value) {
-      if ($value->id == $chatId) {
+      if ($value->secondUserId == $chatId) {
         $value->open = $open;
         break;
       }

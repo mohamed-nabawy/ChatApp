@@ -297,7 +297,7 @@ nav div ul li {
 	}
 
 	.badge1[ng-bind]::after {
-		top: -18px;
+		top: -7px;
 		right: -7px;
 	}
 }

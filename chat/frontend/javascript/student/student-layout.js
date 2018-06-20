@@ -10,7 +10,7 @@ layoutApp.directive('scrollToTop', ['$http', '$rootScope', function($http, $root
 				// load another ten messages
 				// scope.c is the current chat we scrolling
 				$http.get('/chat/backend/requests/chat-messages.php?firstUserId=' +
-					scope.currentUser.id + "&secondUserId=" + scope.c.id + "&classId=" + 1 +
+					scope.c.firstUserId + "&secondUserId=" + scope.c.secondUserId + "&classId=" + 1 +
 					"&offset=" + scope.offset).then(function(response) {
 						if (response.data.length > 0) {
 							var data = response.data; // older messages from database
@@ -33,7 +33,7 @@ layoutApp.directive('scrollToTop', ['$http', '$rootScope', function($http, $root
 
 			elem.bind('wheel', function(e) {
 				// check if it's moved from the wheel not from the scrollbar
-				if (e.originalEvent.deltaY < 0) { // // scroll up
+				if (e.originalEvent.deltaY < 0) { // scroll up
 					// if it's the top of the scroll, load another messages
 					if (elem[0].scrollTop >= elem[0].scrollHeight - 300) {
 						loadAnother();
@@ -93,19 +93,19 @@ layoutApp.controller('chats', ['$scope', '$http', '$rootScope', '$interval', '$t
 			var f = ($scope.chats[ind].open == 1) ? 0 : 1;
 			
 			// update the open state in the session
-			$http.put('/chat/backend/requests/users.php?chatId=' + $scope.chats[ind].id + '&open=' + f).then(function(response) {
+			$http.put('/chat/backend/requests/users.php?chatId=' + $scope.chats[ind].secondUserId + '&open=' + f).then(function(response) {
 				$scope.chats[ind].open = (f == 1) ? 1 : 0;
 			});
 		}
 
 		// reduce new messages notifications by one and make all messages read
 		$scope.removefromNewMessagesIfAny = function(chat) {
-			if ( $rootScope.newLen > 0 && $rootScope.newMessages.indexOf(chat.id) > -1) {
+			if ( $rootScope.newLen > 0 && $rootScope.newMessages.indexOf(chat.secondUserId) > -1) {
 				$rootScope.newLen--;
-				$rootScope.newMessages.splice( $rootScope.newMessages.indexOf(chat.id) );
+				$rootScope.newMessages.splice( $rootScope.newMessages.indexOf(chat.secondUserId) );
 			}
 
-			$http.put('/chat/backend/requests/chat-messages.php?sentFrom=' + chat.id);
+			$http.put('/chat/backend/requests/chat-messages.php?sentFrom=' + chat.secondUserId);
 		};
 
 		$scope.newMessagesIds = [];
@@ -136,7 +136,7 @@ layoutApp.controller('chats', ['$scope', '$http', '$rootScope', '$interval', '$t
 
 	     			for (var i = 0; i < len; i++) {
 	     				for (var j = 0; j < chatLen; j++) {
-	     					if (data[i].sentFrom == $scope.chats[j].id) {
+	     					if (data[i].sentFrom == $scope.chats[j].secondUserId) {
 	     						var d = {
 	     							id: parseInt(data[i].id),
 									sentFrom: data[i].sentFrom,
@@ -169,6 +169,30 @@ layoutApp.controller('chats', ['$scope', '$http', '$rootScope', '$interval', '$t
 		 	}
 	    }, 3000);
 
+	    $scope.$on('newMes', function() {
+	    	var len = $scope.chats.length;
+
+	    	for (var i = 0; i < len; i++) {
+	    		if (($scope.chats[i].firstUserId == $rootScope.newMes.sentFrom && $scope.chats[i].secondUserId == $rootScope.newMes.sentTo) || ($scope.chats[i].firstUserId == $rootScope.newMes.sentTo && $scope.chats[i].secondUserId == $rootScope.newMes.sentFrom)) {
+	    			var newMessage = {
+	    				id: parseInt($rootScope.newMes.messageId),
+						sentFrom: $rootScope.newMes.sentFrom,
+						sentTo: $rootScope.newMes.sentTo,
+						content: $rootScope.newMes.content,
+						classId: 1
+	    			}
+
+	    			var g = $scope.chats[i].messages.filter(function(e) {
+	    				return (e.id == newMessage.id);
+	    			});
+
+	    			if (g.length == 0) {
+	    				$scope.chats[i].messages.push(newMessage);
+	    			}
+	    		}
+	    	}
+	    })
+
 		$scope.getCurrentInfo = function() { // current info of user
 			// get the user in the session
 			$http.get('/chat/backend/requests/users.php?flag=3').then(function(response) {
@@ -186,7 +210,7 @@ layoutApp.controller('chats', ['$scope', '$http', '$rootScope', '$interval', '$t
 
 		$scope.addChatMessages = function(chat) {
 			// load first ten messages
-			$http.get('/chat/backend/requests/chat-messages.php?firstUserId=' + $rootScope.currentUser.id + "&secondUserId=" + chat.id + "&classId=" + 1 + "&offset=" + $scope.offset).then(function(response) {
+			$http.get('/chat/backend/requests/chat-messages.php?firstUserId=' + chat.firstUserId + "&secondUserId=" + chat.secondUserId + "&classId=" + 1 + "&offset=" + $scope.offset).then(function(response) {
 				var data = response.data;
 				var len = data.length;
 
@@ -222,7 +246,7 @@ layoutApp.controller('chats', ['$scope', '$http', '$rootScope', '$interval', '$t
 
 			// remove it from the chats array
 			for (var i = 0; i < len; i++) {
-				if ($scope.chats[i].id == userId) {
+				if ($scope.chats[i].secondUserId == userId) {
 					$scope.chats.splice(i, 1);
 					break;
 				}
@@ -239,13 +263,20 @@ layoutApp.controller('chats', ['$scope', '$http', '$rootScope', '$interval', '$t
 
 			// check if user already in the chats array
 			x = $scope.chats.filter(function(e) {
-				return e.id == $rootScope.addedChat.id;
+				return e.secondUserId == $rootScope.addedChat.secondUserId;
 			});
 
-			if (x <= 0) {
+			if (x.length == 0) {
 				data = $rootScope.addedChat;
 				$scope.addChatMessages(data);
 				$http.put('/chat/backend/requests/users.php?flag=1', data);
+			}
+			else {
+				if (x[0].open == 0) {
+					$http.put('/chat/backend/requests/users.php?chatId=' + x[0].secondUserId + '&open=1').then(function(response) {
+						x[0].open = 1;
+					});
+				}
 			}
 		});
 
@@ -253,8 +284,8 @@ layoutApp.controller('chats', ['$scope', '$http', '$rootScope', '$interval', '$t
 			if (user.message != undefined && user.message != '') {
 				// prepare the data
 				var data = {
-					sentFrom: $rootScope.currentUser.id,
-					sentTo: user.id,
+					sentFrom: user.firstUserId,
+					sentTo: user.secondUserId,
 					content: user.message,
 					classId: 1
 				};
@@ -268,7 +299,7 @@ layoutApp.controller('chats', ['$scope', '$http', '$rootScope', '$interval', '$t
 					var len = $scope.chats.length;
 
 					for (var i = 0; i < len; i++) {
-						if ($scope.chats[i].id == user.id) { // get his receiver chat window
+						if ($scope.chats[i].secondUserId == user.id) { // get his receiver chat window
 							if ($scope.chats[i].messages.length >= 10) {
 								$scope.chats[i].messages.pop();
 							}

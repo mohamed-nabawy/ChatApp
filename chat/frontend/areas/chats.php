@@ -10,21 +10,21 @@
 
 					<span ng-bind="c.firstName" class="name-position"></span>
 
-					<span class="close-chat-window" ng-click="closeWindow(c.id)" title="close">x</span>
+					<span class="close-chat-window" ng-click="closeWindow(c.secondUserId)" title="close">x</span>
 				
 				</div>
 
-				<div id="chat{{c.id}}" class="chat-window" scroll-to-top="1">
+				<div id="chat{{c.secondUserId}}" class="chat-window" scroll-to-top="1">
 
 					<li ng-repeat="m in c.messages | orderBy: '-id'" class="each-message">
 
-						<div ng-if="m.sentFrom == c.id" style="background-color: grey;border: 2px solid grey;left: 10px;position: relative;text-align: center;max-width: 125px" class="message-content">
+						<div ng-if="m.sentFrom == c.secondUserId" style="background-color: grey;border: 2px solid grey;left: 10px;position: relative;text-align: center;max-width: 125px" class="message-content">
 
 							<div ng-bind="m.content"></div>
 
 						</div>
 
-						<div ng-if="m.sentTo == c.id" id="mes{{m.id}}" style="background-color: mediumblue;border: 2px solid mediumblue;left: 60px;text-align: center;max-width: 125px" class="message-content">
+						<div ng-if="m.sentTo == c.secondUserId" style="background-color: mediumblue;border: 2px solid mediumblue;left: 60px;text-align: center;max-width: 125px" class="message-content">
 
 							<div ng-bind="m.content"></div>
 							

@@ -10,7 +10,7 @@
         $users = $_SESSION['chats'];
         
         foreach ($users as $key => $value) {
-          $messages = getMessagesBetweenUsersIdsInClass($conn, $_SESSION['userId'], $value->id, 1, 0);
+          $messages = getMessagesBetweenUsersIdsInClass($conn, $value->firstUserId, $value->secondUserId, 1, 0);
           $value->messages = $messages;
         }
 

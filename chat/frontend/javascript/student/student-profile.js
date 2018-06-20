@@ -1,7 +1,7 @@
 layoutApp.controller('studentProfile', ['$scope', '$rootScope', '$http', function($scope, $rootScope, $http) {
-	$scope.getMyClassMatesAndTeachers = function() {
-		$scope.messages = [];
+	$scope.messages = [];
 
+	$scope.getMyClassMatesAndTeachers = function() {	
 		$http.get('/chat/backend/requests/users.php').then(function(response) {
 			$scope.myClassMatesAndTeachers = response.data;
 		});
@@ -22,7 +22,6 @@ layoutApp.controller('studentProfile', ['$scope', '$rootScope', '$http', functio
 	$scope.setAllNotificationsToRead = function($event) {
 		if ($scope.lastMessagesClicked == 0) {
 			$scope.lastMessagesClicked = 1;
-			$('nav').css('height', '62px');
 		}
 		else {
 			$scope.lastMessagesClicked = 0;
@@ -31,12 +30,11 @@ layoutApp.controller('studentProfile', ['$scope', '$rootScope', '$http', functio
 		$event.stopPropagation();
 		$rootScope.newMessages = [];
 		$rootScope.newLen = 0;
-
 		$http.put('/chat/backend/requests/chat-messages.php?flag=1');
 	}
 	
 	$rootScope.getAllMessages = function() {
-		$http.get('/chat/backend/requests/chat-messages.php?flag=2&offset=' + $scope.offset).then(function(response) {
+		$http.get('/chat/backend/requests/chat-messages.php?flag=2&offset=0').then(function(response) {
 			var data = response.data;
 			var len = data.length;
 			var lenMes = $scope.messages.length;
@@ -64,6 +62,8 @@ layoutApp.controller('studentProfile', ['$scope', '$rootScope', '$http', functio
 					}
 
 					$scope.messages.push(data[i]);
+					$rootScope.newMes = data[i];
+					$rootScope.$broadcast('newMes');
 				}
 			}
 		});
@@ -73,7 +73,8 @@ layoutApp.controller('studentProfile', ['$scope', '$rootScope', '$http', functio
 
 	$scope.addChatWindow = function(data) { // this will communicate with chats controller in layout
 		var user = {
-			id: data.id,
+			firstUserId: $rootScope.currentUser.id,
+			secondUserId: data.id,
 			firstName: data.firstName,
 			open: 1
 		};
@@ -123,10 +124,13 @@ layoutApp.directive('scrollToDown', ['$http', function($http) {
 				});
 			}
 
-			elem.bind('mouseup', function() {
+			elem.bind('scroll', function(e) {
 				// make sure the element is at the top
-				if (elem[0].scrollTop <= 150) {
-					loadAnother();
+				// check if it's not the wheel (only the scrollbar)
+				if (e.originalEvent.deltaY == undefined) {
+					if (elem[0].scrollTop <= 150) {
+						loadAnother();
+					}
 				}
 			});
 
