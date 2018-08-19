@@ -156,6 +156,15 @@ nav div ul li {
 	margin-bottom: 2px;
 }
 
+.phone {
+	position: relative;
+	right: -20px;
+}
+
+.phone:hover {
+	background-color: green;
+}
+
 .name-position {
 	position: relative;
 	left: 90px;

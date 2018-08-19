@@ -8,6 +8,8 @@
 
 				<div class="chat-head" ng-click="showHideChat($index)" ng-class="{hideShowChats: c.open == 0}">
 
+					<span class="phone" title="call" ng-click="call(c)"><i class="fa fa-phone"></i></span>
+
 					<span ng-bind="c.firstName" class="name-position"></span>
 
 					<span class="close-chat-window" ng-click="closeWindow(c.secondUserId)" title="close">x</span>

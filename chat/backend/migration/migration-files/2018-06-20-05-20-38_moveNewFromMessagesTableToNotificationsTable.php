@@ -6,11 +6,11 @@
 
 	$up = function($conn) {
 		column::dropColumn($conn, 'chatmessages', 'new');
-		column::addColumn($conn, 'notifications', 'new', ['type' => 'tinyint']);
+		column::addColumn($conn, 'notifications', 'new', ['type' => 'tinyint', 'default' => 0]);
 	};
 
 	$down = function($conn) {
-		olumn::dropColumn($conn, 'notifications', 'new');
-		column::addColumn($conn, 'chatmessages', 'new', ['type' => 'tinyint']);
+		column::dropColumn($conn, 'notifications', 'new');
+		column::addColumn($conn, 'chatmessages', 'new', ['type' => 'tinyint', 'default' => 0]);
 	};
 	
