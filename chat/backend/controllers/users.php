@@ -1,6 +1,6 @@
 <?php
-  require(__DIR__ . '/../functions.php');
-  require(__DIR__ . '/../image-handle.php');
+  require(dirname(__FILE__, 2) . '/functions.php');
+  require(dirname(__FILE__, 2) . '/image-handle.php');
 
   function getUsers($conn) { // in the same class
     $sql = "select * from `users` where `id` != " . $_SESSION['userId'];

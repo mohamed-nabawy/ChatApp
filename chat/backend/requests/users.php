@@ -1,7 +1,7 @@
 <?php
-  require(__DIR__ . '/../controllers/users.php');
-  require(__DIR__ . '/../controllers/chat-messages.php');
-  require(__DIR__ . '/../test-request-input.php');
+  require(dirname(__FILE__, 2) . '/controllers/users.php');
+  require(dirname(__FILE__, 2) . '/controllers/chat-messages.php');
+  require(dirname(__FILE__, 2) . '/test-request-input.php');
 
   if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     //if ($_SESSION['roleId'] == 1) // admin only can call these methods
@@ -109,5 +109,5 @@
     }
   }
 
-  require(__DIR__ . '/../footer.php');
+  require(dirname(__FILE__, 2) . '/footer.php');
 ?>

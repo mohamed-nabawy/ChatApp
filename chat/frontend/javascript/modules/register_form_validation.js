@@ -25,8 +25,9 @@ registerFormApp.directive('check', ['$http', function($http) {
               Email: val
             };
 
-            $http.post('/ChatApp/chat/backend/Requests/users.php?flag=2', x).then(function(response) {
-              if (response.data == true) {
+            $http.post('/chat/backend/Requests/users.php?flag=2', x).then(function(response) {
+              console.log(response);
+              if (response.data == "1") {
                 ctrl.$setValidity('emailExisted', false);
                 ctrl.$setValidity('emailEmpty', true);
 
@@ -180,8 +181,8 @@ registerFormApp.directive('check', ['$http', function($http) {
               Email: val
             };
 
-            $http.post('/ChatApp/chat/backend/Requests/users.php?flag=2', x).then(function(response) {
-              if (response.data == true) {
+            $http.post('/chat/backend/Requests/users.php?flag=2', x).then(function(response) {
+              if (response.data == "1") {
                 ctrl.$setValidity('emailExisted', false);
                 ctrl.$setValidity('emailEmpty', true);
               }
