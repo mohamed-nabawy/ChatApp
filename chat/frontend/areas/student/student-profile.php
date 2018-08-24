@@ -1,6 +1,6 @@
 <?php 
 	require(dirname(__DIR__, 3) . '/backend/functions.php');
-	validatePageAccess($conn)
+	validatePageAccess([1]);
 ?>
 
 <!DOCTYPE html>

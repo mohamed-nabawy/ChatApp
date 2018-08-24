@@ -122,25 +122,67 @@
     }
   }
 
-  function validatePageAccess($conn) { // using hash
-    confirm_logged_in();
-    $query = "SELECT `name` FROM `directories` WHERE `id` IN ( SELECT `dirId` FROM `directoryroles` WHERE `roleId` = {$_SESSION['roleId']} )"; // add RoleId
-    $result_set = mysqli_query($conn, $query);
-    confirmQuery($result_set);
+  // function validatePageAccess($conn) { // using hash
+  //   confirm_logged_in();
+  //   $query = "SELECT `name` FROM `directories` WHERE `id` IN ( SELECT `dirId` FROM `directoryroles` WHERE `roleId` = {$_SESSION['roleId']} )"; // add RoleId
+  //   $result_set = mysqli_query($conn, $query);
+  //   confirmQuery($result_set);
 
-    if ($result_set) {
-      $dirs = mysqli_fetch_all($result_set, MYSQLI_ASSOC); // ??
+  //   if ($result_set) {
+  //     $dirs = mysqli_fetch_all($result_set, MYSQLI_ASSOC); // ??
 
-      foreach ($dirs as $key => $value) {
-        if ( strpos(getcwd(), $value['name']) !== false ) {
-          return;
-        }
-      }
+  //     foreach ($dirs as $key => $value) {
+  //       if (strpos(getcwd(), $value['name']) !== false) {
+  //         return;
+  //       }
+  //     }
 
-      echo "<h1 style='color: red'>Access Denied .</h2>";
+  //     echo "<h1 style='color: red'>Access Denied .</h2>";
 
-      exit;
+  //     exit;
+  //   }
+  // }
+
+  function validatePageAccess($permittedLevels, $checklogging = true) {
+    // want to permit for admin to see menus in its customer view
+    if ($checklogging) {
+      confirm_logged_in();
     }
+
+    $permitted = false;
+
+    foreach ($permittedLevels as $key => $value) {
+      if ($value == $_SESSION['roleId']) {
+        $permitted = true;
+      }
+    }
+
+    if (!$permitted) {
+      // echo "<h1 style ='color:red;' > Access denied ^_^ ! </h2>";
+      // exit();
+      redirect_to('/login');
+    }
+
+    // $query  = "SELECT `Dir` FROM `dir` WHERE `Id` IN (SELECT `DirId` FROM `dir_role` WHERE `RoleId` = {$_SESSION['roleId']} ) ";  // add RoleId
+    // $result_set = mysqli_query($conn, $query);
+    // confirmQuery($result_set);
+
+    // var_dump($result_set);
+
+    // if ($result_set) {
+    //   $dirs = mysqli_fetch_all($result_set, MYSQLI_ASSOC); // ??
+
+    //   foreach ($dirs as $key => $value) {
+    //     var_dump($value['Dir']);
+    //     if (strpos( getcwd(), $value['Dir'] ) !== false) {
+    //       return;
+    //     }
+    //   }
+    //   var_dump(getcwd());
+
+    //   echo "<h1 style ='color:red;' > Access denied . </h2>";
+    //   exit();
+    // }
   }
 
   function randomPassword() {
