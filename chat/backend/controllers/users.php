@@ -1,6 +1,7 @@
 <?php
-  require(dirname(__FILE__, 2) . '/functions.php');
-  require(dirname(__FILE__, 2) . '/image-handle.php');
+  require(dirname(__DIR__) . '/functions.php');
+  require(dirname(__DIR__) . '/image-handle.php');
+  require(dirname(__DIR__) . '/mail-sender.php');
 
   function getUsers($conn) { // in the same class
     $sql = "select * from `users` where `id` != " . $_SESSION['userId'];
@@ -88,10 +89,10 @@
     }
     else {
       if ($genderId == 1) {
-        $Image = '/ChatApp/chat/backend/uploads/maleimage.jpg';
+        $Image = '/chat/backend/uploads/maleimage.jpg';
       }
       elseif ($genderId == 2) {
-        $Image = '/ChatApp/chat/backend/uploads/femaleimage.jpg';
+        $Image = '/chat/backend/uploads/femaleimage.jpg';
       }
     }
 
@@ -103,6 +104,8 @@
       $_SESSION['userId'] = $user_id;
       $_SESSION['roleId'] = $roleId;
       $_SESSION['chats'] = [];
+
+      sendMail($email, $user_id, $phoneNumber);
       //header("Location: ". "../../frontend/areas/student/student-profile.php");
       
       return $user_id;

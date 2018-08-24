@@ -75,7 +75,7 @@ if ( isset($_POST['submit']) ) {
     	//handling image uploaded
     	$temp_name = $_FILES['image']['tmp_name'];
     	$target_file = basename($_FILES['image']['name']);
-    	$upload_direc = "ChatApp/chat/backend/uploads/";
+    	$upload_direc = "chat/backend/uploads/";
     	move_uploaded_file($temp_name, $upload_direc . $target_file);//return true on success
  	    $roleId = getRoleIdByName($conn, 'Customer');
 		  $localeId = 1;

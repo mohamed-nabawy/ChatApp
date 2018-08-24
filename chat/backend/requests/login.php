@@ -1,7 +1,7 @@
 <?php
-  require(dirname(__FILE__, 2) . '/functions.php');
-  require(dirname(__FILE__, 2) . '/controllers/dates.php');
-  require(dirname(__FILE__, 2) . '/validation-functions.php');
+  require(dirname(__DIR__) . '/functions.php');
+  require(dirname(__DIR__) . '/controllers/dates.php');
+  require(dirname(__DIR__) . '/validation-functions.php');
 
   if ( isset($_GET['redirect_to']) ) {
     $_POST['redirect_to'] = $_GET['redirect_to'];
@@ -38,14 +38,14 @@
 
         }
         if ($_SESSION['roleId'] == 1) {
-          header("Location: " . "../../frontend/areas/student/student-profile.php");
+          header("Location: " . "/chat/frontend/areas/student/student-profile.php");
         }
       }
       else {
         // Failure
 
         $_SESSION['message'] = "Username/password not found.";
-        header("Location: " . "../../frontend/login.php");
+        header("Location: " . "/chat/frontend/login.php");
       }
     }
     // if already logged in and called login page
@@ -54,5 +54,5 @@
     } // end: if (isset($_POST['submit']))
   }
 
-  require(dirname(__FILE__, 2) . '/footer.php');
+  require(dirname(__DIR__) . '/footer.php');
 ?>

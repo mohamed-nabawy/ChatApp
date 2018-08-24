@@ -1,5 +1,5 @@
 <?php 
-	require(dirname(__FILE__, 4) . '/backend/functions.php');
+	require(dirname(__DIR__, 3) . '/backend/functions.php');
 	validatePageAccess($conn)
 ?>
 

@@ -1,6 +1,6 @@
 <?php 	
-  require_once(dirname(__FILE__) . '/session.php');
-  require_once(dirname(__FILE__) . '/connection.php'); 
+  require_once(__DIR__ . '/session.php');
+  require_once(__DIR__ . '/connection.php'); 
 
 	function redirect_to($new_location) {
 	  header("Location: " . $new_location);
@@ -132,7 +132,7 @@
       $dirs = mysqli_fetch_all($result_set, MYSQLI_ASSOC); // ??
 
       foreach ($dirs as $key => $value) {
-        if ( strpos(getcwd(), dirname(__FILE__, 3) . $value['name']) !== false ) {
+        if ( strpos(getcwd(), $value['name']) !== false ) {
           return;
         }
       }

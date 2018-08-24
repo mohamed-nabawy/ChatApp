@@ -1,7 +1,7 @@
 <?php
-  require(dirname(__FILE__, 2) . '/controllers/chat-messages.php');
-  require(dirname(__FILE__, 2) . '/test-request-input.php');
-  require_once(dirname(__FILE__, 2) . '/session.php');
+  require(dirname(__DIR__) . '/controllers/chat-messages.php');
+  require(dirname(__DIR__) . '/test-request-input.php');
+  require_once(dirname(__DIR__) . '/session.php');
 
   //var_dump($_SERVER);
 
@@ -72,5 +72,5 @@
   //   }
   // }
 
-  require(dirname(__FILE__, 2) . '/footer.php');
+  require(dirname(__DIR__) . '/footer.php');
 ?>

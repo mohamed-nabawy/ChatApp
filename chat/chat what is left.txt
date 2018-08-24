@@ -1,3 +1,6 @@
+backend :
+	- cropped image not saved to database
+
 frontend and backend :
 	- video & audio
 

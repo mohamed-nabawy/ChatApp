@@ -1,7 +1,7 @@
 <?php
-  require(dirname(__FILE__, 2) . '/controllers/users.php');
-  require(dirname(__FILE__, 2) . '/controllers/chat-messages.php');
-  require(dirname(__FILE__, 2) . '/test-request-input.php');
+  require(dirname(__DIR__) . '/controllers/users.php');
+  require(dirname(__DIR__) . '/controllers/chat-messages.php');
+  require(dirname(__DIR__) . '/test-request-input.php');
 
   if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     //if ($_SESSION['roleId'] == 1) // admin only can call these methods
@@ -40,7 +40,7 @@
         
         // normalizeString($conn, $_FILES['image']['name']);
         // echo addUser($conn, $_POST['firstName'], $_POST['lastName'], $_FILES['image'], $_POST['email'], $_POST['phone'], $_POST['password'], $_POST['DOB'], $_POST['genderId'], 1);
-        //header("Location: ". "/ChatApp/chat/frontend/areas/student/student-profile.php");
+        //header("Location: ". "/chat/frontend/areas/student/student-profile.php");
 
 
         if (isset($_POST['update']) && $_POST['update'] == 1) {
@@ -50,7 +50,7 @@
           $h  = $_POST['h'];
 
           handlePictureUpdate($conn, $_FILES['image'], $x1, $y1, $w, $h);
-          header("Location: " . '/ChatApp/chat/frontend/areas/student/student-profile.php');
+          header("Location: " . '/chat/frontend/areas/student/student-profile.php');
         }
         else {
           $result = isset($_POST['firstName'], $_POST['lastName'], $_POST['phone'], $_POST['email'], $_POST['DOB'], $_POST['genderId'], $_POST['password']) && normalizeString($conn, $_POST['firstName'], $_POST['lastName']) && testPhone($_POST['phone']) && testEmail($_POST['email']) && testDateOfBirth($_POST['DOB']) && testInt($_POST['genderId']) && testPassword($_POST['password']) && ($_POST['confirmPassword'] == $_POST['password']);
@@ -68,16 +68,16 @@
             $_SESSION['image'] = $x['image'];
             $_SESSION['email']  = $_POST['email'];
             $_SESSION['croppedImage'] = $x['croppedImage'];
-            header("Location: " . '/ChatApp/chat/frontend/areas/student/student-profile.php');
+            header("Location: " . '/chat/frontend/areas/student/student-profile.php');
           }
           else {
-            header("Location: " . '/ChatApp/chat/frontend/register.php');
+            header("Location: " . '/chat/frontend/register.php');
           }
         }
       }
     }
     // else {
-    //   header("Location: " . '/ChatApp/chat/frontend/register.php');
+    //   header("Location: " . '/chat/frontend/register.php');
     // }
   }
 
@@ -109,5 +109,5 @@
     }
   }
 
-  require(dirname(__FILE__, 2) . '/footer.php');
+  require(dirname(__DIR__) . '/footer.php');
 ?>

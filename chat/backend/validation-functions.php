@@ -1,5 +1,5 @@
 <?php
-  $errors = array();
+  $errors = [];
 
   function test_inputs($conn, $array) {
     foreach ($array as $data) {

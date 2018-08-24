@@ -1,5 +1,5 @@
 <?php
-	require(__DIR__ . '/lib/vendor/autoload.php');
+	require(dirname(__DIR__, 2) . '/vendor/autoload.php');
 
 	use PHPMailer\PHPMailer\PHPMailer;
 	use PHPMailer\PHPMailer\Exception;
@@ -17,21 +17,21 @@
 			$mail->Password = 'nacxgewvqqhvydoa';                 // SMTP password
 			$mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
 			$mail->Port = 587;                                    // TCP port to connect to
-			$mail->setFrom('mostafaelsayed9419@gmail.com', 'Cafeteria App');
+			$mail->setFrom('mostafaelsayed9419@gmail.com', 'Chat App');
 			$mail->addAddress($email, "");
-			$mail->Subject = "Cafeteria App Info Confirm";
-			$bodyHref = "http://127.0.0.1/CafeteriaApp/CafeteriaApp/CafeteriaApp.Frontend/infoConfirm.php?acc=" . $acc . "&hashKey=" . $hashKey . "&userId=" . $user_id;
+			$mail->Subject = "Chat App Info Confirm";
+			$bodyHref = "http://127.0.0.1/chat/frontend/infoConfirm.php?acc=" . $acc . "&hashKey=" . $hashKey . "&userId=" . $user_id;
 			$mail->Body = '<p>thank you for joining us, click on <a href=' . $bodyHref . '>this</a> to confirm</p>';
 			$mail->IsHTML(true);
 
 			// only on localhost
-			$mail->SMTPOptions = array(
-				'ssl' => array(
-					'verify_peer' => false,
-					'verify_peer_name' => false,
-					'allow_self_signed' => true
-				)
-			);
+			// $mail->SMTPOptions = array(
+			// 	'ssl' => array(
+			// 		'verify_peer' => false,
+			// 		'verify_peer_name' => false,
+			// 		'allow_self_signed' => true
+			// 	)
+			// );
 		    
 			$result = $mail->Send();
 		}
