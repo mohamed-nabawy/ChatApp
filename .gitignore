@@ -1,4 +1,3 @@
-chat/backend/connection.php
 chat/backend/uploads
 vendor
 chatdb.sql
