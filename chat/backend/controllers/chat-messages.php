@@ -123,6 +123,13 @@ from (
   function sendMessage($conn, $content, $sentFrom, $sentTo, $classId) {
     // date and time are from no
     $dateId = getCurrentDateId($conn);
+
+    if ($dateId === false) {
+      $today = date("Y-m-d");
+      addDate($conn, $today);
+      $dateId = getCurrentDateId($conn);
+    }
+
     $timeId = getCurrentTimeId($conn);
     $messageId = 0;
 

@@ -79,21 +79,35 @@
       return "email already existed";
     }
 
-    $sql = "insert into `users` (firstName, lastName, image, email, phoneNumber, passwordHash, dateOfBirth, genderId, roleId) values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $sql = "insert into `users` (firstName, lastName, image, email, phoneNumber, passwordHash, dateOfBirth, genderId, roleId, croppedImage, imageSet) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
     $pass =  password_encrypt($password);
-    $stmt->bind_param("sssssssii", $firstName, $lastName, $Image, $email, $phoneNumber, $pass, $dateOfBirth, $genderId, $roleId);
+    $stmt->bind_param("sssssssiisi", $firstName, $lastName, $image, $email, $phoneNumber, $pass, $dateOfBirth, $genderId, $roleId, $croppedImage, $imageSet);
 
-    if (isset($image) && $image['size'] != 0) {
-      $Image = addImageFile($image, $email, $x1, $y1, $w, $h)[0];
+    if ($image != null && $image['size'] != 0) {
+      $imageRes = addImageFile($image, $email, $x1, $y1, $w, $h);
+      $image = $imageRes[0];
+      $croppedImage = $imageRes[1];
+      $_SESSION['imageSet'] = 1;
+      $imageSet = 1;
     }
     else {
-      if ($genderId == 1) {
-        $Image = '/chat/backend/uploads/maleimage.jpg';
+      $_SESSION['imageSet'] = 0;
+      $imageSet = 0;
+      $image = '/uploads/';
+
+      if ($genderId == 1) { // male
+        $image .= 'maleimage.jpeg';
       }
-      elseif ($genderId == 2) {
-        $Image = '/chat/backend/uploads/femaleimage.jpg';
+      else if ($genderId == 2) {
+        $image .= 'femaleimage.jpeg';
       }
+      else {
+        echo "error";
+        return;
+      }
+
+      $croppedImage = $image;
     }
 
     if ($stmt->execute() === TRUE) {
