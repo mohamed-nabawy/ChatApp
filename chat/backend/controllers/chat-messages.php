@@ -1,7 +1,7 @@
 <?php
   require_once(dirname(__DIR__) . '/connection.php');
-  require(__DIR__ . '/Times.php');
-  require(__DIR__ . '/Dates.php');
+  require(__DIR__ . '/times.php');
+  require(__DIR__ . '/dates.php');
 
   function getMessagesBetweenUsersIdsInClass($conn, $firstUserId, $secondUserId, $classId, $offset) {  
     $sql = "select * from `chatmessages` where `sentFrom` in ({$firstUserId}, {$secondUserId}) and `sentTo` in ({$firstUserId},{$secondUserId}) order by `id` desc limit {$offset}, 10"; // can be order in the front end
