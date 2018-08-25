@@ -24,6 +24,9 @@
   			$_SESSION['userName'] = $found_user['userName'];
         $_SESSION['roleId'] = $found_user['roleId'];
         $_SESSION['chats'] = []; // empty array of chats
+        $_SESSION['image'] = $found_user['image'];
+        $_SESSION['croppedImage'] = $found_user['croppedImage'];
+        $_SESSION['email'] = $found_user['email'];
       
         // record date
         if (!getCurrentDateId($conn) ) { // make the server add it automatically

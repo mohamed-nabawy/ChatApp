@@ -1,8 +1,22 @@
-<nav class="navbar navbar-fixed-top navbar-inverse" style="position: fixed">
+<nav class="navbar navbar-fixed-top navbar-inverse" style="position: fixed" ng-cloak>
 
 	<div class="container-fluid" id="myNavbar">
 
 		<ul class="nav navbar-nav navbar-right">
+
+			<li>
+				<img class="dropdown-toggle img-circle" id="croppedLayout" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" src="<?php echo $_SESSION['croppedImage']; ?>" style="margin-top: 10px;cursor: pointer;width: 30px;height: 30px;position: relative;right: 10px" />
+
+				<div class="dropdown-menu">
+
+	                <span>
+
+	                	<a data-toggle="modal" data-target="#myModal" style="cursor: pointer;" value="Update">Update</a>
+
+	                </span>
+
+	            </div>
+            </li>
 
 			<li><a href="#">Home</a></li>
 
@@ -10,13 +24,13 @@
 
 				<a class="toggleChats">
 
-					<i class="fa fa-comments" ng-cloak>
+					<i class="fa fa-comments">
 						<span ng-show="newLen > 0" ng-bind={{newLen}} class="badge1"></span>
 					</i>
 
 				</a>
 
-				<div style="width: 160px;position: absolute;margin-top: -5px;height: 300px;overflow-y: scroll;overflow-x: hidden;" ng-cloak ng-show="lastMessagesClicked == 1" class="panel wrapword" scroll-to-down>
+				<div style="width: 160px;position: absolute;margin-top: -5px;height: 300px;overflow-y: scroll;overflow-x: hidden;" ng-show="lastMessagesClicked == 1" class="panel wrapword" scroll-to-down>
 
 					<!-- the minus sign is for descending order -->
 					<div ng-repeat="m in messages | orderBy: '-messageId'" class="mes" ng-click="addChatWindow(m)">

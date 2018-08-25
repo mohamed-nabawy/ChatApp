@@ -8,7 +8,7 @@
 
     <meta http-equiv="X-UA-Compatible" name="viewport" charset="utf-8" content="IE=11,width=device-width,initial-scale=1.0">
 
-    <link rel="icon" href="../favicon.ico">
+    <link rel="icon" href="/chat/favicon.ico">
   
     <link href="css/errors.css" rel="stylesheet" type="text/css">
 

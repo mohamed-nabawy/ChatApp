@@ -1,6 +1,33 @@
 layoutApp.controller('studentProfile', ['$scope', '$rootScope', '$http', function($scope, $rootScope, $http) {
 	$scope.messages = [];
 
+	$scope.imageUrl = '';
+	$scope.csrf_token = document.getElementById('csrf_token').value;
+
+	$scope.updateImage = function() {
+		if ($scope.myform.$valid) {
+			var data = {
+				Image: $('#myimg').attr('src'),
+				csrf_token: $scope.csrf_token,
+				x1: $('#x1').val(),
+				y1: $('#y1').val(),
+				w: $('#w').val(),
+				h: $('#h').val()
+			};
+
+			$('#myModal').hide();
+
+			$http.post('/chat/backend/requests/users.php?update=1', data).then(function(response) {
+				console.log(response);
+				//$scope.i++;
+				//$('#cropped').html($('#cropped').attr('src'));
+				// $('#cropped').attr('src', $('#cropped').attr('src') + '?' + $scope.i);
+				// $('#croppedLayout').attr('src', $('#croppedLayout').attr('src') + '?' + $scope.i);
+				location.reload();
+			});
+		}
+	};
+
 	$scope.getMyClassMatesAndTeachers = function() {	
 		$http.get('/chat/backend/requests/users.php').then(function(response) {
 			$scope.myClassMatesAndTeachers = response.data;

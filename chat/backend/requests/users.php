@@ -33,7 +33,23 @@
       $data = json_decode( file_get_contents('php://input') );
       $email = $data->Email;
       echo checkExistingEmail($conn, $email);
-    } 
+    }
+    elseif (isset($_GET['update']) && $_GET['update'] == 1) {
+      $data = json_decode( file_get_contents('php://input') );
+
+      if ( isset($data->x1, $data->y1, $data->w, $data->h) && ( ($data->x1 == '' && $data->y1 == '' && $data->w == '' && $data->h == '') || testMutipleInts($data->x1, $data->y1, $data->w, $data->h) ) ) {
+          $x1 = $y1 = $w = $h = null;
+
+          if ( ($data->x1 != '' && $data->y1 != '' && $data->w != '' && $data->h != '') ) {
+              $x1 = $data->x1;
+              $y1 = $data->y1;
+              $w  = $data->w;
+              $h  = $data->h;
+          }
+
+          handlePictureUpdate($conn, $data->Image, $x1, $y1, $w, $h);
+      }
+    }
     else {
       $result = isset($_POST['firstName'], $_POST['lastName'], $_POST['phone'], $_POST['email'], $_POST['DOB'], $_POST['genderId'], $_POST['password']) && normalizeString($conn, $_POST['firstName'], $_POST['lastName']) && testPhone($_POST['phone']) && testEmail($_POST['email']) && testDateOfBirth($_POST['DOB']) && testInt($_POST['genderId']) && testPassword($_POST['password']);
       if ($result) {
