@@ -123,6 +123,39 @@
     elseif (isset($_GET['id']) && testInt($_GET['id']) ) {
       deleteChat($_GET['id']);
     }
+    elseif (isset($_GET['f']) && $_GET['f'] == 1) {
+      $_SESSION['imageSet'] = 0;
+      $conn->query("update `users` set `imageSet` = 0 where `id` = '{$_SESSION['userId']}'");
+      $type = pathinfo($_SESSION['image'], PATHINFO_EXTENSION);
+      $imageFileName = dirname(__DIR__, 3) . '/uploads/' . $_SESSION['email'];
+      $croppedImageFileName = $imageFileName;
+
+      if ($type == 'jpeg') {
+          $imageFileName .= '.jpeg';
+          $croppedImageFileName .= '_crop.jpeg';
+
+      }
+      else {
+          $imageFileName .= '.png';
+          $croppedImageFileName .= '_crop.png';
+      }
+
+      unlink($croppedImageFileName);
+      unlink($imageFileName);
+
+      $_SESSION['image'] = '/uploads/';
+
+      if ($_SESSION['genderId'] == 1) { // male
+          $_SESSION['image'] .= 'maleimage.jpeg';
+      }
+      else {
+          $_SESSION['image'] .= 'femaleimage.jpeg';
+      }
+
+      $_SESSION['croppedImage'] = $_SESSION['image'];
+
+      $conn->query("update `users` set `image` = '{$_SESSION['image']}', `croppedImage` = '{$_SESSION['croppedImage']}' where `id` = '{$_SESSION['userId']}'");
+    }
   }
 
   require(dirname(__DIR__) . '/footer.php');

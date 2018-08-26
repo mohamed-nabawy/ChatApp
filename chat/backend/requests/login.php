@@ -27,6 +27,7 @@
         $_SESSION['image'] = $found_user['image'];
         $_SESSION['croppedImage'] = $found_user['croppedImage'];
         $_SESSION['email'] = $found_user['email'];
+        $_SESSION['genderId'] = $found_user['genderId'];
       
         // record date
         if (!getCurrentDateId($conn) ) { // make the server add it automatically

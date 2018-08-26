@@ -28,6 +28,12 @@ layoutApp.controller('studentProfile', ['$scope', '$rootScope', '$http', functio
 		}
 	};
 
+	$scope.delete = function() {
+		$http.delete('/chat/backend/requests/users.php?f=1').then(function(response) {
+			location.reload();
+		});
+	};
+
 	$scope.getMyClassMatesAndTeachers = function() {	
 		$http.get('/chat/backend/requests/users.php').then(function(response) {
 			$scope.myClassMatesAndTeachers = response.data;

@@ -9,11 +9,17 @@
 
 				<div class="dropdown-menu">
 
-	                <span>
+	                <div>
 
 	                	<a data-toggle="modal" data-target="#myModal" style="cursor: pointer;" value="Update">Update</a>
 
-	                </span>
+	                </div>
+
+	                <div>
+
+	                	<a ng-click="delete()" style="cursor: pointer;" type="submit">Delete</a>
+
+	                </div>
 
 	            </div>
             </li>
