@@ -1,15 +1,32 @@
-backend :
-	update profile picture
-frontend :
-	
 
-frontend and backend :
+frontend and/or backend :
+
 	- video & audio
 
+	- sometimes the updated profile photo not shown after update (need refresh or something)
+
+	- open chat window when someone sends you new message when you are online
+
+	- faster inserting for message
+
+	- faster marking message as read
+
+	- check if message is marked as read and the color should be go from grey to white when click on chat in the last messages array
+	
+	
+
 backend :
+
+	- object oriented way
+
+	- optional :
+
+		- try mongodb
 
 frontend :
 
+	- when logout the login info is overlapped with the labels
 
 	- optional :
+
 		- when always scroll

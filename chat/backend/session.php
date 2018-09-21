@@ -2,6 +2,10 @@
 	if ( !session_id() ) {
     	session_start();
 	}
+
+	if ( empty($_SESSION['csrf_token']) ) {
+	    $_SESSION['csrf_token'] = bin2hex( random_bytes(32) );
+	}
 	
 	// to use session to send a message to another page
 	function message() {

@@ -21,7 +21,7 @@
         // Success
   			// Mark user as logged in
   			$_SESSION['userId'] = $found_user['id'];
-  			$_SESSION['userName'] = $found_user['userName'];
+  			//$_SESSION['userName'] = $found_user['userName'];
         $_SESSION['roleId'] = $found_user['roleId'];
         $_SESSION['chats'] = []; // empty array of chats
         $_SESSION['image'] = $found_user['image'];

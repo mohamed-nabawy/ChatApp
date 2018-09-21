@@ -121,7 +121,6 @@
 		          <input type="hidden" name="h" id="h" value="" />
 
 		          <br><br>
-		        <!-- ng-show="<?php echo $_SESSION['imgFlag'] ?> != 1" -->
 		          <div style="text-align: center"><input type="submit" class="btn btn-primary" ng-click="updateImage()" /></div>
 		        </form>        
 

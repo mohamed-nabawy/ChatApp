@@ -41,3 +41,7 @@
 	overflow: hidden;
 	height: 50px;
 }
+
+.hideChatWindowContent {
+	display: none;
+}

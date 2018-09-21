@@ -16,35 +16,39 @@
 				
 				</div>
 
-				<div id="chat{{c.secondUserId}}" class="chat-window" scroll-to-top="1">
+				<div ng-class="{hideChatWindowContent: c.open == 0}">
 
-					<li ng-repeat="m in c.messages | orderBy: '-id'" class="each-message">
+					<div id="chat{{c.secondUserId}}" class="chat-window" scroll-to-top="1">
 
-						<div ng-if="m.sentFrom == c.secondUserId" style="background-color: grey;border: 2px solid grey;left: 10px;position: relative;text-align: center;max-width: 125px" class="message-content">
+						<li ng-repeat="m in c.messages | orderBy: '-id'" class="each-message">
 
-							<div ng-bind="m.content"></div>
+							<div ng-if="m.sentFrom == c.secondUserId" style="background-color: grey;border: 2px solid grey;left: 10px;position: relative;text-align: center;max-width: 125px" class="message-content">
 
-						</div>
+								<div ng-bind="m.content"></div>
 
-						<div ng-if="m.sentTo == c.secondUserId" style="background-color: mediumblue;border: 2px solid mediumblue;left: 60px;text-align: center;max-width: 125px" class="message-content">
+							</div>
 
-							<div ng-bind="m.content"></div>
-							
-						</div>
+							<div ng-if="m.sentTo == c.secondUserId" style="background-color: mediumblue;border: 2px solid mediumblue;left: 60px;text-align: center;max-width: 125px" class="message-content">
 
-					</li>
+								<div ng-bind="m.content"></div>
+								
+							</div>
 
-				</div>
+						</li>
 
-				<div>
+					</div>
 
-					<textarea type="text" class="message-input" ng-model="c.message" send-button placeholder="send a message..."></textarea>
+					<div>
 
-				</div>
+						<textarea type="text" class="message-input" ng-model="c.message" send-button placeholder="send a message..."></textarea>
 
-				<div>
+					</div>
 
-					<input type="submit" value="send" class="btn btn-primary send-button" ng-click="sendMessageToUser(c)" />
+					<div>
+
+						<input type="submit" value="send" class="btn btn-primary send-button" ng-click="sendMessageToUser(c)" />
+
+					</div>
 
 				</div>
 
