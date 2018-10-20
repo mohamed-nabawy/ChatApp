@@ -12,6 +12,8 @@ frontend and/or backend :
 	- faster marking message as read
 
 	- check if message is marked as read and the color should be go from grey to white when click on chat in the last messages array
+
+	- error handling
 	
 	
 

@@ -3,22 +3,26 @@
   require(dirname(__DIR__) . '/test-request-input.php');
   require_once(dirname(__DIR__) . '/session.php');
 
-  //var_dump($_SERVER);
+  $chatMessageController = new ChatMessageController();
 
   if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+
     if ( isset($_GET['firstUserId'], $_GET['secondUserId'], $_GET['offset']) && testInt($_GET['firstUserId'], $_GET['secondUserId'], $_GET['offset']) ) {
-      checkResult(getMessagesBetweenUsersIdsInClass($conn, $_GET['firstUserId'], $_GET['secondUserId'], $_GET['classId'], $_GET['offset']) );
-    } elseif ( isset($_GET['flag'], $_GET['offset']) && $_GET['flag'] == 2 && testInt($_GET['offset']) ) {
-      checkResult( getLastCurrentUserMessages($conn, $_GET['offset']) );
-    } elseif ( isset($_GET['flag']) && $_GET['flag'] == 3) {
-      checkResult( getMessageNotifications($conn) );
+      checkResult($chatMessageController->getMessagesBetweenUsersIdsInClass($conn, $_GET['firstUserId'], $_GET['secondUserId'], $_GET['classId'], $_GET['offset']) );
     }
-      elseif (isset($_GET['messageId']) && testInt($_GET['messageId']) ) {
-      checkMessageExistence($conn, $_GET['messageId']);
-    } else {
-      if ( checkNewMessageForUserIdInClass($conn, $_SESSION['userId'], 1)[0] > 0)
-        //echo( checkNewMessageForUserIdInClass($conn, $_SESSION['userId'], 1)[0] );
-        checkResult( recieveNewMessageForUserIdInClass($conn, $_SESSION['userId'], 1) );
+    elseif ( isset($_GET['flag'], $_GET['offset']) && $_GET['flag'] == 2 && testInt($_GET['offset']) ) {
+      checkResult( $chatMessageController->getLastCurrentUserMessages($conn, $_GET['offset']) );
+    }
+    elseif ( isset($_GET['flag']) && $_GET['flag'] == 3) {
+      checkResult( $chatMessageController->getMessageNotifications($conn) );
+    }
+    elseif (isset($_GET['messageId']) && testInt($_GET['messageId']) ) {
+      $chatMessageController->checkMessageExistence($conn, $_GET['messageId']);
+    }
+    else {
+      if ( $chatMessageController->checkNewMessageForUserIdInClass($conn, $_SESSION['userId'], 1)[0] > 0) {
+        checkResult( $chatMessageController->recieveNewMessageForUserIdInClass($conn, $_SESSION['userId'], 1) );
+      }
     }
   }
 
@@ -29,7 +33,7 @@
     testInt($data->sentFrom, $data->sentTo, $data->classId) && normalizeString($conn, $data->content);
 
     if ($result) {
-      echo sendMessage($conn, $data->content, $data->sentFrom, $data->sentTo, $data->classId);
+      echo $chatMessageController->sendMessage($conn, $data->content, $data->sentFrom, $data->sentTo, $data->classId);
     }
     else {
       //echo "error";
@@ -40,10 +44,10 @@
 
   if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
     if ( isset($_GET['sentFrom']) && testInt($_GET['sentFrom']) ) {
-      markMessageAsReadFromSomeUser($conn, $_GET['sentFrom']);
+      $chatMessageController->markMessageAsReadFromSomeUser($conn, $_GET['sentFrom']);
     }
     elseif (isset($_GET['flag']) && $_GET['flag'] == 1) {
-      markAllMessageNotificationsAsRead($conn);
+      $chatMessageController->markAllMessageNotificationsAsRead($conn);
     }
     
     //$messages = checkNewMessageForUserIdInClass($conn, $_SESSION['userId'], 1)[0];

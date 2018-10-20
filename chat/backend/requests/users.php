@@ -3,6 +3,9 @@
   require(dirname(__DIR__) . '/controllers/chat-messages.php');
   require(dirname(__DIR__) . '/test-request-input.php');
 
+  $chatMessageController = new ChatMessageController();
+  $userController = new UserController();
+
   if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     //if ($_SESSION['roleId'] == 1) // admin only can call these methods
     //{
@@ -10,20 +13,20 @@
         $users = $_SESSION['chats'];
         
         foreach ($users as $key => $value) {
-          $messages = getMessagesBetweenUsersIdsInClass($conn, $value->firstUserId, $value->secondUserId, 1, 0);
+          $messages = $chatMessageController->getMessagesBetweenUsersIdsInClass($conn, $value->firstUserId, $value->secondUserId, 1, 0);
           $value->messages = $messages;
         }
 
         checkResult($users);
       }
       elseif (isset($_GET['id']) && testInt($_GET['id']) ) {
-        checkResult( getUserById( $conn, $_GET['id'] ) );
+        checkResult( $userController->getUserById( $conn, $_GET['id'] ) );
       }
       elseif (isset($_GET['flag']) && testInt($_GET['flag']) && $_GET['flag'] == 3) {
-        checkResult( getCurrentUser($conn) );
+        checkResult( $userController->getCurrentUser($conn) );
       }
       else {
-        checkResult( getUsers($conn) );
+        checkResult( $userController->getUsers($conn) );
       }
     //}
   }
@@ -32,7 +35,7 @@
     if (isset($_GET['flag']) && $_GET['flag'] == 2) {
       $data = json_decode( file_get_contents('php://input') );
       $email = $data->Email;
-      echo checkExistingEmail($conn, $email);
+      echo $userController->checkExistingEmail($conn, $email);
     }
     elseif (isset($_GET['update']) && $_GET['update'] == 1) {
       $data = json_decode( file_get_contents('php://input') );
@@ -99,7 +102,7 @@
 
   if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
     if (isset($_GET['open'], $_GET['chatId']) && testInt($_GET['open'], $_GET['chatId']) ) {
-      openOrCloseChat($_GET['chatId'], $_GET['open']);
+      $userController->openOrCloseChat($_GET['chatId'], $_GET['open']);
     }
       // decode the json data
     elseif ( !isset( $_GET['flag'] ) ) {
@@ -108,20 +111,20 @@
 
       if ($result) {
         normalizeString($conn, $data->Image);
-        editUser($conn, $data->UserName, $data->FirstName, $data->LastName, $data->Email, $data->Image, $data->PhoneNumber, $data->RoleId, $data->Id);
+        $userController->editUser($conn, $data->UserName, $data->FirstName, $data->LastName, $data->Email, $data->Image, $data->PhoneNumber, $data->RoleId, $data->Id);
       }
     }
     elseif ($_GET['flag'] == 1) {
-      addChatUser( json_decode( file_get_contents('php://input') ) );
+      $userController->addChatUser( json_decode( file_get_contents('php://input') ) );
     }
   }
 
   if ($_SERVER['REQUEST_METHOD'] == 'DELETE') {
     if (isset($_GET['userId']) && testInt($_GET['userId']) ) {
-      deleteUser($conn, $_GET['userId']);
+      $userController->deleteUser($conn, $_GET['userId']);
     }
     elseif (isset($_GET['id']) && testInt($_GET['id']) ) {
-      deleteChat($_GET['id']);
+      $userController->deleteChat($_GET['id']);
     }
     elseif (isset($_GET['f']) && $_GET['f'] == 1) {
       $_SESSION['imageSet'] = 0;

@@ -1,5 +1,12 @@
 <?php
-function getTimes($conn) {
+
+/**
+ * 
+ */
+class Time
+{
+	
+public function getTimes($conn) {
   $sql = "select * from `times`";
   $result = $conn->query($sql);
 
@@ -13,7 +20,7 @@ function getTimes($conn) {
   }
 }
 
-function getTimeById($conn, $id) {
+public function getTimeById($conn, $id) {
   $sql = "select * from `times` where `id` = " . $id . " LIMIT 1";
   $result = $conn->query($sql);
 
@@ -27,7 +34,7 @@ function getTimeById($conn, $id) {
   }
 }
 
-function getTimeIdByTime($conn, $time) {
+public function getTimeIdByTime($conn, $time) {
   $sql = "select `id` from `times` where `time` = '{$time}' LIMIT 1";
   $result = $conn->query($sql);
 
@@ -41,7 +48,7 @@ function getTimeIdByTime($conn, $time) {
   }
 }
 
-function getCurrentTimeId($conn) {
+public function getCurrentTimeId($conn) {
   $time = date("h:i:00");
   $sql = "select `id` from `times` where `time` = '{$time}' LIMIT 1";
   $result = $conn->query($sql);
@@ -56,7 +63,7 @@ function getCurrentTimeId($conn) {
   }
 }
 
-function deleteTime($conn, $id) {
+public function deleteTime($conn, $id) {
   //$conn->query("set foreign_key_checks=0");
   $sql = "delete from Times where Id = ".$id. " LIMIT 1";
   
@@ -67,4 +74,10 @@ function deleteTime($conn, $id) {
     echo "Error: " . $conn->error;
   }
 }
-?>
+
+	
+	// function __construct(argument)
+	// {
+	// 	# code...
+	// }
+}
