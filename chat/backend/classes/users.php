@@ -9,10 +9,6 @@ require(dirname(__DIR__) . '/mail-sender.php');
  */
 class User
 {
-
-	
-  
-
   public function getUsers($conn) { // in the same class
     $sql = "select * from `users` where `id` != " . $_SESSION['userId'];
     $result = $conn->query($sql);

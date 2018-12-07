@@ -1,7 +1,9 @@
 <?php
   require(dirname(__DIR__) . '/functions.php');
-  require(dirname(__DIR__) . '/controllers/dates.php');
+  require(dirname(__DIR__) . '/classes/dates.php');
   require(dirname(__DIR__) . '/validation-functions.php');
+
+  $date = new Date();
 
   if ( isset($_GET['redirect_to']) ) {
     $_POST['redirect_to'] = $_GET['redirect_to'];
@@ -30,7 +32,7 @@
         $_SESSION['genderId'] = $found_user['genderId'];
       
         // record date
-        if (!getCurrentDateId($conn) ) { // make the server add it automatically
+        if (!$date->getCurrentDateId($conn) ) { // make the server add it automatically
           addTodayDate($conn, true);
         }
         
