@@ -7,19 +7,18 @@ frontend and/or backend :
 
 	- open chat window when someone sends you new message when you are online
 
-	- faster inserting for message
+	- faster inserting for message in the window
 
 	- faster marking message as read
 
-	- check if message is marked as read and the color should be go from grey to white when click on chat in the last messages array
+	- check if message is marked as read and the color should go from grey to white when click on chat in the last messages array
 
 	- error handling
-	
-	
+
 
 backend :
 
-	- object oriented way
+	- socket programming
 
 	- optional :
 

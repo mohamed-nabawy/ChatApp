@@ -180,7 +180,7 @@ layoutApp.controller('chats', ['$scope', '$http', '$rootScope', '$interval', '$t
 						sentTo: $rootScope.newMes.sentTo,
 						content: $rootScope.newMes.content,
 						classId: 1
-	    			}
+	    			};
 
 	    			var g = $scope.chats[i].messages.filter(function(e) {
 	    				return (e.id == newMessage.id);
@@ -304,7 +304,7 @@ layoutApp.controller('chats', ['$scope', '$http', '$rootScope', '$interval', '$t
 								$scope.chats[i].messages.pop();
 							}
 
-							$scope.chats[i].messages.unshift(data);
+							$scope.chats[i].messages.push(data);
 							$("#chat" + user.id).scrollTop(0);
 							break;
 						}

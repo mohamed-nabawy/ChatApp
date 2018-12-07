@@ -139,10 +139,6 @@ else { // if at first time load not submitting the form
 
       <div id="page" class="row" style="align-content:center;text-align:center">
 
-        <?php// echo message(); ?>
-
-        <?php //echo form_errors($errors); ?>
-
       </div>
       
       <h2 style="text-align: center;"> New User </h2>
