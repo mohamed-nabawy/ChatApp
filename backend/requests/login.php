@@ -44,14 +44,14 @@
 
         }
         if ($_SESSION['roleId'] == 1) {
-          header("Location: " . "/chat/frontend/areas/student/student-profile.php");
+          header("Location: " . "/frontend/areas/student/student-profile.php");
         }
       }
       else {
         // Failure
 
         $_SESSION['message'] = "Username/password not found.";
-        header("Location: " . "/chat/frontend/login.php");
+        header("Location: " . "/frontend/login.php");
       }
     }
     // if already logged in and called login page

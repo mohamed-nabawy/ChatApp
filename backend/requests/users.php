@@ -59,7 +59,7 @@
         
         // normalizeString($conn, $_FILES['image']['name']);
         // echo addUser($conn, $_POST['firstName'], $_POST['lastName'], $_FILES['image'], $_POST['email'], $_POST['phone'], $_POST['password'], $_POST['DOB'], $_POST['genderId'], 1);
-        //header("Location: ". "/chat/frontend/areas/student/student-profile.php");
+        //header("Location: ". "/frontend/areas/student/student-profile.php");
 
 
         if (isset($_POST['update']) && $_POST['update'] == 1) {
@@ -69,7 +69,7 @@
           $h  = $_POST['h'];
 
           handlePictureUpdate($conn, $_FILES['image'], $x1, $y1, $w, $h);
-          header("Location: " . '/chat/frontend/areas/student/student-profile.php');
+          header("Location: " . '/frontend/areas/student/student-profile.php');
         }
         else {
           $result = isset($_POST['firstName'], $_POST['lastName'], $_POST['phone'], $_POST['email'], $_POST['DOB'], $_POST['genderId'], $_POST['password']) && normalizeString($conn, $_POST['firstName'], $_POST['lastName']) && testPhone($_POST['phone']) && testEmail($_POST['email']) && testDateOfBirth($_POST['DOB']) && testInt($_POST['genderId']) && testPassword($_POST['password']) && ($_POST['confirmPassword'] == $_POST['password']);
@@ -80,23 +80,23 @@
             $w  = $_POST['w'];
             $h  = $_POST['h'];
             normalizeString($conn, $_FILES['image']['name']);
-            $userId = addUser($conn, $_POST['firstName'], $_POST['lastName'], $_FILES['image'], $_POST['email'], $_POST['phone'], $_POST['password'], $_POST['DOB'], $_POST['genderId'], 1, $x1, $y1, $w, $h);
+            $userId = $userController->addUser($conn, $_POST['firstName'], $_POST['lastName'], $_FILES['image'], $_POST['email'], $_POST['phone'], $_POST['password'], $_POST['DOB'], $_POST['genderId'], 1, $x1, $y1, $w, $h);
             $_SESSION['userId'] = $userId;
             $x = mysqli_fetch_assoc( $conn->query('select `image`, `croppedImage` from `users` where `id` = ' . $userId) );
             $_SESSION['genderId'] = $_POST['genderId'];
             $_SESSION['image'] = $x['image'];
             $_SESSION['email']  = $_POST['email'];
             $_SESSION['croppedImage'] = $x['croppedImage'];
-            header("Location: " . '/chat/frontend/areas/student/student-profile.php');
+            header("Location: " . '/frontend/areas/student/student-profile.php');
           }
           else {
-            header("Location: " . '/chat/frontend/register.php');
+            header("Location: " . '/frontend/register.php');
           }
         }
       }
     }
     // else {
-    //   header("Location: " . '/chat/frontend/register.php');
+    //   header("Location: " . '/frontend/register.php');
     // }
   }
 

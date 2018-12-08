@@ -14,15 +14,15 @@
 		<!-- if run with ie 10 compatible -->
 		<meta http-equiv="X-UA-Compatible" name="viewport" content="IE=11,width=device-width,initial-scale=1.0">
 
-		<link rel="icon" href="/chat/favicon.ico">
+		<link rel="icon" href="/favicon.ico">
 
-		<link rel="stylesheet" type="text/css" href="/chat/frontend/css/modules/bootstrap.css">
+		<link rel="stylesheet" type="text/css" href="/frontend/css/modules/bootstrap.css">
 
-		<link rel="stylesheet" type="text/css" href="/chat/frontend/css/student/student-layout.css">
+		<link rel="stylesheet" type="text/css" href="/frontend/css/student/student-layout.css">
 
-		<link rel="stylesheet" type="text/css" href="/chat/frontend/css/modules/font-awesome.css">
+		<link rel="stylesheet" type="text/css" href="/frontend/css/modules/font-awesome.css">
 
-		<link rel="stylesheet" type="text/css" href="/chat/frontend/css/student/student-profile.css" />
+		<link rel="stylesheet" type="text/css" href="/frontend/css/student/student-profile.css" />
 		
 	</head>
 
@@ -179,25 +179,25 @@
 		  }
 		</style>
 
-		<script type="text/javascript" src="/chat/frontend/javascript/modules/jquery-3.2.1.js"></script>
+		<script type="text/javascript" src="/frontend/javascript/modules/jquery-3.2.1.js"></script>
 
-		<script type="text/javascript" src="/chat/frontend/javascript/modules/bootstrap.js"></script>
+		<script type="text/javascript" src="/frontend/javascript/modules/bootstrap.js"></script>
 
-		<script type="text/javascript" src="/chat/frontend/javascript/modules/angular.js"></script>
+		<script type="text/javascript" src="/frontend/javascript/modules/angular.js"></script>
 
-		<script type="text/javascript" src="/chat/frontend/javascript/services/user-service.js"></script>
+		<script type="text/javascript" src="/frontend/javascript/services/user-service.js"></script>
 
-		<script type="text/javascript" src="/chat/frontend/javascript/services/message-service.js"></script>
+		<script type="text/javascript" src="/frontend/javascript/services/message-service.js"></script>
 
-		<script type="text/javascript" src="/chat/frontend/javascript/student/student-layout.js"></script>
+		<script type="text/javascript" src="/frontend/javascript/student/student-layout.js"></script>
 
-		<script type="text/javascript" src="/chat/frontend/javascript/student/student-profile.js"></script>
+		<script type="text/javascript" src="/frontend/javascript/student/student-profile.js"></script>
 
-		<link rel="stylesheet" type="text/css" href="/chat/frontend/javascript/modules/croppie/croppie.css">
+		<link rel="stylesheet" type="text/css" href="/frontend/javascript/modules/croppie/croppie.css">
 		
-		<script type="text/javascript" src="/chat/frontend/javascript/modules/croppie/croppie.js"></script>
+		<script type="text/javascript" src="/frontend/javascript/modules/croppie/croppie.js"></script>
 
-		<script type="text/javascript" src="/chat/frontend/javascript/crop.js"></script>
+		<script type="text/javascript" src="/frontend/javascript/crop.js"></script>
 
 	</body>
 

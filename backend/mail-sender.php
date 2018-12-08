@@ -1,10 +1,13 @@
 <?php
-	require(dirname(__DIR__, 2) . '/vendor/autoload.php');
+	require(dirname(__DIR__, 1) . '/vendor/autoload.php');
 
 	use PHPMailer\PHPMailer\PHPMailer;
 	use PHPMailer\PHPMailer\Exception;
 
 	function sendMail($email, $user_id, $phoneNumber) {
+		$chatAppHost = getenv('CHATAPP_HOST');
+		$SMTPOptionsFlag = getenv('CHATAPPSMTPOPTIONS');
+
 		try {
 			$acc = hash("sha256", $user_id, false);
 			$hashKey = hash("sha256", $phoneNumber . $user_id, false);
@@ -20,18 +23,20 @@
 			$mail->setFrom('mostafaelsayed9419@gmail.com', 'Chat App');
 			$mail->addAddress($email, "");
 			$mail->Subject = "Chat App Info Confirm";
-			$bodyHref = "http://127.0.0.1/chat/frontend/infoConfirm.php?acc=" . $acc . "&hashKey=" . $hashKey . "&userId=" . $user_id;
+			$bodyHref = $chatAppHost + "/frontend/infoConfirm.php?acc=" . $acc . "&hashKey=" . $hashKey . "&userId=" . $user_id;
 			$mail->Body = '<p>thank you for joining us, click on <a href=' . $bodyHref . '>this</a> to confirm</p>';
 			$mail->IsHTML(true);
 
 			// only on localhost
-			// $mail->SMTPOptions = array(
-			// 	'ssl' => array(
-			// 		'verify_peer' => false,
-			// 		'verify_peer_name' => false,
-			// 		'allow_self_signed' => true
-			// 	)
-			// );
+			if ($SMTPOptionsFlag === 0) {
+				$mail->SMTPOptions = array(
+					'ssl' => array(
+						'verify_peer' => false,
+						'verify_peer_name' => false,
+						'allow_self_signed' => true
+					)
+				);
+			}
 		    
 			$result = $mail->Send();
 		}

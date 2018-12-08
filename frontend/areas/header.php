@@ -70,7 +70,7 @@
 
 			<li>
 
-				<a href="/chat/frontend/logout.php">Logout</a>
+				<a href="/frontend/logout.php">Logout</a>
 
 			</li>
 

@@ -8,7 +8,7 @@
 
     <meta http-equiv="X-UA-Compatible" name="viewport" charset="utf-8" content="IE=11,width=device-width,initial-scale=1.0">
 
-    <link rel="icon" href="/chat/favicon.ico">
+    <link rel="icon" href="/favicon.ico">
   
     <link href="css/errors.css" rel="stylesheet" type="text/css">
 
@@ -40,7 +40,7 @@
       
       <h1 style="font-style: italic">Login</h1>
 
-      <form novalidate role="form" name="myform" ng-app="loginApp" ng-controller="loginController" action="/chat/backend/requests/login.php" method="post" class="login-box" style="width: 30%;margin: auto;text-align: center">
+      <form novalidate role="form" name="myform" ng-app="loginApp" ng-controller="loginController" action="/backend/requests/login.php" method="post" class="login-box" style="width: 30%;margin: auto;text-align: center">
 
         <div class="input-field col s12">
 

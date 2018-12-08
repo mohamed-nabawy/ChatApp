@@ -1,6 +1,6 @@
-var registerFormApp = angular.module('registerFormValidation', []);
+var registerFormApp = angular.module('registerFormValidation', ['user-service']);
 
-registerFormApp.directive('check', ['$http', function($http) {
+registerFormApp.directive('check', ['$http', 'userService', function($http, userService) {
   function checkType(val, regExp) {
     if ( regExp.test(val) ) {
       return true;
@@ -25,9 +25,9 @@ registerFormApp.directive('check', ['$http', function($http) {
               Email: val
             };
 
-            $http.post('/chat/backend/Requests/users.php?flag=2', x).then(function(response) {
-              console.log(response);
-              if (response.data == "1") {
+            userService.checkExistingEmail(x).then(function(data) {
+              //console.log(response);
+              if (data == "1") {
                 ctrl.$setValidity('emailExisted', false);
                 ctrl.$setValidity('emailEmpty', true);
 
@@ -181,8 +181,8 @@ registerFormApp.directive('check', ['$http', function($http) {
               Email: val
             };
 
-            $http.post('/chat/backend/Requests/users.php?flag=2', x).then(function(response) {
-              if (response.data == "1") {
+            userService.checkExistingEmail(x).then(function(data) {
+              if (data == "1") {
                 ctrl.$setValidity('emailExisted', false);
                 ctrl.$setValidity('emailEmpty', true);
               }

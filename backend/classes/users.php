@@ -79,7 +79,7 @@ class User
   }
 
   public function addUser($conn, $firstName, $lastName, $image, $email, $phoneNumber, $password, $dateOfBirth, $genderId, $roleId, $x1 = null, $y1 = null, $w = null, $h = null) {
-    $x = checkExistingEmail($conn, $email);
+    $x = $this->checkExistingEmail($conn, $email);
 
     if ($x) {
       return "email already existed";

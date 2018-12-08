@@ -271,4 +271,6 @@
 
 <script src="javascript/modules/crop.js"></script>
 
+<script type="text/javascript" src="javascript/services/user-service.js"></script>
+
 <script type="text/javascript" src="javascript/modules/register_form_validation.js"></script>

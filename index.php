@@ -1,1 +1,1 @@
-<?php header('Location: chat/frontend/areas/student/student-profile.php');
+<?php header('Location: /frontend/areas/student/student-profile.php');
