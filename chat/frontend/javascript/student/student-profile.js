@@ -1,4 +1,4 @@
-layoutApp.controller('studentProfile', ['$scope', '$rootScope', '$http', function($scope, $rootScope, $http) {
+layoutApp.controller('studentProfile', ['$scope', '$rootScope', '$http', 'messageService', 'userService', function($scope, $rootScope, $http, messageService, userService) {
 	$scope.messages = [];
 
 	$scope.imageUrl = '';
@@ -6,7 +6,7 @@ layoutApp.controller('studentProfile', ['$scope', '$rootScope', '$http', functio
 
 	$scope.updateImage = function() {
 		if ($scope.myform.$valid) {
-			var data = {
+			var imageData = {
 				Image: $('#myimg').attr('src'),
 				csrf_token: $scope.csrf_token,
 				x1: $('#x1').val(),
@@ -17,8 +17,8 @@ layoutApp.controller('studentProfile', ['$scope', '$rootScope', '$http', functio
 
 			$('#myModal').hide();
 
-			$http.post('/chat/backend/requests/users.php?update=1', data).then(function(response) {
-				console.log(response);
+			userService.updateUserImage(imageData).then(function(data) {
+				//console.log(response);
 				//$scope.i++;
 				//$('#cropped').html($('#cropped').attr('src'));
 				// $('#cropped').attr('src', $('#cropped').attr('src') + '?' + $scope.i);
@@ -29,14 +29,14 @@ layoutApp.controller('studentProfile', ['$scope', '$rootScope', '$http', functio
 	};
 
 	$scope.delete = function() {
-		$http.delete('/chat/backend/requests/users.php?f=1').then(function(response) {
+		userService.deleteUserImage().then(function(data) {
 			location.reload();
 		});
 	};
 
 	$scope.getMyClassMatesAndTeachers = function() {	
-		$http.get('/chat/backend/requests/users.php').then(function(response) {
-			$scope.myClassMatesAndTeachers = response.data;
+		userService.getMyClassMatesAndTeachers().then(function(data) {
+			$scope.myClassMatesAndTeachers = data;
 		});
 	};
 
@@ -63,12 +63,11 @@ layoutApp.controller('studentProfile', ['$scope', '$rootScope', '$http', functio
 		$event.stopPropagation();
 		$rootScope.newMessages = [];
 		$rootScope.newLen = 0;
-		$http.put('/chat/backend/requests/chat-messages.php?flag=1');
+		messageService.markAllMessageNotificationsAsRead();
 	}
 	
 	$rootScope.getAllMessages = function() {
-		$http.get('/chat/backend/requests/chat-messages.php?flag=2&offset=0').then(function(response) {
-			var data = response.data;
+		messageService.getLastCurrentUserMessages(0).then(function(data) {
 			var len = data.length;
 			var lenMes = $scope.messages.length;
 
@@ -127,7 +126,7 @@ layoutApp.controller('studentProfile', ['$scope', '$rootScope', '$http', functio
 		}
 
 		// mark messages as read
-		$http.put('/chat/backend/requests/chat-messages.php?sentFrom=' + user.id);
+		messageService.markMessagesAsReadFromUser(user.id);
 		$rootScope.addedChat = user;
 		$rootScope.$broadcast('chatRequest');
 	};
@@ -135,7 +134,7 @@ layoutApp.controller('studentProfile', ['$scope', '$rootScope', '$http', functio
 	$scope.getMyClassMatesAndTeachers();
 }]);
 
-layoutApp.directive('scrollToDown', ['$http', function($http) {
+layoutApp.directive('scrollToDown', ['$http', 'messageService', function($http, messageService) {
 	return {
 		link: function(scope, elem) {
 			function loadAnother() {
@@ -143,11 +142,9 @@ layoutApp.directive('scrollToDown', ['$http', function($http) {
 
 				// load another ten messages
 				// scope.c is the current chat we scrolling
-				$http.get('/chat/backend/requests/chat-messages.php?flag=2&offset=' +
-					scope.offset).then(function(response) {
-						if (response.data.length > 0) {
+				messageService.getLastCurrentUserMessages(scope.offset).then(function(data) {
+						if (data.length > 0) {
 							elem[0].scrollTop -= 50; // scroll up 50px
-							var data = response.data; // older last messages from database
 							var len = data.length;
 
 							for (var j = 0; j < len; j++) {

@@ -185,6 +185,10 @@
 
 		<script type="text/javascript" src="/chat/frontend/javascript/modules/angular.js"></script>
 
+		<script type="text/javascript" src="/chat/frontend/javascript/services/user-service.js"></script>
+
+		<script type="text/javascript" src="/chat/frontend/javascript/services/message-service.js"></script>
+
 		<script type="text/javascript" src="/chat/frontend/javascript/student/student-layout.js"></script>
 
 		<script type="text/javascript" src="/chat/frontend/javascript/student/student-profile.js"></script>
