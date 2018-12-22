@@ -1,14 +1,16 @@
 <?php
 
-require(dirname(__DIR__) . '/functions.php');
-require(dirname(__DIR__) . '/image-handle.php');
-require(dirname(__DIR__) . '/mail-sender.php');
+require(__DIR__ . '/image-handler.php');
+require(__DIR__ . '/mail-sender.php');
+require(dirname(__DIR__) . '/helpers/generator.php');
 
-/**
- * 
- */
-class User
-{
+class User {
+  private $generator = NULL;
+
+  public function __construct(MyGenerator $generator) {
+    $this->generator = $generator;
+  }
+
   public function getUsers($conn) { // in the same class
     $sql = "select * from `users` where `id` != " . $_SESSION['userId'];
     $result = $conn->query($sql);
@@ -16,6 +18,7 @@ class User
     if ($result) {
       $users = mysqli_fetch_all($result, MYSQLI_ASSOC);
       mysqli_free_result($result);
+
       return $users;
     }
     else {
@@ -36,6 +39,7 @@ class User
     foreach ($_SESSION['chats'] as $key => $value) {
       if ($value->secondUserId == $id) {
         array_splice($_SESSION['chats'], $key, 1);
+
         break;
       }
     }
@@ -48,6 +52,7 @@ class User
     if ($result) {
       $user = mysqli_fetch_assoc($result);
       mysqli_free_result($result);
+
       return $user;
     }
     else {
@@ -59,6 +64,7 @@ class User
     foreach ($_SESSION['chats'] as $key => &$value) {
       if ($value->secondUserId == $chatId) {
         $value->open = $open;
+
         break;
       }
     }
@@ -71,6 +77,7 @@ class User
     if ($result) {
       $user = mysqli_fetch_assoc($result);
       mysqli_free_result($result);
+
       return $user;
     }
     else {
@@ -81,13 +88,16 @@ class User
   public function addUser($conn, $firstName, $lastName, $image, $email, $phoneNumber, $password, $dateOfBirth, $genderId, $roleId, $x1 = null, $y1 = null, $w = null, $h = null) {
     $x = $this->checkExistingEmail($conn, $email);
 
+    //$generator = new Generator();
+
     if ($x) {
       return "email already existed";
     }
 
     $sql = "insert into `users` (firstName, lastName, image, email, phoneNumber, passwordHash, dateOfBirth, genderId, roleId, croppedImage, imageSet) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    $pass =  password_encrypt($password);
+    $pass =  $this->generator->password_encrypt($password);
+    // $pass =  '23';
     $stmt->bind_param("sssssssiisi", $firstName, $lastName, $image, $email, $phoneNumber, $pass, $dateOfBirth, $genderId, $roleId, $croppedImage, $imageSet);
 
     if ($image != null && $image['size'] != 0) {
@@ -126,21 +136,20 @@ class User
       $_SESSION['chats'] = [];
 
       sendMail($email, $user_id, $phoneNumber);
-      //header("Location: ". "../../frontend/areas/student/student-profile.php");
       
       return $user_id;
     }
     else {
       echo "Error: ", $conn->error;
-      //return false;
     }
   }
 
   public function editUser($conn, $userName, $firstName, $lastName, $email, $image, $phoneNumber, $roleId, $id) {
     $userUserName = mysqli_fetch_assoc( $conn->query("select `userName` from `users` where `id` = " . $id) )['userName'];
     
-    if ( !($userUserName == $userName) && checkExistingUserName($conn, $userName, true) )  {
+    if ( !($userUserName == $userName) && $this->checkExistingUserName($conn, $userName, true) )  {
       echo "existing username or email";
+
       return;
     }
     else {
@@ -151,15 +160,6 @@ class User
       $stmt = $conn->prepare($sql);
       $stmt->bind_param("ssssssii", $userName, $firstName, $lastName, $email, $Image, $phoneNumber, $roleId, $id);
 
-      // if (isset($image) && $image != $userImage)
-      // {
-      //   $Image = editImage($image, $userImage, $userName);
-      // }
-      // else
-      // {
-      //   $Image = $image;
-      // }
-
       if ($stmt->execute() === TRUE) {
         echo "User updated successfully";
       }
@@ -168,56 +168,6 @@ class User
       }
     }
   }
-
-  // public function updateUserPasswordByEmail($conn,$password,$email)
-  // {
-  //   if (!isset($password) || !isset($email)) 
-  //   {
-  //     //echo "User password is empty !";
-  //     return;
-  //   }
-  //   else
-  //   {
-  //     $sql = "update User set PasswordHash = (?) where Email = (?)"; 
-  //     $stmt = $conn->prepare($sql);
-  //     $stmt->bind_param("ss",$Password,$Email);
-  //     $Email = $email;
-  //     $Password = $password;
-  //     if ($stmt->execute() === TRUE)
-  //     {
-  //       return "User updated successfully";
-  //     }
-  //     else
-  //     {
-  //       echo "Error: ".$conn->error;
-  //     }
-  //   }
-  // }
-
-  // public function updateUserPasswordById($conn,$password,$id)
-  // {
-  //    if (!isset($password) || !isset($id)) 
-  //   {
-  //     //echo "User password is empty !";
-  //     return;
-  //   }
-  //   else
-  //   {
-  //     $sql = "update User set PasswordHash = (?) where Id = (?)"; 
-  //     $stmt = $conn->prepare($sql);
-  //     $stmt->bind_param("si",$Password,$Id);
-  //     $Id = $id;
-  //     $Password = $password;
-  //     if ($stmt->execute() === TRUE)
-  //     {
-  //       return "User updated successfully";
-  //     }
-  //     else
-  //     {
-  //       echo "Error: ".$conn->error;
-  //     }
-  //   }
-  // }
 
   public function activateUser($conn, $id) { // check validations on this
     $sql = "update `users` set `confirmed` = true where `id` = (?)"; 
@@ -239,11 +189,9 @@ class User
 
     if ($result) {
       $result = mysqli_fetch_array($result, MYSQLI_NUM); 
-      //mysqli_free_result($result);
       $result = (int)$result[0];
+
       if ($result > 0) { // if he wnats to change the mail and not keeping the old
-      
-        //echo "existing username" 
         return true; // exist
       }
       else {
@@ -267,7 +215,6 @@ class User
       $result = (int)$result[0];
 
       if ($result > 0) { // if he wants to change the mail and not keeping the old
-        //echo "existing email";
         return true; // exist
       }
       else {
@@ -282,7 +229,6 @@ class User
   }
 
   public function deleteUser($conn, $id) { // cascaded delete ??
-    //$conn->query("set foreign_key_checks = 0"); // ????????/
     $sql = "delete from `users` where `id` = " . $id . " limit 1";
 
     if ($conn->query($sql) === TRUE) {
@@ -293,9 +239,27 @@ class User
     }
   }
 
-	
-	// function __construct(argument)
-	// {
-	// 	# code...
-	// }
+  public function getUserByEmail($conn, $email) {
+    if ( !isset($email) ) {
+      echo "Error: User Email is not set";
+      
+      return;
+    }
+    else {
+      $safe_email = mysqli_real_escape_string($conn, $email);
+      $query  = "SELECT * ";
+      $query .= "FROM `users` ";
+      $query .= "WHERE `email` = '{$safe_email}' ";
+      $query .= "LIMIT 1";
+      $user_set = mysqli_query($conn, $query);
+      //confirmQuery($user_set);
+
+      if ( $user = mysqli_fetch_assoc($user_set) ) {
+        return $user;
+      }
+      else {
+        return null;
+      }
+    }
+  }
 }

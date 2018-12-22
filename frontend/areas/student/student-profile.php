@@ -1,6 +1,7 @@
 <?php 
-	require(dirname(__DIR__, 3) . '/backend/functions.php');
-	validatePageAccess([1]);
+	require_once(dirname(__DIR__, 3) . '/backend/class-validators/user-validator.php');
+	$userValidator = new UserValidator();
+	$userValidator->validatePageAccess([1]);
 ?>
 
 <!DOCTYPE html>

@@ -1,83 +1,75 @@
 <?php
 
-/**
- * 
- */
-class Time
-{
-	
-public function getTimes($conn) {
-  $sql = "select * from `times`";
-  $result = $conn->query($sql);
+class Time {
+  public function getTimes($conn) {
+    $sql = "select * from `times`";
+    $result = $conn->query($sql);
 
-  if ($result) {
-    $times = mysqli_fetch_all($result, MYSQLI_ASSOC);
-    mysqli_free_result($result);
-    return $times;
-  }
-  else {
-    echo "Error retrieving Times: " . $conn->error;
-  }
-}
+    if ($result) {
+      $times = mysqli_fetch_all($result, MYSQLI_ASSOC);
+      mysqli_free_result($result);
 
-public function getTimeById($conn, $id) {
-  $sql = "select * from `times` where `id` = " . $id . " LIMIT 1";
-  $result = $conn->query($sql);
+      return $times;
+    }
+    else {
+      echo "Error retrieving Times: " . $conn->error;
+    }
+  }
 
-  if ($result) {
-    $times = mysqli_fetch_assoc($result);
-    mysqli_free_result($result);
-    return $times;
-  }
-  else {
-    echo "Error retrieving Time: " . $conn->error;
-  }
-}
+  public function getTimeById($conn, $id) {
+    $sql = "select * from `times` where `id` = " . $id . " LIMIT 1";
+    $result = $conn->query($sql);
 
-public function getTimeIdByTime($conn, $time) {
-  $sql = "select `id` from `times` where `time` = '{$time}' LIMIT 1";
-  $result = $conn->query($sql);
+    if ($result) {
+      $times = mysqli_fetch_assoc($result);
+      mysqli_free_result($result);
 
-  if ($result) {
-    $times = mysqli_fetch_assoc($result);
-    mysqli_free_result($result);
-    return $times["id"];
+      return $times;
+    }
+    else {
+      echo "Error retrieving Time: " . $conn->error;
+    }
   }
-  else {
-    echo "Error: " . $conn->error;
-  }
-}
 
-public function getCurrentTimeId($conn) {
-  $time = date("h:i:00");
-  $sql = "select `id` from `times` where `time` = '{$time}' LIMIT 1";
-  $result = $conn->query($sql);
+  public function getTimeIdByTime($conn, $time) {
+    $sql = "select `id` from `times` where `time` = '{$time}' LIMIT 1";
+    $result = $conn->query($sql);
 
-  if ($result) {
-    $times = mysqli_fetch_assoc($result);
-    mysqli_free_result($result);
-    return $times["id"];
-  }
-  else {
-    echo "Error: " . $conn->error;
-  }
-}
+    if ($result) {
+      $times = mysqli_fetch_assoc($result);
+      mysqli_free_result($result);
 
-public function deleteTime($conn, $id) {
-  //$conn->query("set foreign_key_checks=0");
-  $sql = "delete from Times where Id = ".$id. " LIMIT 1";
-  
-  if ($conn->query($sql) === TRUE) {
-    return "Time deleted successfully";
+      return $times["id"];
+    }
+    else {
+      echo "Error: " . $conn->error;
+    }
   }
-  else {
-    echo "Error: " . $conn->error;
-  }
-}
 
-	
-	// function __construct(argument)
-	// {
-	// 	# code...
-	// }
+  public function getCurrentTimeId($conn) {
+    $time = date("h:i:00");
+    $sql = "select `id` from `times` where `time` = '{$time}' LIMIT 1";
+    $result = $conn->query($sql);
+
+    if ($result) {
+      $times = mysqli_fetch_assoc($result);
+      mysqli_free_result($result);
+      
+      return $times["id"];
+    }
+    else {
+      echo "Error: " . $conn->error;
+    }
+  }
+
+  public function deleteTime($conn, $id) {
+    $sql = "delete from Times where Id = ".$id. " LIMIT 1";
+    
+    if ($conn->query($sql) === TRUE) {
+      return "Time deleted successfully";
+    }
+    else {
+      echo "Error: " . $conn->error;
+    }
+  }
 }

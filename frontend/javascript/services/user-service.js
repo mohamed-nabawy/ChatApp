@@ -6,6 +6,7 @@ userServiceApp.factory('userService', ['$http', '$q', function($http, $q) {
     userServiceObj.getUserInSession = function() {
         return $q(function(resolve, reject) {
             $http.get('/backend/requests/users.php?flag=3').then(function(response) {
+                //console.log(response);
                 resolve(response.data);
             });
         });
@@ -14,6 +15,7 @@ userServiceApp.factory('userService', ['$http', '$q', function($http, $q) {
     userServiceObj.getChats = function() {
         return $q(function(resolve, reject) {
             $http.get('/backend/requests/users.php?flag=1').then(function(response) {
+                //console.log(response);
                 resolve(response.data);
             });
         });
@@ -70,6 +72,7 @@ userServiceApp.factory('userService', ['$http', '$q', function($http, $q) {
     userServiceObj.getMyClassMatesAndTeachers = function() {
         return $q(function(resolve, reject) {
             $http.get('/backend/requests/users.php').then(function(response) {
+                //console.log(response);
                 resolve(response.data);
             });
         });

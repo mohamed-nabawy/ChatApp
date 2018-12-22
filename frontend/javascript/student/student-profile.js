@@ -1,6 +1,6 @@
 layoutApp.controller('studentProfile', ['$scope', '$rootScope', '$http', 'messageService', 'userService', function($scope, $rootScope, $http, messageService, userService) {
 	$scope.messages = [];
-
+	$scope.offset = 0;
 	$scope.imageUrl = '';
 	$scope.csrf_token = document.getElementById('csrf_token').value;
 
@@ -18,9 +18,9 @@ layoutApp.controller('studentProfile', ['$scope', '$rootScope', '$http', 'messag
 			$('#myModal').hide();
 
 			userService.updateUserImage(imageData).then(function(data) {
-				//console.log(response);
-				//$scope.i++;
-				//$('#cropped').html($('#cropped').attr('src'));
+				// console.log(response);
+				// $scope.i++;
+				// $('#cropped').html($('#cropped').attr('src'));
 				// $('#cropped').attr('src', $('#cropped').attr('src') + '?' + $scope.i);
 				// $('#croppedLayout').attr('src', $('#croppedLayout').attr('src') + '?' + $scope.i);
 				location.reload();
@@ -50,9 +50,10 @@ layoutApp.controller('studentProfile', ['$scope', '$rootScope', '$http', 'messag
 		}
 	})
 
-	$scope.offset = 0;
-
 	$scope.setAllNotificationsToRead = function($event) {
+		$rootScope.newMessages = [];
+		$rootScope.newLen = 0;
+		
 		if ($scope.lastMessagesClicked == 0) {
 			$scope.lastMessagesClicked = 1;
 		}
@@ -87,10 +88,14 @@ layoutApp.controller('studentProfile', ['$scope', '$rootScope', '$http', 'messag
 
 				if (f == 0) {
 					for (var j = 0; j < lenMes; j++) {
-						if ($scope.messages[j].sentFrom == data[i].sentFrom) {
+						var cond = false;
+
+						if ($scope.messages[j])
+							cond = ($scope.messages[j].sentFrom == data[i].sentFrom && $scope.messages[j].sentTo == data[i].sentTo) || ($scope.messages[j].sentFrom == data[i].sentTo && $scope.messages[j].sentTo == data[i].sentFrom);
+
+						if (cond)
 							$scope.messages.splice(j, 1);
-							break;
-						}
+
 					}
 
 					$scope.messages.push(data[i]);
@@ -98,12 +103,31 @@ layoutApp.controller('studentProfile', ['$scope', '$rootScope', '$http', 'messag
 					$rootScope.$broadcast('newMes');
 				}
 			}
+			//console.log($scope.messages);
 		});
 	};
+
+	$scope.$on('updatenew', function(e, id) {
+		//console.log(id);
+		var lenMessages = $scope.messages.length;
+
+		for (var k = 0; k < lenMessages; k++) {
+			if ($scope.messages[k].id == id) {
+				//console.log(id);
+				$scope.messages[k].new = 0;
+				break;
+			}
+		}
+	});
 
 	$scope.getAllMessages();
 
 	$scope.addChatWindow = function(data) { // this will communicate with chats controller in layout
+		//console.log(data);
+
+		// data represents info about about the remote user (id, firstname, etc) and info about the message(sentfrom, sentto, etc) 
+
+		
 		var user = {
 			firstUserId: $rootScope.currentUser.id,
 			secondUserId: data.id,
@@ -111,22 +135,25 @@ layoutApp.controller('studentProfile', ['$scope', '$rootScope', '$http', 'messag
 			open: 1
 		};
 
-		if ($rootScope.newMessages.indexOf(user.id) > 0) {
-			$rootScope.newLen--;
-			$rootScope.newMessages.splice($rootScope.newMessages.indexOf(user.id), 1);
-		}
+		// if ($rootScope.newMessages.indexOf(user.id) > 0) {
+		// 	$rootScope.newLen--;
+		// 	$rootScope.newMessages.splice($rootScope.newMessages.indexOf(user.id), 1);
+		// }
 
-		var lenMes = $scope.messages.length;
+		// var lenMes = $scope.messages.length;
 
-		for (var j = 0; j < lenMes; j++) {
-			if ($scope.messages[j].sentFrom == user.id) {
-				$scope.messages[j].new = 0;
-				break;
-			}
-		}
+		// for (var j = 0; j < lenMes; j++) {
+		// 	if ($scope.messages[j].sentFrom == user.id) {
+		// 		$scope.messages[j].new = 0;
+		// 		break;
+		// 	}
+		// }
 
 		// mark messages as read
-		messageService.markMessagesAsReadFromUser(user.id);
+		if (data.sentTo == $rootScope.currentUser.id && data.new == 1)
+			data.new = 0; // now it's old
+			messageService.markMessagesAsReadFromUser(data.id);
+		
 		$rootScope.addedChat = user;
 		$rootScope.$broadcast('chatRequest');
 	};

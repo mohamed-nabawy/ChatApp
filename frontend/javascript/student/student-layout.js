@@ -91,17 +91,20 @@ layoutApp.controller('chats', ['$scope', '$http', '$rootScope', '$interval', '$t
 			userService.updateOpenStateOfChat($scope.chats[ind].secondUserId, f).then(function(data) {
 				$scope.chats[ind].open = (f == 1) ? 1 : 0;
 			});
-		}
+		};
 
 		// reduce new messages notifications by one
 		$scope.removefromNewMessagesIfAny = function(chat) {
+			$rootScope.$broadcast('updatenew', chat.secondUserId);
+
 			if ( $rootScope.newLen > 0 && $rootScope.newMessages.indexOf(chat.secondUserId) > -1) {
 				$rootScope.newLen--;
 				$rootScope.newMessages.splice( $rootScope.newMessages.indexOf(chat.secondUserId) );
 			}
 
 			// make all messages read
-			messageService.markMessagesAsReadFromUser();
+			messageService.markMessagesAsReadFromUser(chat.secondUserId);
+			
 		};
 
 		$scope.newMessagesIds = [];
@@ -137,13 +140,15 @@ layoutApp.controller('chats', ['$scope', '$http', '$rootScope', '$interval', '$t
 									sentFrom: data[i].sentFrom,
 									sentTo: data[i].sentTo,
 									content: data[i].content,
+									timeId: data[i].timeId,
+									dateId: data[i].dateId,
 									classId: 1
 	     						};
 
 	     						$scope.newids = $scope.chats[j].messages.filter(function(e) {
 	     							return e.id == d.id;
-	     						});
-
+								});
+								
 	     						if ($scope.newids.length == 0) {
 	     							$scope.chats[j].messages.push(d);
 	     						};
@@ -179,8 +184,8 @@ layoutApp.controller('chats', ['$scope', '$http', '$rootScope', '$interval', '$t
 
 	    			var g = $scope.chats[i].messages.filter(function(e) {
 	    				return (e.id == newMessage.id);
-	    			});
-
+					});
+					
 	    			if (g.length == 0) {
 	    				$scope.chats[i].messages.push(newMessage);
 	    			}

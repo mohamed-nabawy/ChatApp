@@ -1,14 +1,6 @@
 <?php
 
-
-/**
- * 
- */
-class Date
-{
-	// private $id = 0;
-	// private $date = '';
-
+class Date {
 	public function getDates($conn) {
 		$sql = "select * from `dates`";
 		$result = $conn->query($sql);
@@ -45,7 +37,8 @@ class Date
 
 	  if ($result) {
 	    $dateId = mysqli_fetch_assoc($result);
-	    mysqli_free_result($result);
+			mysqli_free_result($result);
+			
 	    return $dateId["id"];
 	  }
 	  else {
@@ -60,7 +53,8 @@ class Date
 
 	  if ($result) {
 	    $date = mysqli_fetch_assoc($result);
-	    mysqli_free_result($result);
+			mysqli_free_result($result);
+			
 	    if ( isset($date["id"]) ) {
 	      return $date["id"];
 	    }
@@ -114,7 +108,6 @@ class Date
 	}
 
 	public function deleteDate($conn, $id) {
-	  //$conn->query("set foreign_key_checks=0");
 	  $sql = "delete from `dates` where `id` = " . $id . " LIMIT 1";
 
 	  if ($conn->query($sql) === TRUE) {
@@ -124,9 +117,4 @@ class Date
 	    echo "Error: " . $conn->error;
 	  }
 	}
-	
-	// function __construct(argument)
-	// {
-	// 	# code...
-	// }
 }

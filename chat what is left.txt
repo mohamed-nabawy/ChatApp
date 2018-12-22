@@ -1,32 +1,26 @@
-
-frontend and/or backend :
+frontend and backend :
 
 	- video & audio
 
-	- sometimes the updated profile photo not shown after update (need refresh or something)
-
 	- open chat window when someone sends you new message when you are online
-
-	- faster inserting for message in the window
-
-	- faster marking message as read
-
-	- check if message is marked as read and the color should go from grey to white when click on chat in the last messages array
 
 	- error handling
 
-
 backend :
+
+	- rewrite image-handle.php to maintain it well
 
 	- socket programming
 
-	- optional :
-
-		- try mongodb
+	- try mongodb
 
 frontend :
 
+	- faster inserting for message in the window
+
 	- when logout the login info is overlapped with the labels
+
+	- display loaders when we are waiting for ajax response (like updating profile picture)
 
 	- optional :
 

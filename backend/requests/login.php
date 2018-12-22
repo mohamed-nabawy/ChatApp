@@ -1,9 +1,13 @@
 <?php
-  require(dirname(__DIR__) . '/functions.php');
-  require(dirname(__DIR__) . '/classes/dates.php');
-  require(dirname(__DIR__) . '/validation-functions.php');
+  require_once(dirname(__DIR__) . '/classes/dates.php');
+  require_once(dirname(__DIR__) . '/class-validators/user-validator.php');
+  require_once(dirname(__DIR__) . '/helpers/connection.php');
+  //require(dirname(__DIR__) . '/helpers/session.php');
 
   $date = new Date();
+  $userValidator = new UserValidator();
+
+  var_dump($_POST);
 
   if ( isset($_GET['redirect_to']) ) {
     $_POST['redirect_to'] = $_GET['redirect_to'];
@@ -12,13 +16,14 @@
     // Process the form
     // validations
     $required_fields = array("email", "password");
-    validate_presences($required_fields);
+    $errors = $userValidator->validate_presences($required_fields);
     
     if (empty($errors) ) {
       // Attempt Login
   		$email = $_POST['email'];
   		$password = $_POST['password'];
-  		$found_user = attempt_login($conn, $email, $password);
+      $found_user = $userValidator->attempt_login($conn, $email, $password);
+      
       if ($found_user) {
         // Success
   			// Mark user as logged in
@@ -33,7 +38,7 @@
       
         // record date
         if (!$date->getCurrentDateId($conn) ) { // make the server add it automatically
-          addTodayDate($conn, true);
+          $date->addTodayDate($conn, true);
         }
         
         if ( isset($_POST['remember']) ) { // set the cookie to a long date
@@ -60,5 +65,5 @@
     } // end: if (isset($_POST['submit']))
   }
 
-  require(dirname(__DIR__) . '/footer.php');
+  require(dirname(__DIR__) . '/helpers/footer.php');
 ?>

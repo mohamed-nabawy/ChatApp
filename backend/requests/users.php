@@ -1,15 +1,15 @@
 <?php
   require(dirname(__DIR__) . '/controllers/users.php');
   require(dirname(__DIR__) . '/controllers/chat-messages.php');
-  require(dirname(__DIR__) . '/test-request-input.php');
+  require(dirname(__DIR__) . '/class-validators/user-validator.php');
+  require_once(dirname(__DIR__) . '/helpers/connection.php');
 
-  $chatMessageController = new ChatMessageController();
-  $userController = new UserController();
+  $userValidator = new UserValidator();
+  $userController = new UserController(new User(new MyGenerator()));
+  $chatMessageController = new ChatMessageController(new ChatMessage(new Time(), new Date()));
 
   if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-    //if ($_SESSION['roleId'] == 1) // admin only can call these methods
-    //{
-      if (isset($_GET['flag']) && testInt($_GET['flag']) && $_GET['flag'] == 1) {
+      if (isset($_GET['flag']) && $userValidator->testInt($_GET['flag']) && $_GET['flag'] == 1) {
         $users = $_SESSION['chats'];
         
         foreach ($users as $key => $value) {
@@ -17,21 +17,22 @@
           $value->messages = $messages;
         }
 
-        checkResult($users);
+        $userValidator->checkResult($users);
       }
-      elseif (isset($_GET['id']) && testInt($_GET['id']) ) {
-        checkResult( $userController->getUserById( $conn, $_GET['id'] ) );
+      elseif (isset($_GET['id']) && $userValidator->testInt($_GET['id']) ) {
+        $userValidator->checkResult( $userController->getUserById( $conn, $_GET['id'] ) );
       }
-      elseif (isset($_GET['flag']) && testInt($_GET['flag']) && $_GET['flag'] == 3) {
-        checkResult( $userController->getCurrentUser($conn) );
+      elseif (isset($_GET['flag']) && $userValidator->testInt($_GET['flag']) && $_GET['flag'] == 3) {
+        $userValidator->checkResult( $userController->getCurrentUser($conn) );
+      }
+      elseif (isset($_GET['flag']) && $userValidator->testInt($_GET['flag']) && $_GET['flag'] == 1) {
+        $userValidator->checkResult( $userController->getCurrentUser($conn) );
       }
       else {
-        checkResult( $userController->getUsers($conn) );
+        $userValidator->checkResult( $userController->getUsers($conn) );
       }
-    //}
   }
   elseif ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    //die(var_dump($_POST));
     if (isset($_GET['flag']) && $_GET['flag'] == 2) {
       $data = json_decode( file_get_contents('php://input') );
       $email = $data->Email;
@@ -54,14 +55,13 @@
       }
     }
     else {
-      $result = isset($_POST['firstName'], $_POST['lastName'], $_POST['phone'], $_POST['email'], $_POST['DOB'], $_POST['genderId'], $_POST['password']) && normalizeString($conn, $_POST['firstName'], $_POST['lastName']) && testPhone($_POST['phone']) && testEmail($_POST['email']) && testDateOfBirth($_POST['DOB']) && testInt($_POST['genderId']) && testPassword($_POST['password']);
+      $result = isset($_POST['firstName'], $_POST['lastName'], $_POST['phone'], $_POST['email'], $_POST['DOB'],
+        $_POST['genderId'], $_POST['password']) && $userValidator->normalizeString($conn, $_POST['firstName'],
+        $_POST['lastName']) && $userValidator->testPhone($_POST['phone']) && $userValidator->testEmail($_POST['email'])
+        && $userValidator->testDateOfBirth($_POST['DOB']) && $userValidator->testInt($_POST['genderId'])
+        && $userValidator->testPassword($_POST['password']);
+
       if ($result) {
-        
-        // normalizeString($conn, $_FILES['image']['name']);
-        // echo addUser($conn, $_POST['firstName'], $_POST['lastName'], $_FILES['image'], $_POST['email'], $_POST['phone'], $_POST['password'], $_POST['DOB'], $_POST['genderId'], 1);
-        //header("Location: ". "/frontend/areas/student/student-profile.php");
-
-
         if (isset($_POST['update']) && $_POST['update'] == 1) {
           $x1 = $_POST['x1'];
           $y1 = $_POST['y1'];
@@ -72,14 +72,14 @@
           header("Location: " . '/frontend/areas/student/student-profile.php');
         }
         else {
-          $result = isset($_POST['firstName'], $_POST['lastName'], $_POST['phone'], $_POST['email'], $_POST['DOB'], $_POST['genderId'], $_POST['password']) && normalizeString($conn, $_POST['firstName'], $_POST['lastName']) && testPhone($_POST['phone']) && testEmail($_POST['email']) && testDateOfBirth($_POST['DOB']) && testInt($_POST['genderId']) && testPassword($_POST['password']) && ($_POST['confirmPassword'] == $_POST['password']);
+          $result = $result && ($_POST['confirmPassword'] == $_POST['password']);
 
           if ($result) {
             $x1 = $_POST['x1'];
             $y1 = $_POST['y1'];
             $w  = $_POST['w'];
             $h  = $_POST['h'];
-            normalizeString($conn, $_FILES['image']['name']);
+            $userValidator->normalizeString($conn, $_FILES['image']['name']);
             $userId = $userController->addUser($conn, $_POST['firstName'], $_POST['lastName'], $_FILES['image'], $_POST['email'], $_POST['phone'], $_POST['password'], $_POST['DOB'], $_POST['genderId'], 1, $x1, $y1, $w, $h);
             $_SESSION['userId'] = $userId;
             $x = mysqli_fetch_assoc( $conn->query('select `image`, `croppedImage` from `users` where `id` = ' . $userId) );
@@ -87,6 +87,7 @@
             $_SESSION['image'] = $x['image'];
             $_SESSION['email']  = $_POST['email'];
             $_SESSION['croppedImage'] = $x['croppedImage'];
+            
             header("Location: " . '/frontend/areas/student/student-profile.php');
           }
           else {
@@ -101,7 +102,7 @@
   }
 
   if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
-    if (isset($_GET['open'], $_GET['chatId']) && testInt($_GET['open'], $_GET['chatId']) ) {
+    if (isset($_GET['open'], $_GET['chatId']) && $userValidator->testInt($_GET['open'], $_GET['chatId']) ) {
       $userController->openOrCloseChat($_GET['chatId'], $_GET['open']);
     }
       // decode the json data
@@ -110,7 +111,7 @@
       $result = isset($data->RoleId, $data->Id, $data->UserName, $data->FirstName, $data->LastName, $data->Email, $data->PhoneNumber) && testInt($data->RoleId, $data->Id) && normalizeString($conn, $data->UserName, $data->FirstName, $data->LastName) && testPhone($data->PhoneNumber) && testEmail($data->Email);
 
       if ($result) {
-        normalizeString($conn, $data->Image);
+        $userValidator->normalizeString($conn, $data->Image);
         $userController->editUser($conn, $data->UserName, $data->FirstName, $data->LastName, $data->Email, $data->Image, $data->PhoneNumber, $data->RoleId, $data->Id);
       }
     }
@@ -120,17 +121,17 @@
   }
 
   if ($_SERVER['REQUEST_METHOD'] == 'DELETE') {
-    if (isset($_GET['userId']) && testInt($_GET['userId']) ) {
+    if (isset($_GET['userId']) && $userValidator->testInt($_GET['userId']) ) {
       $userController->deleteUser($conn, $_GET['userId']);
     }
-    elseif (isset($_GET['id']) && testInt($_GET['id']) ) {
+    elseif (isset($_GET['id']) && $userValidator->testInt($_GET['id']) ) {
       $userController->deleteChat($_GET['id']);
     }
     elseif (isset($_GET['f']) && $_GET['f'] == 1) {
       $_SESSION['imageSet'] = 0;
       $conn->query("update `users` set `imageSet` = 0 where `id` = '{$_SESSION['userId']}'");
       $type = pathinfo($_SESSION['image'], PATHINFO_EXTENSION);
-      $imageFileName = dirname(__DIR__, 3) . '/uploads/' . $_SESSION['email'];
+      $imageFileName = dirname(__DIR__, 2) . '/uploads/' . $_SESSION['email'];
       $croppedImageFileName = $imageFileName;
 
       if ($type == 'jpeg') {
@@ -161,5 +162,5 @@
     }
   }
 
-  require(dirname(__DIR__) . '/footer.php');
+  require(dirname(__DIR__) . '/helpers/footer.php');
 ?>

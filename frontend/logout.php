@@ -1,5 +1,5 @@
 <?php
-	require('../backend/functions.php');
+	require(dirname(__DIR__) . '/backend/helpers/session.php');
 	//require('fbConfig.php');
  
 
@@ -23,5 +23,5 @@
 	}
 	
 	session_destroy();
-	redirect_to('login.php');
+	header("Location: " . '/frontend/login.php');
 ?>

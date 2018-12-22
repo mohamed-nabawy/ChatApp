@@ -1,27 +1,38 @@
 <?php
   require(dirname(__DIR__) . '/controllers/chat-messages.php');
-  require(dirname(__DIR__) . '/test-request-input.php');
-  require_once(dirname(__DIR__) . '/session.php');
+  require(dirname(__DIR__) . '/class-validators/message-validator.php');
+  require_once(dirname(__DIR__) . '/helpers/session.php');
 
-  $chatMessageController = new ChatMessageController();
+  $messageValidator = new MessageValidator();
+  $chatMessageController = new ChatMessageController(new ChatMessage(new Time(), new Date()));
 
   if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
-    if ( isset($_GET['firstUserId'], $_GET['secondUserId'], $_GET['offset']) && testInt($_GET['firstUserId'], $_GET['secondUserId'], $_GET['offset']) ) {
-      checkResult($chatMessageController->getMessagesBetweenUsersIdsInClass($conn, $_GET['firstUserId'], $_GET['secondUserId'], $_GET['classId'], $_GET['offset']) );
+    if ( isset($_GET['firstUserId'], $_GET['secondUserId'], $_GET['offset']) && $messageValidator->testInt($_GET['firstUserId'], $_GET['secondUserId'], $_GET['offset']) ) {
+      $messageValidator->checkResult($chatMessageController->getMessagesBetweenUsersIdsInClass($conn, $_GET['firstUserId'], $_GET['secondUserId'], $_GET['classId'], $_GET['offset']) );
     }
-    elseif ( isset($_GET['flag'], $_GET['offset']) && $_GET['flag'] == 2 && testInt($_GET['offset']) ) {
-      checkResult( $chatMessageController->getLastCurrentUserMessages($conn, $_GET['offset']) );
+    elseif ( isset($_GET['flag'], $_GET['offset']) && $_GET['flag'] == 2 && $messageValidator->testInt($_GET['offset']) ) {
+      $messageValidator->checkResult( $chatMessageController->getLastCurrentUserMessages($conn, $_GET['offset']) );
     }
     elseif ( isset($_GET['flag']) && $_GET['flag'] == 3) {
-      checkResult( $chatMessageController->getMessageNotifications($conn) );
+      $messageValidator->checkResult( $chatMessageController->getMessageNotifications($conn) );
     }
-    elseif (isset($_GET['messageId']) && testInt($_GET['messageId']) ) {
+    elseif (isset($_GET['messageId']) && $messageValidator->testInt($_GET['messageId']) ) {
       $chatMessageController->checkMessageExistence($conn, $_GET['messageId']);
+    }
+    elseif (isset($_GET['flag']) && $messageValidator->testInt($_GET['flag']) && $_GET['flag'] == 1) {
+      $users = $_SESSION['chats'];
+      
+      foreach ($users as $key => $value) {
+        $messages = $chatMessageController->getMessagesBetweenUsersIdsInClass($conn, $value->firstUserId, $value->secondUserId, 1, 0);
+        $value->messages = $messages;
+      }
+
+      $messageValidator->checkResult($users);
     }
     else {
       if ( $chatMessageController->checkNewMessageForUserIdInClass($conn, $_SESSION['userId'], 1)[0] > 0) {
-        checkResult( $chatMessageController->recieveNewMessageForUserIdInClass($conn, $_SESSION['userId'], 1) );
+        $messageValidator->checkResult( $chatMessageController->recieveNewMessageForUserIdInClass($conn, $_SESSION['userId'], 1) );
       }
     }
   }
@@ -30,7 +41,7 @@
     // decode the json data
     $data = json_decode( file_get_contents('php://input') );
     $result = isset($data->content, $data->sentFrom, $data->sentTo, $data->classId) && 
-    testInt($data->sentFrom, $data->sentTo, $data->classId) && normalizeString($conn, $data->content);
+    $messageValidator->testInt($data->sentFrom, $data->sentTo, $data->classId) && $messageValidator->normalizeString($conn, $data->content);
 
     if ($result) {
       echo $chatMessageController->sendMessage($conn, $data->content, $data->sentFrom, $data->sentTo, $data->classId);
@@ -40,41 +51,14 @@
     }
   }
 
-
-
   if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
-    if ( isset($_GET['sentFrom']) && testInt($_GET['sentFrom']) ) {
+    if ( isset($_GET['sentFrom']) && $messageValidator->testInt($_GET['sentFrom']) ) {
       $chatMessageController->markMessageAsReadFromSomeUser($conn, $_GET['sentFrom']);
     }
     elseif (isset($_GET['flag']) && $_GET['flag'] == 1) {
       $chatMessageController->markAllMessageNotificationsAsRead($conn);
     }
-    
-    //$messages = checkNewMessageForUserIdInClass($conn, $_SESSION['userId'], 1)[0];
-    // if ($_SESSION['roleId'] == 1)
-    // {
-    //   // decode the json data
-    //   $data = json_decode(file_get_contents('php://input'));
-    //   $result = isset($data->RoleId,$data->Id,$data->UserName,$data->FirstName,$data->LastName,$data->Email,$data->PhoneNumber) && test_int($data->RoleId,$data->Id) && normalize_string($conn,$data->UserName,$data->FirstName,$data->LastName) && test_phone($data->PhoneNumber) && test_email($data->Email);
-    //   if ($result)
-    //   {
-    //     normalize_string($conn,$data->Image);
-    //     editUser($conn,$data->UserName,$data->FirstName,$data->LastName,$data->Email,$data->Image,$data->PhoneNumber,$data->RoleId,$data->Id);
-    //   }
-    // }
   }
-
-  // if ($_SERVER['REQUEST_METHOD'] == 'DELETE')
-  // {
-  //   if ($_SESSION['roleId'] == 1)
-  //   {
-  //     // decode the json data
-  //     if (isset($_GET['userId']) && test_int($_GET['userId']))
-  //     {
-  //       deleteUser($conn,$_GET['userId']);
-  //     }
-  //   }
-  // }
-
-  require(dirname(__DIR__) . '/footer.php');
+  
+  require(dirname(__DIR__) . '/helpers/footer.php');
 ?>

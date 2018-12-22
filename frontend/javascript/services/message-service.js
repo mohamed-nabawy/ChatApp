@@ -8,6 +8,7 @@ messageServiceApp.factory('messageService', ['$http', '$q', function($http, $q) 
             $http.get('/backend/requests/chat-messages.php?firstUserId=' +
 				firstUserId + "&secondUserId=" + secondUserId + "&classId=" + 1 +
 				"&offset=" + offset).then(function(response) {
+                    //console.log(response);
                     resolve(response.data);  
             });
         });
@@ -22,6 +23,7 @@ messageServiceApp.factory('messageService', ['$http', '$q', function($http, $q) 
     messageServiceObj.getMessageNotifications = function() {
         return $q(function(resolve, reject) {
             $http.get('/backend/requests/chat-messages.php?flag=3').then(function(response) {
+                //console.log(response);
                 resolve(response.data);
             });
         });
@@ -30,6 +32,7 @@ messageServiceApp.factory('messageService', ['$http', '$q', function($http, $q) 
     messageServiceObj.getNewMessages = function() {
         return $q(function(resolve, reject) {
             $http.get('/backend/requests/chat-messages.php').then(function(response) {
+                //console.log(response);
                 resolve(response.data);
             });
         });
@@ -38,6 +41,7 @@ messageServiceApp.factory('messageService', ['$http', '$q', function($http, $q) 
     messageServiceObj.sendMessage = function(data) {
         return $q(function(resolve, reject) {
             $http.post('/backend/requests/chat-messages.php', data).then(function(response) {
+                //console.log(response);
                 resolve(response.data);
             });
         });
@@ -54,6 +58,7 @@ messageServiceApp.factory('messageService', ['$http', '$q', function($http, $q) 
     messageServiceObj.getLastCurrentUserMessages = function(offset) {
         return $q(function(resolve, reject) {
             $http.get('/backend/requests/chat-messages.php?flag=2&offset=' + offset).then(function(response) {
+                //console.log(response);
                 resolve(response.data);
             });
         });
