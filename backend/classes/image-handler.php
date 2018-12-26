@@ -1,6 +1,6 @@
 <?php
     function addImageFile($image, $name, $x1 = null, $y1 = null, $w = null, $h = null) {
-        $target_dir = dirname(__DIR__, 1) . "/uploads/";
+        $target_dir = dirname(__DIR__, 2) . "/uploads/";
         $target_file = $target_dir . $name;
 
         // Check file size
@@ -40,7 +40,7 @@
                 $c1 = $target_file . '.png';
             }
 
-            move_uploaded_file( $image['tmp_name'], $c);
+            move_uploaded_file($image['tmp_name'], $c);
             copy($c, $c1);
         }
         else {
@@ -91,17 +91,17 @@
         return [$imageNameDb, $croppedImageNameDb];
     }
 
+    // crop image
     function crop($image, $x1, $y1, $w, $h, $type) {
-        // crop image
         // Create our small image
         $new = imagecreatetruecolor(150, 150);
         // Create original image
         $current_image = 0;
 
-        if ($type == 2) {
+        if ($type == 2) { // jpeg image
             $current_image = imagecreatefromjpeg($image);
         }
-        else {
+        else { // png image
             $current_image = imagecreatefrompng($image);
         }
 
@@ -113,18 +113,18 @@
         // creating our new image
 
         if ($type == 2) {
-            imagejpeg($new, $image, 95);
+            imagejpeg($new, $image);
         }
         else {
-            imagepng($new, $image, 9);
+            imagepng($new, $image, 0);
         }
 
         imagedestroy($new);
     }
 
     function deleteImageFileName($fileName) {
-        if (file_exists(dirname(__DIR__, 1) . $fileName)) {
-            unlink(dirname(__DIR__, 1) . $fileName);
+        if (file_exists(dirname(__DIR__, 2) . $fileName)) {
+            unlink(dirname(__DIR__, 2) . $fileName);
 
             return true;
         }
@@ -134,7 +134,7 @@
 
     function handlePictureUpdate($conn, $image, $x1 = null, $y1 = null, $w = null, $h = null) {
         if ($x1 != null || $y1 != null || $w != null || $h != null) {
-            if (strlen($image) != 0) { // new image is gonna be uploaded
+            if (strlen($image) != 0) { // new image is going to be uploaded
                 $imageData = $image;
                 list($imageFileType, $image) = explode(';', $image);
                 list(, $image)      = explode(',', $image);
@@ -163,15 +163,15 @@
                     if ($ext != 'jpeg') {
                         if ($f == 0) {
                             $conn->query("update `users` set `image` = '{$_SESSION['image']}', `croppedImage` = '{$_SESSION['croppedImage']}' where `id` = '{$_SESSION['userId']}'");
-                            unlink(dirname(__DIR__, 1) . '/uploads/' . $_SESSION['email'] . '.png'); // remove the old picture
-                            unlink(dirname(__DIR__, 1) . '/uploads/' . $_SESSION['email'] . '_crop.png'); // remove the old cropped
+                            unlink(dirname(__DIR__, 2) . '/uploads/' . $_SESSION['email'] . '.png'); // remove the old picture
+                            unlink(dirname(__DIR__, 2) . '/uploads/' . $_SESSION['email'] . '_crop.png'); // remove the old cropped
                         }
                     }
                     else {
                         if ($f == 0) {
                             $conn->query("update `users` set `image` = '{$_SESSION['image']}', `croppedImage` = '{$_SESSION['croppedImage']}' where `id` = '{$_SESSION['userId']}'");
-                            unlink(dirname(__DIR__, 1) . '/uploads/' . $_SESSION['email'] . '.jpeg'); // remove the old picture
-                            unlink(dirname(__DIR__, 1) . '/uploads/' . $_SESSION['email'] . '_crop.jpeg'); // remove the old
+                            unlink(dirname(__DIR__, 2) . '/uploads/' . $_SESSION['email'] . '.jpeg'); // remove the old picture
+                            unlink(dirname(__DIR__, 2) . '/uploads/' . $_SESSION['email'] . '_crop.jpeg'); // remove the old
                         }
                     }
                 }
@@ -189,15 +189,15 @@
                     if ($ext != 'png') {
                         if ($f == 0) {
                             $conn->query("update `users` set `image` = '{$_SESSION['image']}', `croppedImage` = '{$_SESSION['croppedImage']}' where `id` = '{$_SESSION['userId']}'");
-                            unlink(dirname(__DIR__, 1) . '/uploads/' . $_SESSION['email'] . '.jpeg'); // remove the old picture
-                            unlink(dirname(__DIR__, 1) . '/uploads/' . $_SESSION['email'] . '_crop.jpeg'); // remove the old cropped
+                            unlink(dirname(__DIR__, 2) . '/uploads/' . $_SESSION['email'] . '.jpeg'); // remove the old picture
+                            unlink(dirname(__DIR__, 2) . '/uploads/' . $_SESSION['email'] . '_crop.jpeg'); // remove the old cropped
                         }
                     }
                     else {
                         if ($f == 0) {
                             $conn->query("update `users` set `image` = '{$_SESSION['image']}', `croppedImage` = '{$_SESSION['croppedImage']}' where `id` = '{$_SESSION['userId']}'");
-                            unlink(dirname(__DIR__, 1) . '/uploads/' . $_SESSION['email'] . '.png'); // remove the old picture
-                            unlink(dirname(__DIR__, 1) . '/uploads/' . $_SESSION['email'] . '_crop.png'); // remove the old
+                            unlink(dirname(__DIR__, 2) . '/uploads/' . $_SESSION['email'] . '.png'); // remove the old picture
+                            unlink(dirname(__DIR__, 2) . '/uploads/' . $_SESSION['email'] . '_crop.png'); // remove the old
                         }
                     }
                 }
@@ -208,8 +208,8 @@
             else {
                 if ($_SESSION['imageSet'] == 1) {
                     $ext = pathinfo($_SESSION['image'], PATHINFO_EXTENSION);
-                    $img = dirname(__DIR__, 1) . '/uploads/' . $_SESSION['email'];
-                    $cropped = dirname(__DIR__, 1) . '/uploads/' . $_SESSION['email'] . '_crop';
+                    $img = dirname(__DIR__, 2) . '/uploads/' . $_SESSION['email'];
+                    $cropped = dirname(__DIR__, 2) . '/uploads/' . $_SESSION['email'] . '_crop';
 
                     if ($ext == 'jpeg') {
                         $ext = 2;
@@ -227,8 +227,8 @@
                     crop($cropped, $x1, $y1, $w, $h, $ext);
                 }
                 else {
-                    $img = dirname(__DIR__, 1) . '/uploads/';
-                    $cropped = dirname(__DIR__, 1) . '/uploads/';
+                    $img = dirname(__DIR__, 2) . '/uploads/';
+                    $cropped = dirname(__DIR__, 2) . '/uploads/';
 
                     if ($_SESSION['genderId'] == 1) {
                         $img .= 'maleimage.jpeg';
@@ -239,7 +239,7 @@
 
                     $x = $_SESSION['email'] . '_crop.jpeg';
                     $cropped .= $x;
-                    $_SESSION['croppedImage'] = dirname(__DIR__, 1) . '/uploads/' . $x;
+                    $_SESSION['croppedImage'] = dirname(__DIR__, 2) . '/uploads/' . $x;
 
                     $conn->query("update `users` set `croppedImage` = '{$_SESSION['croppedImage']}' where `id` = '{$_SESSION['userId']}'");
 
@@ -287,7 +287,7 @@
         $croppedFileName = '';
 
         if ($imageAttr2 !== 0) { // maybe a user
-            $c = dirname(__DIR__, 1) . "/uploads/" . $name;
+            $c = dirname(__DIR__, 2) . "/uploads/" . $name;
             $c1 = $c . "_crop";
 
             if ($type == 'data:image/jpeg') {
@@ -299,7 +299,7 @@
                 $fileName = '/uploads/' . $name;
                 $croppedFileName = '/uploads/' . $croppedName;
                 copy($c, $c1);
-                crop(dirname(__DIR__, 1) . $croppedFileName, $x1, $y1, $w, $h, 2);
+                crop(dirname(__DIR__, 2) . $croppedFileName, $x1, $y1, $w, $h, 2);
             }
             elseif ($type == 'data:image/png') {
                 $croppedName = $name . '_crop.png';
@@ -310,7 +310,7 @@
                 $fileName = '/uploads/' . $name;
                 $croppedFileName = '/uploads/' . $croppedName;
                 copy($c, $c1);
-                crop(dirname(__DIR__, 1) . $croppedFileName, $x1, $y1, $w, $h, 3);
+                crop(dirname(__DIR__, 2) . $croppedFileName, $x1, $y1, $w, $h, 3);
             }
 
             return [$fileName, $croppedFileName];
@@ -329,7 +329,7 @@
                 }
             }
 
-            $target_file = dirname(__DIR__, 1) . "/uploads/" . $name;
+            $target_file = dirname(__DIR__, 2) . "/uploads/" . $name;
             file_put_contents($target_file, $imageData);
             $fileName = '/uploads/' . $name;
 

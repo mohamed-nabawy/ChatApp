@@ -120,8 +120,6 @@ $("#myModal").on('shown.bs.modal', function() {
     $('input[name=w]').val(w);
     $('input[name=h]').val(h);
 
-    console.log(cropData);
-
     // cropped area data
     $('#profPicture').croppie('result', {}).then(function(x) {
       $('#picInner').attr('src', x);

@@ -65,7 +65,7 @@ layoutApp.controller('studentProfile', ['$scope', '$rootScope', '$http', 'messag
 		$rootScope.newMessages = [];
 		$rootScope.newLen = 0;
 		messageService.markAllMessageNotificationsAsRead();
-	}
+	};
 	
 	$rootScope.getAllMessages = function() {
 		messageService.getLastCurrentUserMessages(0).then(function(data) {
@@ -103,18 +103,16 @@ layoutApp.controller('studentProfile', ['$scope', '$rootScope', '$http', 'messag
 					$rootScope.$broadcast('newMes');
 				}
 			}
-			//console.log($scope.messages);
 		});
 	};
 
 	$scope.$on('updatenew', function(e, id) {
-		//console.log(id);
 		var lenMessages = $scope.messages.length;
 
 		for (var k = 0; k < lenMessages; k++) {
 			if ($scope.messages[k].id == id) {
-				//console.log(id);
 				$scope.messages[k].new = 0;
+
 				break;
 			}
 		}

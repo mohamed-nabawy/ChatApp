@@ -41,7 +41,7 @@
     elseif (isset($_GET['update']) && $_GET['update'] == 1) {
       $data = json_decode( file_get_contents('php://input') );
 
-      if ( isset($data->x1, $data->y1, $data->w, $data->h) && ( ($data->x1 == '' && $data->y1 == '' && $data->w == '' && $data->h == '') || testMutipleInts($data->x1, $data->y1, $data->w, $data->h) ) ) {
+      if ( isset($data->x1, $data->y1, $data->w, $data->h) && ( ($data->x1 == '' && $data->y1 == '' && $data->w == '' && $data->h == '') || $userValidator->testMutipleInts($data->x1, $data->y1, $data->w, $data->h) ) ) {
           $x1 = $y1 = $w = $h = null;
 
           if ( ($data->x1 != '' && $data->y1 != '' && $data->w != '' && $data->h != '') ) {
